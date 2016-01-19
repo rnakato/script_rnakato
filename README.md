@@ -1,4 +1,6 @@
 # scripts
+add_genename_fromgtf.pl
+add_genename_fromrefseqid.pl
 autocalc_ave_and_stdv.pl
 changespace2tab.pl
 clmsort-low.pl
