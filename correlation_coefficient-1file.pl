@@ -5,6 +5,8 @@ $file=$ARGV[0];
 $line1=$ARGV[1];
 $line2=$ARGV[2];
 
+die "correlation_coefficient-1file.pl <file> <line1> <line2>\n" if($#ARGV !=2);
+
 undef @array_a;
 undef @array_b;
 
