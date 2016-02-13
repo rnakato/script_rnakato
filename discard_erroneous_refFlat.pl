@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
 
 =head1 SYNOPSIS
-discard_erroneous_refFlat.pl [gtf|txt] <file>
+
+    discard_erroneous_refFlat.pl [gtf|txt] <file>
+
 =cut
 
 use strict;
@@ -32,7 +34,10 @@ while(<$fh>){
     }
 }
 
-system("rm $filename") if($type eq "txt");
+if($type eq "txt"){
+    my $fl = file($filename);
+    $fl->remove or die $!;
+}
 
 while(my($geneid,$entry) = each(%$hash)){
     my (@chr,@strand);

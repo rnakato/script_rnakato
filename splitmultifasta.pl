@@ -1,38 +1,54 @@
 #!/usr/bin/perl -w
 
+=head1 DESCRIPTION
+
+    split multifasta into single fastas in <dir>
+
+=head1 SYNOPSIS
+
+    % splitmulitfasta.pl <input.fa> <directory>
+
+=cut
+
 use strict;
 use warnings;
 use autodie;
-$filename = $ARGV[0];
-$dir = $ARGV[1];
-$head ="";
-$seq = "";
-open(InputFile,$filename) ||die "error: can't open file.\n";
-while(<InputFile>){
+use Path::Class;
+use Pod::Usage qw/pod2usage/;
+
+my $filename = $ARGV[0];
+pod2usage(2) unless $filename;
+my $dir = $ARGV[1];
+pod2usage(2) unless $dir;
+my $head ="";
+my $seq = "";
+my $file = file($filename);
+my $fh = $file->open('r') or die $!;
+while(<$fh>){
     next if($_ eq "\n");
     chomp;
     if($_ =~ />(.+)/){
 	if($seq ne ""){
-	    open(OUT,">$dir/$filename.fa");
-	    print OUT ">$filename\n";
-	    print OUT "$seq\n";
+	    my $out = file($dir . "/" . $head . ".fa");
+	    my $writer = $out->open('w') or die "Can't read $out: $!";
+	    $writer->print(">$head\n");
+	    $writer->print("$seq\n");
+	    $writer->close;
 	    $seq = "";
-	    close(OUT);
 	}
 	$head =$1;
-	my @str = split(/ /, $head);
-	$filename = $str[0];
-	print "$filename\n"
+	$head =~ s/\s+/_/g;
+	print "$head\n"
     }else{
 	$seq .= $_;
     }
 } 
-close (InputFile);
+$fh->close;
 
 if($seq ne ""){
-    open(OUT,">$dir/$filename.fa");
-    print OUT ">$filename\n";
-    print OUT "$seq\n";
-    $seq = "";
-    close(OUT);
+    my $out = file($dir . "/" . $head . ".fa");
+    my $writer = $out->open('w') or die "Can't read $out: $!";
+    $writer->print(">$head\n");
+    $writer->print("$seq\n");
+    $writer->close;
 }

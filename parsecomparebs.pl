@@ -3,12 +3,11 @@
 use strict;
 use warnings;
 use autodie;
-use Getopt::Long;
+use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 
-$length=0;
+my $length=0;
 GetOptions('length' => \$length);
-$file=$ARGV[0];
-
+my $file=$ARGV[0];
 open(IN, $file) || die "error: cannot open $file.";
 while(<IN>) {
     next if($_ eq "\n");
@@ -21,5 +20,3 @@ while(<IN>) {
     }
 }
 close IN;
-
-#file1 peaknum: 3499	file2 peaknum: 22412	 file1 common: 463 (13.2%)	file1 unique: 3036 (86.8%)	file2 common: 480 (2.1%)	file2 unique: 21932 (97.9%)

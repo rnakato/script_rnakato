@@ -1,27 +1,42 @@
 #! /usr/bin/perl -w
 
+=head1 DESCRIPTION
+
+    describe DESCRIPTION
+
+=head1 SYNOPSIS
+
+    % combine_lines_from2files.pl <file1> <file2> <line1> <line2>
+
+=cut
+
 use strict;
 use warnings;
 use autodie;
+use Path::Class;
+use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
+use Pod::Usage qw/pod2usage/;
+pod2usage(2) if($#ARGV !=3);
 my $file1=$ARGV[0];
 my $file2=$ARGV[1];
 my $line1=$ARGV[2];
 my $line2=$ARGV[3];
 
-die "combine_lines_from2files.pl <file1> <file2> <line1> <line2>\n" if($#ARGV !=3);
-
 my %Hash = {};
-open(List, $file1) ||die "error: can't open $file1.\n";
-while(<List>){
+my $file = file($file1);
+my $fh = $file->open('r') or die $!;
+while(<$fh>){
     next if($_ eq "\n");
     chomp;
     my @clm = split(/\s/, $_);
     $Hash{$clm[$line1]} = $_;
 }
-close (List);
+$fh->close;
 
-open(List, $file2) ||die "error: can't open $file2.\n";
-while(<List>){
+$file = file($file2);
+$fh = $file->open('r') or die $!;
+my $fh = $file->open('r') or die $!;
+while(<$fh>){
     next if($_ eq "\n");
     chomp;
     my @clm = split(/\s/, $_);
@@ -30,4 +45,4 @@ while(<List>){
 	print "$Hash{$name}\t$_\n";
     }
 }
-close (List);
+$fh->close;

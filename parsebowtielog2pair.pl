@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use autodie;
-$k=0;
+my $k=0;
 open(ListFile, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
 while($line = <ListFile>){
     next if($line eq "\n");
@@ -16,19 +16,19 @@ while($line = <ListFile>){
 close (ListFile);
 
 open(ListFile, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
-$sample="";
-$num_total="";
-$num_mapped="";
-$num_unaligned="";
-$num_filtered="";
-$num_pcrfiltered=" -";
+my $sample="";
+my $num_total="";
+my $num_mapped="";
+my $num_unaligned="";
+my $num_filtered="";
+my $num_pcrfiltered=" -";
 
 print "Sample\treads\tpaired\t%\tmapped $k time\t%\tmapped >$k time\t%\tmapped total\t%\tunmapped\t%\tPCR bias\n";
 
 while($line = <ListFile>){
     next if($line eq "\n");
     chomp($line);
-    if($line =~ /bowtie2(.+) (.+)\.fastq (.+)/){
+    if($line =~ /bowtie2 (.+) (.+)\.fastq (.+)/){
 	if($sample ne ""){
 	    my $totalnum = $num_mapped + $num_filtered;
     printf "%s\t%d\t%d\t%.2f\t", $sample, $num_total, $num_paired, $num_paired*100/$num_total;

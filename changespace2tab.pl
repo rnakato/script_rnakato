@@ -3,12 +3,10 @@
 use strict;
 use warnings;
 use autodie;
-$mapfile=$ARGV[0];
-open(IN, $mapfile) || die "error: cannot open $mapfile.";
+open(IN, $ARGV[0]) || die;
 while(<IN>) {
     next if($_ eq "\n");
-    chomp;
     $_ =~ s/\s+/\t/g;
-    print "$_\n";
+    print $_;
 }
 close IN;
