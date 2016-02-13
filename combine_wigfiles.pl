@@ -1,5 +1,8 @@
 #! /usr/bin/perl
 
+use strict;
+use warnings;
+use autodie;
 die "scatterplot_wigfile.pl <binsize> <wigfile1> <wigfile2> [<wigfile3> ... ]\n" if($#ARGV ==-1);
 
 $binsize=$ARGV[0];

@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 use Statistics::Lite qw(:all);
 
 $num=0;

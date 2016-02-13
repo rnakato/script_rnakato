@@ -1,4 +1,8 @@
 #! /usr/bin/perl -w
+
+use strict;
+use warnings;
+use autodie;
 use POSIX;
 
 $max=0;

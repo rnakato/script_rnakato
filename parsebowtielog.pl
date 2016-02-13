@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 open(ListFile, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
 
 print "Sample\treads\tmapped unique\t%\tmapped >= 2\t%\tmapped total\t%\tunmapped\t%\n";

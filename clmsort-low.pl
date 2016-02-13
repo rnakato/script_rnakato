@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $filename=$ARGV[0];
 $max=$ARGV[1];
 

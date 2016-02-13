@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
-# lowlettermask.pl
-# fasta形式の配列で小文字の部分をNでマスクします。
 
+use strict;
+use warnings;
+use autodie;
 
 $filename = $ARGV[0];
 

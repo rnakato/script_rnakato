@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "convert_genename2refseq.pl <genefile> <refFlat>\n" if($#ARGV !=1);
 
 $file=$ARGV[0];

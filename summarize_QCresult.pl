@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $n=0;
 $totallen=0;
 open(IN, $ARGV[0]) || die;

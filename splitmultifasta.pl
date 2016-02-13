@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $filename = $ARGV[0];
 $dir = $ARGV[1];
 $head ="";

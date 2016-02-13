@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $len_all=0;
 $len_nonN=0;
 open(ListFile, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";

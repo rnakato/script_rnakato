@@ -1,5 +1,8 @@
-#! /usr/bin/perl
-# correlation_coefficient.pl
+#! /usr/bin/perl -w
+
+use strict;
+use warnings;
+use autodie;
 
 $file_a=$ARGV[0];
 $file_b=$ARGV[1];

@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "randomextract_fastq.pl <fastq> <p> <postfix>\n" if($#ARGV !=2);
 
 

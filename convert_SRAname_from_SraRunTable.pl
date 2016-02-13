@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $file=$ARGV[0];
 $line_name=$ARGV[1];
 open(IN, $file) || die;

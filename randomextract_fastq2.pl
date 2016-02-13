@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "randomextract_fastq2.pl <fastq> <num_def> <num_all> <outputname>\n" if($#ARGV !=3);
 
 $fastqfile=$ARGV[0];

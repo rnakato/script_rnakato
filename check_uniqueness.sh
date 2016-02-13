@@ -1,5 +1,7 @@
 #!/bin/bash
 
+use strict;
+use warnings;
 while getopts af: OPT
 do
     case $OPT in

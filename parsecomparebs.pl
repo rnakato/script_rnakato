@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 use Getopt::Long;
 
 $length=0;

@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "random_pickup2_forfa.pl <file> <number>\n" if($#ARGV !=1);
 
 $file=$ARGV[0];

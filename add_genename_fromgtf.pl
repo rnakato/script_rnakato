@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "add_genename_fromgtf.pl <file> <gtf>\n" if($#ARGV !=1);
 
 $file=$ARGV[0];

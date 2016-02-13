@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 die "randomextract_csfasta.pl <csfasta> <qual> <p>\n" if($#ARGV !=2);
-
 
 $csfastafile=$ARGV[0];
 $qualfile=$ARGV[1];

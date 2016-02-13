@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $file1=$ARGV[0];
 $file2=$ARGV[1];
 $line1=$ARGV[2];

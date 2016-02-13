@@ -1,5 +1,8 @@
 #! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 &readfile($ARGV[0], \%expmatrix, \@name);
 
 foreach $gene (keys(%Hash_geneall)){

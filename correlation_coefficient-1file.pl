@@ -1,6 +1,8 @@
-#! /usr/bin/perl
-# correlation_coefficient-1file.pl
+#! /usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $file=$ARGV[0];
 $line1=$ARGV[1];
 $line2=$ARGV[2];

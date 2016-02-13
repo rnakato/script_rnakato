@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $file=$ARGV[0];
 open(ListFile, $file) ||die "error: can't open file.\n";
 while($line = <ListFile>){

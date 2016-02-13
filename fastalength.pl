@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 $filename = $ARGV[0];
 $len=0;
 $lenall=0;

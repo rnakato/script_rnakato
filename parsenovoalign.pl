@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+use strict;
+use warnings;
+use autodie;
 open(File, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
 while(<File>){
     next if($_ eq "\n");
