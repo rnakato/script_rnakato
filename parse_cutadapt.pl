@@ -3,6 +3,16 @@
 use strict;
 use warnings;
 use autodie;
+my $all;
+my $ad;
+my $rad;
+my $short;
+my $rshort;
+my $pass;
+my $rpass;
+my $allbp;
+my $passbp;
+my $rpassbp;
 open(File, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
 while(<File>){
     next if($_ eq "\n");
