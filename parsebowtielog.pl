@@ -1,26 +1,35 @@
 #!/usr/bin/perl -w
 
+=head1 SYNOPSIS
+parsebowtielog.pl <file>
+=cut
+
 use strict;
 use warnings;
 use autodie;
-open(ListFile, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
+use Pod::Usage qw(pod2usage);
+my $sample="";
+my $num_total="";
+my $num_mapped="";
+my $num_unaligned="";
+my $num_filtered="";
+my $num_pcrfiltered="";
+my $totalnum =0;
+
+my $filename=shift;
+pod2usage unless $filename;
+
+open(File, $filename) ||die "error: can't open $filename.\n";
 
 print "Sample\treads\tmapped unique\t%\tmapped >= 2\t%\tmapped total\t%\tunmapped\t%\n";
-
-$sample="";
-$num_total="";
-$num_mapped="";
-$num_unaligned="";
-$num_filtered="";
-$num_pcrfiltered="";
-while($line = <ListFile>){
-    next if($line eq "\n");
-    if($line =~ /Could not open read file/){
-	print $line;
+while(<File>){
+    next if($_ eq "\n");
+    if($_ =~ /Could not open read file/){
+	print $_;
 	next;
     }
-    chomp($line);
-    if($line =~ /bowtie(.+)[>|samtools sort -] (.+)/){
+    chomp;
+    if($_ =~ /bowtie(.+)[>|samtools sort -] (.+)/){
 	if($sample ne ""){
 	    if($num_filtered ne ""){
 		$totalnum = $num_mapped + $num_filtered;
@@ -37,20 +46,20 @@ while($line = <ListFile>){
 	    $num_pcrfiltered=" -";
 	}
 	$sample = $2;
-    }elsif($line =~ /# reads processed: (.+)/){
+    }elsif($_ =~ /# reads processed: (.+)/){
 	$num_total=$1;
-    }elsif($line =~ /# reads with at least one reported alignment: (.+) (\(.+\))/){
+    }elsif($_ =~ /# reads with at least one reported alignment: (.+) (\(.+\))/){
 	$num_mapped=$1;
-    }elsif($line =~ /# reads that failed to align: (.+) (\(.+\))/){
+    }elsif($_ =~ /# reads that failed to align: (.+) (\(.+\))/){
 	$num_unaligned=$1;
-    }elsif($line =~ /# reads with alignments suppressed due to -m: (.+) (\(.+\))/){
+    }elsif($_ =~ /# reads with alignments suppressed due to -m: (.+) (\(.+\))/){
 	$num_filtered=$1;
-    }elsif($line =~ /total: pcr bias position: (.+), filter read num: (.+)/){
+    }elsif($_ =~ /total: pcr bias position: (.+), filter read num: (.+)/){
 	$num_pcrfiltered=$2;
     }
 
 }
-close (ListFile);
+close(File);
 
 if($sample ne ""){
     if($num_filtered ne ""){
