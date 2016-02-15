@@ -18,7 +18,7 @@ while(<List>){
     my @clm = split(/\s/, $_);
     $Hash{$clm[$line1]} = $_;
 }
-close (ListFile);
+close (List);
 
 open(List, $file2) ||die "error: can't open $file2.\n";
 while(<List>){
@@ -30,4 +30,4 @@ while(<List>){
 	print "$Hash{$name}\t$_\n";
     }
 }
-close (ListFile);
+close (List);
