@@ -7,6 +7,7 @@ parsebowtielog.pl <file>
 use strict;
 use warnings;
 use autodie;
+use Path::Class;
 use Pod::Usage qw(pod2usage);
 my $sample="";
 my $num_total="";
@@ -19,10 +20,11 @@ my $totalnum =0;
 my $filename=shift;
 pod2usage unless $filename;
 
-open(File, $filename) ||die "error: can't open $filename.\n";
-
 print "Sample\treads\tmapped unique\t%\tmapped >= 2\t%\tmapped total\t%\tunmapped\t%\n";
-while(<File>){
+
+my $file = file($filename);
+my $fh = $file->open('r') or die $!;
+while(<$fh>){
     next if($_ eq "\n");
     if($_ =~ /Could not open read file/){
 	print $_;
@@ -59,7 +61,6 @@ while(<File>){
     }
 
 }
-close(File);
 
 if($sample ne ""){
     if($num_filtered ne ""){
