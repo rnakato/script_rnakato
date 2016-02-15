@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 =head1 SYNOPSIS
-discard_erroneous_gtf.pl [gtf|txt] <file>
+discard_erroneous_refFlat.pl [gtf|txt] <file>
 =cut
 
 use strict;
