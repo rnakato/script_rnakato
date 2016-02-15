@@ -31,7 +31,7 @@ while(<$fh>){
 	next;
     }
     chomp;
-    if($_ =~ /bowtie(.+)[>|samtools sort -] (.+)/){
+    if($_ =~ /bowtie (.+)[>|samtools sort -] (.+)/){
 	if($sample ne ""){
 	    if($num_filtered ne ""){
 		$totalnum = $num_mapped + $num_filtered;
