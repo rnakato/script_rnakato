@@ -5,8 +5,9 @@ use warnings;
 use autodie;
 die "add_genename_fromrefseqid.pl <file> <refFlat>\n" if($#ARGV !=1);
 
-$file=$ARGV[0];
-$refflat=$ARGV[1];
+my $file=$ARGV[0];
+my $refflat=$ARGV[1];
+my %Hash={};
 open(ListFile, $refflat) ||die "error: can't open $refflat.\n";
 while(<ListFile>){
     next if($_ eq "\n");

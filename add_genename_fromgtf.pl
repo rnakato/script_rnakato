@@ -5,8 +5,9 @@ use warnings;
 use autodie;
 die "add_genename_fromgtf.pl <file> <gtf>\n" if($#ARGV !=1);
 
-$file=$ARGV[0];
-$gtf=$ARGV[1];
+my $file=$ARGV[0];
+my $gtf=$ARGV[1];
+my %Hash={};
 open(ListFile, $gtf) ||die "error: can't open $gtf.\n";
 while(<ListFile>){
     next if($_ eq "\n");
