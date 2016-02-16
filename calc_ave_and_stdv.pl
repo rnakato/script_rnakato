@@ -11,7 +11,6 @@
     Options:
     --column=<int>
     --ave
-    --median
     --var
     --stdv
     --min
@@ -29,7 +28,7 @@ use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 use Pod::Usage qw/pod2usage/;
 use Statistics::Lite qw(:all);
 
-GetOptions(\my %opt, qw/ave median max min var stdv sum all column|c=i/) or pod2usage(1);
+GetOptions(\my %opt, qw/ave max min var stdv sum all column|c=i/) or pod2usage(1);
 
 my @required_options = qw/column/;
 pod2usage(2) if grep {!exists $opt{$_}} @required_options;
