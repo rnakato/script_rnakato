@@ -17,6 +17,7 @@
     --min
     --max
     --sum
+    --all
 
 =cut
 
@@ -28,7 +29,7 @@ use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 use Pod::Usage qw/pod2usage/;
 use Statistics::Lite qw(:all);
 
-GetOptions(\my %opt, qw/ave median max min var stdv sum column|c=i/) or pod2usage(1);
+GetOptions(\my %opt, qw/ave median max min var stdv sum all column|c=i/) or pod2usage(1);
 
 my @required_options = qw/column/;
 pod2usage(2) if grep {!exists $opt{$_}} @required_options;
@@ -47,9 +48,9 @@ while(<$fh>){
 }
 $fh->close;
 
-printf("mean\t%f\n", mean @array) if(exists($opt{ave}));
-printf("max\t%f\n",  max @array) if(exists($opt{max}));
-printf("min\t%f\n",  min @array) if(exists($opt{min}));
-printf("var\t%f\n",  variance @array) if(exists($opt{var}));
-printf("stdv\t%f\n", stddev @array) if(exists($opt{stdv}));
-printf("sum\t%f\n",  sum @array) if(exists($opt{sum}));
+printf("mean\t%f\n", mean @array) if(exists($opt{ave}) || exists($opt{all}));
+printf("max\t%f\n",  max @array) if(exists($opt{max}) || exists($opt{all}));
+printf("min\t%f\n",  min @array) if(exists($opt{min}) || exists($opt{all}));
+printf("var\t%f\n",  variance @array) if(exists($opt{var}) || exists($opt{all}));
+printf("stdv\t%f\n", stddev @array) if(exists($opt{stdv}) || exists($opt{all}));
+printf("sum\t%f\n",  sum @array) if(exists($opt{sum}) || exists($opt{all}));
