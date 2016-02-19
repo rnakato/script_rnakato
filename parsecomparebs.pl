@@ -1,15 +1,29 @@
 #! /usr/bin/perl -w
 
+=head1 DESCRIPTION
+
+    parse output of compare_bs
+
+=head1 SYNOPSIS
+
+    % parsecomparebs.pl [--length] <filename>
+
+=cut
+
 use strict;
 use warnings;
 use autodie;
+use Path::Class;
 use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 
 my $length=0;
 GetOptions('length' => \$length);
-my $file=$ARGV[0];
-open(IN, $file) || die "error: cannot open $file.";
-while(<IN>) {
+
+my $filename=shift;
+pod2usage(2) unless $filename;
+my $file = file($filename);
+my $fh = $file->open('r') or die $!;
+while(<$fh>){
     next if($_ eq "\n");
     chomp;
     if(!$length && $_ =~ /#num1: (.+)\tnum2: (.+)\tnum1_overlap: (.+) (\(.+\))\tnum1_notoverlap: (.+) (\(.+\))\tnum2_overlap: (.+) (\(.+\))\tnum2_notoverlap: (.+) (\(.+\))/){
@@ -19,4 +33,4 @@ while(<IN>) {
 	print "$1\t$3\t$5\t$6\t$7\n";
     }
 }
-close IN;
+$fh->close;
