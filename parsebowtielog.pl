@@ -26,6 +26,7 @@ my $num_mapped="";
 my $num_unaligned="";
 my $num_filtered="";
 my $num_pcrfiltered="";
+my $totalnum=0;
 
 my $file = file($filename);
 my $fh = $file->open('r') or die $!;
@@ -39,7 +40,7 @@ while(<$fh>){
     if($_ =~ /bowtie (.+)[>|samtools sort -] (.+)/){
 	if($sample ne ""){
 	    if($num_filtered ne ""){
-		my $totalnum = $num_mapped + $num_filtered;
+		$totalnum = $num_mapped + $num_filtered;
 		printf "%s\t%d\t%d\t%.2f\t%d\t%.2f\t%d\t%.2f\t%d\t%.2f\n", $sample, $num_total, $num_mapped, $num_mapped*100/$num_total, $num_filtered, $num_filtered*100/$num_total, $totalnum, $totalnum*100/$num_total, $num_unaligned, $num_unaligned*100/$num_total;
 	    }else{
 		$totalnum = $num_mapped;
@@ -70,7 +71,7 @@ $fh->close;
 
 if($sample ne ""){
     if($num_filtered ne ""){
-	my $totalnum = $num_mapped + $num_filtered;
+	$totalnum = $num_mapped + $num_filtered;
 	printf "%s\t%d\t%d\t%.2f\t%d\t%.2f\t%d\t%.2f\t%d\t%.2f\n", $sample, $num_total, $num_mapped, $num_mapped*100/$num_total, $num_filtered, $num_filtered*100/$num_total, $totalnum, $totalnum*100/$num_total, $num_unaligned, $num_unaligned*100/$num_total;
     }else{
 	$totalnum = $num_mapped;
