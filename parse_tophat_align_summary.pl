@@ -5,15 +5,16 @@ use warnings;
 use autodie;
 use Getopt::Long;
 
-$pair=0;
+my $pair=0;
 GetOptions('pair' => \$pair);
 
 if($pair){
-    $str="";
-    $nleft=0;$nright=0;
-    $mapleft=0;$mapright=0;$mappair=0;
-    $mapmulti=0;$rmulti=0;
-    $mapdis=0;$rdis=0;
+    my $str="";
+    my $nleft=0; my $nright=0;
+    my $mapleft=0;my $mapright=0;my $mappair=0;
+    my $mapmulti=0;my $rmulti=0;
+    my $mapdis=0;my $rdis=0;
+    my $rl=0; my $rr=0;
     open(File, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
     while(<File>){
 	next if($_ eq "\n");
@@ -56,7 +57,7 @@ if($pair){
     print STDERR "Sequenced\tmapped\t(%)\tSequenced\tmapped\t(%)\tAligned\tmultiple\t(%)\tdiscordant\t(%)\n";
     print "$nleft\t$mapleft\t$rl\t$nright\t$mapright\t$rr\t$mappair\t$mapmulti\t$rmulti\t$mapdis\t$rdis\n";
 }else{
-    $seq=0; $map=0; $rmap=0; $mapmulti=0; $rmulti=0; $n=0; $t=0;
+    my $seq=0; my $map=0; my $rmap=0; my $mapmulti=0; my $rmulti=0; my $n=0; my $t=0;
     open(File, $ARGV[0]) ||die "error: can't open $ARGV[0].\n";
     while(<File>){
 	next if($_ eq "\n");
@@ -73,8 +74,8 @@ if($pair){
 	    $t=$4;
 	}
     }
-    $unmap = $seq - $map;
-    $runmap = 100 - $rmap;
+    my $unmap = $seq - $map;
+    my $runmap = 100 - $rmap;
     print STDERR "Sequenced\tmapped\t(%)\tmultiple\t(%)\t >$t\tunmapped\t(%)\n";
     print "$seq\t$map\t$rmap\t$mapmulti\t$rmulti\t$n\t$unmap\t$runmap\n";
 }
