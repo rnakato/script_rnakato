@@ -1,4 +1,5 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+
 =head1 DESCRIPTION
  
     Parse stats output by bowtie1.
