@@ -2,7 +2,6 @@
 # downloaded from Galaxy (https://github.com/najoshi/ucd-biocore-galaxy/blob/master/tools/filters/bed_to_gff_converter.py)
 
 import sys
-
 assert sys.version_info[:2] >= ( 2, 4 )
 
 def __main__():
