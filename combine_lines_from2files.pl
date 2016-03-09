@@ -22,7 +22,7 @@ my $file2=$ARGV[1];
 my $line1=$ARGV[2];
 my $line2=$ARGV[3];
 
-my %Hash = {};
+my %Hash = ();
 my $file = file($file1);
 my $fh = $file->open('r') or die $!;
 while(<$fh>){
@@ -35,14 +35,11 @@ $fh->close;
 
 $file = file($file2);
 $fh = $file->open('r') or die $!;
-my $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "\n");
     chomp;
     my @clm = split(/\s/, $_);
     my $name = $clm[$line2];
-    if(exists($Hash{$name})){
-	print "$Hash{$name}\t$_\n";
-    }
+    print "$Hash{$name}\t$_\n" if(exists($Hash{$name}));
 }
 $fh->close;
