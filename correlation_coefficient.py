@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys 
+import sys
+from math import log
 from scipy.stats.stats import pearsonr
 from scipy.stats.stats import spearmanr
 from optparse import OptionParser
