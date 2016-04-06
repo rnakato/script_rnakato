@@ -1,10 +1,11 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
-use autodie;
+#use strict;
+#use warnings;
+#use autodie;
 $file=$ARGV[0];
 $line_name=$ARGV[1];
+$sep=$ARGV[2];
 open(IN, $file) || die;
 $file=<IN>;
 @clm= split(/\t/, $file);
@@ -19,7 +20,11 @@ while(<IN>) {
     chomp;
     @clm= split(/\t/, $_);
     my $srr = $clm[$line_id];
-    my ($gsm, $name) = split(': ', $clm[$line_name]);
+    if($sep eq "space"){
+	my ($name, $gsm) = split(' ', $clm[$line_name]);
+    }else{
+	my ($gsm, $name) = split(': ', $clm[$line_name]);
+    }
     $name =~ s/(?:\()/_/g;
     $name =~ s/(?:\))/_/g;
     $type{$name} = $clm[$line_type];
