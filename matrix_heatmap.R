@@ -7,35 +7,31 @@ clst <- as.logical(args[4])
 library(RColorBrewer)
 library(gplots)
 
-counts <- read.table(infile, header=T, row.names=1, sep="\t")
-
+counts <- read.table(infile, row.names=1, header=T, sep="\t")
 counts <- as.matrix(counts)
 
 if(t == "T"){
     counts <- t(counts)
 }
 
-library(gplots)
+cn <- colnames(counts)
+
+for (i in 2:length(cn)){
+    cn[i-1] <- cn[i]
+}       
+colnames(counts) <- cn
+temp <- counts[,-length(cn)]
+counts <- temp
+
 pdf(outfile)
 xval <- formatC(counts, format="f", digits=2)	
 pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
-heatmap.2(
-    counts, 
-    Rowv=clst,Colv=clst,
-    dendrogram="both",   # 樹形図
-    main="Overlap Matrix Heatmap", 
+heatmap.2(counts, Rowv=T,Colv=T, dendrogram="both", main="Matrix Heatmap", col=pal, 
+          tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10),
+          hclustfun=function(d) hclust(d, method="complete"))
                                         #        xlab="Columns", ylab="Rows", 
-    col=pal, 
-    tracecol="#303030", 
-    trace="none",
+                                        #    hclustfun=function(d) hclust(d, method="ward.D2") 
                                         #        cellnote=xval, 
-    notecol="black", 
-    notecex=0.5, 
-    keysize = 1.5, 
-    margins=c(10, 10),
-    hclustfun=function(d) hclust(d, method="complete")
-#    hclustfun=function(d) hclust(d, method="ward.D2") 
-)
 dev.off()
 
 ## クラスタリングあり、数字表示
