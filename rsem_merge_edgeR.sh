@@ -3,6 +3,11 @@
 Rdir=$(cd $(dirname $0) && pwd)
 R="Rscript $Rdir/edgeR.R"
 
+if test $# -ne 6; then
+    echo "rsem_merge_edgeR.sh <files> <output> <strings for sed> <num of reps> <gtf> <build>"
+    exit 0
+fi
+
 array=$1
 outname=$2
 str_sed=$3
