@@ -24,8 +24,8 @@ for str in genes isoforms; do
     done
     rsem-generate-data-matrix $s > $outname.$str.$build.txt
     
-    cat $outname.$str.$build.txt | sed -e 's/-'$build'.'$str'.results//g' > temp
-    mv temp $outname.$str.$build.txt
+    cat $outname.$str.$build.txt | sed -e 's/-'$build'.'$str'.results//g' > $outname.temp
+    mv $outname.temp $outname.$str.$build.txt
     for rem in $str_sed \" "rsem\/"
       do
       cat $outname.$str.$build.txt | sed -e 's/'$rem'//g' > temp
