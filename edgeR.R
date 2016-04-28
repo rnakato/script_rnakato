@@ -142,10 +142,10 @@ cnts_sig_up <- cnts_sig[sig_up,]
 sig_down <- cnts_sig$logFC < 0
 cnts_sig_down <- cnts_sig[sig_down,]
 
-write.table(cnts, file=paste(output, ".edgeR.all.xls", sep=""), quote=F, sep = "\t")
-write.table(cnts_sig, file=paste(output, ".edgeR.DEGs.xls", sep=""), quote=F, sep = "\t")
-write.table(cnts_sig_up, file=paste(output, ".edgeR.upDEGs.xls", sep=""), quote=F, sep = "\t")
-write.table(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.xls", sep=""), quote=F, sep = "\t")
+write.csv(cnts, file=paste(output, ".edgeR.all.xls", sep=""), quote=F)
+write.csv(cnts_sig, file=paste(output, ".edgeR.DEGs.xls", sep=""), quote=F)
+write.csv(cnts_sig_up, file=paste(output, ".edgeR.upDEGs.xls", sep=""), quote=F)
+write.csv(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.xls", sep=""), quote=F)
 
 
 # zスコアを用いてクラスタリング
