@@ -99,8 +99,6 @@ if(nrowname==2){
 }
 
 counts <- as.matrix(data)
-#names <- c("HeLa C1","HeLa C2","HeLa 7-1","HeLa 7-2","HeLa 8-1","HeLa 8-2","RPE C1","RPE C2","RPE7-1","RPE 7-2","RPE 8-1","RPE 8-2")
-#colnames(counts) <- names
 group <- factor(c(rep("A",num1),rep("B",num2)))
 design <- model.matrix(~ group)
 design
@@ -139,7 +137,16 @@ cnts_sig <- cnts[significant,]
 #cnts_sig[cnts_sig==0] <- NA
 #cnts_sig <- na.omit(cnts_sig)
 
-write.table(cnts, file=paste(output, ".edgeR.cnts.xls", sep=""), quote=F, sep = "\t")
+sig_up <- cnts_sig$logFC > 0
+cnts_sig_up <- cnts_sig[sig_up,]
+sig_down <- cnts_sig$logFC < 0
+cnts_sig_down <- cnts_sig[sig_down,]
+
+write.table(cnts, file=paste(output, ".edgeR.all.xls", sep=""), quote=F, sep = "\t")
+write.table(cnts_sig, file=paste(output, ".edgeR.DEGs.xls", sep=""), quote=F, sep = "\t")
+write.table(cnts_sig_up, file=paste(output, ".edgeR.upDEGs.xls", sep=""), quote=F, sep = "\t")
+write.table(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.xls", sep=""), quote=F, sep = "\t")
+
 
 # zスコアを用いてクラスタリング
 library(som)
