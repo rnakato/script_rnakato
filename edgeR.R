@@ -22,7 +22,7 @@ print.usage <- function() {
 args <- commandArgs(trailingOnly = T) 
 nargs = length(args);
 minargs = 1;
-maxargs = 5;
+maxargs = 6;
 if (nargs < minargs | nargs > maxargs) {
 	print.usage()
 	q(save="no",status=1)

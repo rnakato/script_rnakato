@@ -3,8 +3,8 @@
 Rdir=$(cd $(dirname $0) && pwd)
 R="Rscript $Rdir/edgeR.R"
 
-if test $# -ne 6; then
-    echo "rsem_merge_edgeR.sh <files> <output> <strings for sed> <num of reps> <gtf> <build>"
+if test $# -ne 7; then
+    echo "rsem_merge_edgeR.sh <files> <output> <strings for sed> <num of reps> <gtf> <build> <FDR>"
     exit 0
 fi
 
@@ -14,6 +14,7 @@ str_sed=$3
 n=$4
 gtf=$5
 build=$6
+p=$7
 
 for str in genes isoforms; do
     s=""
@@ -34,5 +35,5 @@ done
 add_genename_fromgtf.pl $outname.isoforms.$build.txt $gtf > $outname.isoforms.$build.addname.txt
 mv $outname.isoforms.$build.addname.txt $outname.isoforms.$build.txt
 
-$R -i=$outname.genes.$build.txt -n=$n -o=$outname.genes.$build
-$R -i=$outname.isoforms.$build.txt -n=$n -o=$outname.isoforms.$build -nrowname=2 -color=orange
+$R -i=$outname.genes.$build.txt    -n=$n -o=$outname.genes.$build    -p=$p
+$R -i=$outname.isoforms.$build.txt -n=$n -o=$outname.isoforms.$build -p=$p -nrowname=2 -color=orange
