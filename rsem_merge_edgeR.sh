@@ -32,8 +32,7 @@ for str in genes isoforms; do
     done
 done
 add_genename_fromgtf.pl $outname.isoforms.$build.txt $gtf > $outname.isoforms.$build.addname.txt
+mv $outname.isoforms.$build.addname.txt $outname.isoforms.$build.txt
 
-
-for str in genes isoforms; do
-    $R -i=$outname.$str.$build.txt -n=$n -o=$outname.$str.$build
-done
+$R -i=$outname.genes.$build.txt -n=$n -o=$outname.genes.$build
+$R -i=$outname.isoforms.$build.txt -n=$n -o=$outname.isoforms.$build -nrowname=2 -color=orange

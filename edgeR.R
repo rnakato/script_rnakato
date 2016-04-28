@@ -66,7 +66,7 @@ for (each.arg in args) {
     else if (grepl('^-nrowname=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
         if (! is.na(arg.split[2]) ) {
-            nrowname <- arg.split[2]
+            nrowname <- as.numeric(arg.split[2])
         }
         else { stop('No value provided for parameter -nrowname=')}
     }
