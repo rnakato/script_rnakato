@@ -28,8 +28,8 @@ for str in genes isoforms; do
     mv $outname.temp $outname.$str.$build.txt
     for rem in $str_sed \" "rsem\/"
       do
-      cat $outname.$str.$build.txt | sed -e 's/'$rem'//g' > temp
-      mv temp $outname.$str.$build.txt
+      cat $outname.$str.$build.txt | sed -e 's/'$rem'//g' > $outname.temp
+      mv $outname.temp $outname.$str.$build.txt
     done
 done
 add_genename_fromgtf.pl $outname.isoforms.$build.txt $gtf > $outname.isoforms.$build.addname.txt
