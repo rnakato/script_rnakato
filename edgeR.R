@@ -98,7 +98,22 @@ if(nrowname==2){
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
 }
 
+draw_density <- function(counts, output) {
+    counts1<- counts +1
+    exp <- as.vector(counts1)
+    logexp <- log10(exp)
+    cells <- rep(name, each = nrow(data))
+    dat <- data.frame(logexp = logexp, cells = cells)
+    library(ggplot2)
+    png(paste(output, ".density.png", sep=""), h=600, w=600, pointsize=20)
+    ggplot(dat, aes(x = logexp, fill = cells)) + geom_density(alpha = 0.5)
+    dev.off()
+}
+
+name <- colnames(data)
 counts <- as.matrix(data)
+draw_density(counts, output)
+
 group <- factor(c(rep("A",num1),rep("B",num2)))
 design <- model.matrix(~ group)
 design
