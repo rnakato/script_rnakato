@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if test $# -ne 4; then
-    echo "edgeR.sh <files> <build> <num of reps> <FDR>"
+    echo "edgeR.sh <Matrix> <build> <num of reps> <FDR>"
     exit 0
 fi
 
