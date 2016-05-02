@@ -21,7 +21,7 @@ my $fh = $file->open('r') or pod2usage(2);
 while(<$fh>){
     next if($_ eq "\n");
     chomp;
-    if($_ =~ /\s+([0-9]+) ([0-9]+)/){
+    if($_ =~ /\s+([0-9]+) (.+)/){
 	
 	print "$2\t$1\n";
     }
