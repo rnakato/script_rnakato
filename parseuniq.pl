@@ -17,7 +17,8 @@ my $filename = shift;
 pod2usage unless $filename;
 
 my $file = file($filename);
-my $fh = $file->open('r') or pod2usage(2);
+my $fh = $file->open('r') 
+    or pod2usage(2);
 while(<$fh>){
     next if($_ eq "\n");
     chomp;

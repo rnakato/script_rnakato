@@ -44,10 +44,8 @@ def __main__():
                 except:
                     group = 'group%d' % ( i + 1 )
                 if complete_bed:
-#                    out.write( '%s\tbed2gff\t%s\t%d\t%d\t%s\t%s\t.\t%s %s;\n' % ( chrom, feature, start, end, score, strand, feature, group  ) )
                     out.write( '%s\t%s\tbed2gff\t%d\t%d\t%s\t%s\t.\t%s %s;\n' % ( chrom, feature, start, end, score, strand, feature, group  ) )
                 else:
-#                    out.write( '%s\tbed2gff\t%s\t%d\t%d\t%s\t%s\t.\t%s;\n' % ( chrom, feature, start, end, score, strand, group  ) )
                     out.write( '%s\t%s\tbed2gff\t%d\t%d\t%s\t%s\t.\t%s;\n' % ( chrom, feature, start, end, score, strand, group  ) )
                 if complete_bed:
                     # We have all the info necessary to annotate exons for genes and mRNAs
