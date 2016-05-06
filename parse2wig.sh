@@ -20,10 +20,14 @@ mpbin=$Ddir/mappability_Mosaics_${k}mer/map
 
 bam=bam/$prefix.sort.bam
 pdir=parse2wigdir
-if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls;          then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl          -binsize $binsize; fi
-for b in $binsize 100000; do
-if test ! -e $pdir/$prefix-raw-mpbl-GR.$binsize.xls;       then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR         -n GR -binsize $b; fi
-done
-if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff; fi
 
-parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls > log/parse2wig-$prefix-$build
+func(){
+    if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls;          then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl          -binsize $binsize; fi
+    for b in $binsize 100000; do
+	if test ! -e $pdir/$prefix-raw-mpbl-GR.$binsize.xls;       then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR         -n GR -binsize $b; fi
+    done
+    if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff; fi
+}
+
+func >& log/parse2wig-$prefix
+parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls > log/parsestats-$prefix
