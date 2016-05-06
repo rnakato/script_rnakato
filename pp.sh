@@ -1,8 +1,13 @@
 #!/bin/bash
 
-mdir=ppout
-R=/work/programs/phantompeakqualtools/run_spp.R
+if test $# -ne 2; then
+    echo "pp.sh <bam> <prefix>"
+    exit 0
+fi
 
+
+R=$(cd $(dirname $0) && pwd)/../binaries/phantompeakqualtools/run_spp.R
+mdir=ppout
 if test ! -e $mdir; then mkdir $mdir; fi
 
 IPbam=$1
