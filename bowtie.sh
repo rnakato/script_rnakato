@@ -22,14 +22,22 @@ ex_hiseq(){
     eval $command
 }
 
-ex_solid(){
+ex_csfasta(){
     index=/home/Database/bowtie-indexes/UCSC-$build-cs
     command="bowtie -S -C $index -f csfasta/$prefix.csfasta -Q csfasta/$prefix.qual -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
     echo $command
     eval $command
 }
 
-if test $type = "solid"; then  ex_solid >& log/bowtie-$prefix-$build; 
+ex_csfasta(){
+    index=/home/Database/bowtie-indexes/UCSC-$build-cs
+    command="bowtie -S -C $index -f fastq/$prefix.fastq -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
+    echo $command
+    eval $command
+}
+
+if test $type = "csfasta"; then  ex_csfasta >& log/bowtie-$prefix-$build; 
+elif test $type = "csfastq"; then  ex_csfastq >& log/bowtie-$prefix-$build;
 else ex_hiseq >& log/bowtie-$prefix-$build
 fi
 echo "bamfile: $bamdir/$prefix-n2-m1-$build.sort.bam"
