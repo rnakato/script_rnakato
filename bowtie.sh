@@ -29,9 +29,9 @@ ex_csfasta(){
     eval $command
 }
 
-ex_csfasta(){
+ex_csfastq(){
     index=/home/Database/bowtie-indexes/UCSC-$build-cs
-    command="bowtie -S -C $index -f fastq/$prefix.fastq -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
+    command="bowtie -S -C $index fastq/$prefix.fastq -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
     echo $command
     eval $command
 }
