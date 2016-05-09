@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if test $# -ne 5; then
-    echo "rsem_merge.sh <files> <output> <gtf> <build> <strings for sed>"
+if test $# -ne 6; then
+    echo "rsem_merge.sh <files> <output> <gtf> <build> <strings for sed> <type>"
     exit 0
 fi
 
@@ -10,11 +10,16 @@ outname=$2
 gtf=$3
 build=$4
 str_sed=$5
+type=$6
+
+
+if test $type = "TPM"; then rsem="rsem-generate-data-matrix-TPM";
+else rsem="rsem-generate-data-matrix"
 
 for str in genes isoforms; do
     s=""
     for prefix in $array; do s="$s rsem/$prefix-$build.$str.results"; done
-    rsem-generate-data-matrix $s > $outname.$str.$build.txt
+    $rsem $s > $outname.$str.$build.txt
     
     cat $outname.$str.$build.txt | sed -e 's/-'$build'.'$str'.results//g' > $outname.temp
     mv $outname.temp $outname.$str.$build.txt
