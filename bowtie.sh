@@ -36,9 +36,10 @@ ex_csfastq(){
     eval $command
 }
 
-if test $type = "csfasta"; then  ex_csfasta >& log/bowtie-$prefix-$build; 
+if test $type = "stats"; then parsebowtielog.pl log/bowtie-$prefix-$build | grep -v mapped | sed -e 's/'$bamdir'\///g' -e 's/-n2-m1-'$build'.sort//g';
+elif test $type = "csfasta"; then  ex_csfasta >& log/bowtie-$prefix-$build; 
 elif test $type = "csfastq"; then  ex_csfastq >& log/bowtie-$prefix-$build;
 else ex_hiseq >& log/bowtie-$prefix-$build
 fi
-echo "bamfile: $bamdir/$prefix-n2-m1-$build.sort.bam"
+#echo "bamfile: $bamdir/$prefix-n2-m1-$build.sort.bam"
 
