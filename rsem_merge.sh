@@ -14,6 +14,7 @@ type=$6
 
 
 if test $type = "TPM"; then rsem="rsem-generate-data-matrix-TPM";
+elif test $type = "FPKM"; then rsem="rsem-generate-data-matrix-FPKM";
 else rsem="rsem-generate-data-matrix"
 
 for str in genes isoforms; do
