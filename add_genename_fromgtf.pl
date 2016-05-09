@@ -12,13 +12,20 @@ open(ListFile, $gtf) ||die "error: can't open $gtf.\n";
 while(<ListFile>){
     next if($_ eq "\n");
     chomp;
-    if($_ =~ /(.+)gene_id "(.+)"; transcript_id "(.+)";(.+)/){
-	$Hash{$3}=$2;
+    my @clm = split(/;/, $_);
+    my $gene="";
+    my $tr="";
+    foreach my $str (@clm){
+	$gene = $2 if($str =~ /(.*)gene_id "(.+)"/);
+	$tr   = $2 if($str =~ /(.*)transcript_id "(.+)"/);
     }
+    $Hash{$tr}=$gene;
 }
 close (ListFile);
 
 open(ListFile, $file) ||die "error: can't open $file.\n";
+my $line = <ListFile>;
+print $line;
 while(<ListFile>){
     next if($_ eq "\n");
     chomp;
