@@ -36,14 +36,14 @@ file.close()
 if(options.spearman):
     cc = spearmanr(array1,array2)
     if(options.both):
-        print cc
+        sys.stdout.write(str(cc))
     else:
-        print cc[0]
+        sys.stdout.write(str(cc[0]))
 else:
     cc = pearsonr(array1,array2)
     if(options.both):
-        print cc
+        sys.stdout.write(str(cc))
     else:
-        print cc[0]
+        sys.stdout.write(str(cc[0]))
 
     
