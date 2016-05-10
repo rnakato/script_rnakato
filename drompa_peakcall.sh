@@ -17,11 +17,11 @@ k=$5
 
 Ddir=/home/Database/UCSC/$build
 gt=$Ddir/genome_table
-map=gap="$Ddir/mappability_Mosaics_${k}mer/map_fragL150"
+map="$Ddir/mappability_Mosaics_${k}mer/map_fragL150"
 
 if test -e $IP.binarray_dist.xls && test -s $IP.binarray_dist.xls ; then
-    if test -e $Input.binarray_dist.xls && test -s $Inpupt.binarray_dist.xls ; then
-	drompa_peakcall PC_SHARP -i $IP,$Input -binsize $binsize -gt $gt -p $mdir/$prefix -mp $map
+    if test -e $Input.binarray_dist.xls && test -s $Input.binarray_dist.xls ; then
+	drompa_peakcall PC_SHARP -i $IP,$Input -binsize $binsize -gt $gt -p $mdir/$1 -mp $map
     else
 	echo "$Input.binarray_dist.xls does not exist."
     fi
