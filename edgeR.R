@@ -14,6 +14,7 @@ print.usage <- function() {
 	cat('      -nrowname=<int> , row name (default: 1) \n',file=stderr())
 	cat('      -p=<float>      , threshold for FDR (default: 0.01) \n',file=stderr())
 	cat('      -color=<color>  , heatmap color (blue|orange|purple|green , default: blue) \n',file=stderr())
+	cat('      -density        , density plot of expression level \n',file=stderr())
 	cat('   OUTPUT ARGUMENTS\n',file=stderr())
 	cat('      -o=<output> , prefix of output file \n',file=stderr())
 	cat('\n',file=stderr())
@@ -22,7 +23,7 @@ print.usage <- function() {
 args <- commandArgs(trailingOnly = T) 
 nargs = length(args);
 minargs = 1;
-maxargs = 6;
+maxargs = 7;
 if (nargs < minargs | nargs > maxargs) {
 	print.usage()
 	q(save="no",status=1)
@@ -31,6 +32,7 @@ if (nargs < minargs | nargs > maxargs) {
 nrowname <- 1
 p <- 0.01
 color <- "blue"
+density <- 0
 for (each.arg in args) {
     if (grepl('^-i=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -62,6 +64,9 @@ for (each.arg in args) {
             color <- arg.split[2]
         }
         else { stop('No value provided for parameter -color=')}
+    }
+    else if (grepl('^-density',each.arg)) {
+        density <- 1
     }
     else if (grepl('^-nrowname=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -102,17 +107,23 @@ name <- colnames(data)
 counts <- as.matrix(data)
 
 # draw_density
-library(ggplot2)
-counts1<- counts +1
-exp <- as.vector(counts1)
-logexp <- log10(exp)
-cells <- rep(name, each = nrow(data))
-dat <- data.frame(log10exp = logexp, cells = cells)
 f <- paste(output, ".density.png", sep="")
-cat('\nprint density plot in', f, '\n',file=stderr())
 png(f, h=600, w=700, pointsize=20)
-ggplot(dat, aes(x = log10exp, fill = cells)) + geom_density(alpha = 0.5)
+if(density) {
+ library(ggplot2)
+ counts1<- counts +1
+ exp <- as.vector(counts1)
+ logexp <- log10(exp)
+ cells <- rep(name, each = nrow(data))
+ dat <- data.frame(log10exp = logexp, cells = cells)
+ cat('\nprint density plot in', f, '\n',file=stderr())
+ ggplot(dat, aes(x = log10exp, fill = cells)) + geom_density(alpha = 0.5)
+
+
+}
 dev.off()
+if(density) { q(save="no",status=0)}
+
 
 group <- factor(c(rep("A",num1),rep("B",num2)))
 design <- model.matrix(~ group)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if test $# -ne 6; then
-    echo "rsem_merge.sh <files> <output> <gtf> <build> <strings for sed> <type>"
+if test $# -ne 5; then
+    echo "rsem_merge.sh <files> <output> <gtf> <build> <strings for sed>"
     exit 0
 fi
 
@@ -10,26 +10,27 @@ outname=$2
 gtf=$3
 build=$4
 str_sed=$5
-type=$6
-
-
-if test $type = "TPM"; then rsem="rsem-generate-data-matrix-TPM";
-elif test $type = "FPKM"; then rsem="rsem-generate-data-matrix-FPKM";
-else rsem="rsem-generate-data-matrix"
-fi
 
 for str in genes isoforms; do
     s=""
     for prefix in $array; do s="$s rsem/$prefix-$build.$str.results"; done
-    $rsem $s > $outname.$str.$build.txt
-    
-    cat $outname.$str.$build.txt | sed -e 's/-'$build'.'$str'.results//g' > $outname.temp
-    mv $outname.temp $outname.$str.$build.txt
-    for rem in $str_sed \" "rsem\/"
-      do
-      cat $outname.$str.$build.txt | sed -e 's/'$rem'//g' > $outname.temp
-      mv $outname.temp $outname.$str.$build.txt
+
+    rsem-generate-data-matrix     $s > $outname.$str.count.$build.txt
+    rsem-generate-data-matrix-TPM $s > $outname.$str.TPM.$build.txt
+
+    for tp in count TPM; do
+	head=$outname.$str.$tp.$build
+	cat $head.txt | sed -e 's/-'$build'.'$str'.results//g' > $head.temp
+	mv $head.temp $head.txt
+	for rem in $str_sed \" "rsem\/"
+	  do
+	  cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
+	  mv $head.temp $head.txt
+	done
     done
 done
-add_genename_fromgtf.pl $outname.isoforms.$build.txt $gtf > $outname.isoforms.$build.addname.txt
-mv $outname.isoforms.$build.addname.txt $outname.isoforms.$build.txt
+
+for tp in count TPM; do
+    add_genename_fromgtf.pl $outname.isoforms.$tp.$build.txt $gtf > $outname.isoforms.$tp.$build.addname.txt
+    mv $outname.isoforms.$tp.$build.addname.txt $outname.isoforms.$tp.$build.txt
+done
