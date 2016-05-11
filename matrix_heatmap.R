@@ -3,6 +3,7 @@ infile  <- args[1] # 1番目の引数を入力ファイル名として代入す�
 outfile <- args[2] # 2番目の引数を出力ファイル名として代入する。
 t <- args[3]       # 転置行列にするか
 clst <- as.logical(args[4])
+k <- args[5]
 
 library(RColorBrewer)
 library(gplots)
@@ -23,16 +24,55 @@ colnames(counts) <- cn
 temp <- counts[,-length(cn)]
 counts <- temp
 
-pdf(outfile)
 xval <- formatC(counts, format="f", digits=2)	
 pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
-heatmap.2(counts, Rowv=T,Colv=T, dendrogram="both", main="Matrix Heatmap", col=pal, 
+
+dist <- dist(counts)
+tdist <- dist(t(counts))
+rlt <- hclust(dist, method="ward.D2")
+trlt <- hclust(tdist, method="ward.D2")
+#plot(rlt)
+#plot(trlt)
+
+sortree <- function(rlt){
+    name <- rlt$labels
+    max <- length(name)
+
+    array <- c(rep(0,k))
+    n <- 1
+    temp <- 0
+    for(i in 1:max){
+        j <- rlt$cl[name[rlt$order[max-i+1]]]
+        if(n==1 || temp != j){
+            print(j)
+            array[n] <- j
+            temp <- j
+            n <- n+1
+        }
+    }
+    return (array)
+}
+
+classify <- function(rlt, k){
+    rlt$cl <- cutree(rlt,k=k)
+
+    array <- sortree(rlt)
+    for(i in 1:length(rlt$labels)){ rlt$cl[i] <- which(array==rlt$cl[i])}
+#    sortree(rlt)
+    return (rlt)
+}
+
+k<-3
+rlt <- classify(rlt, k)
+
+pdf(paste(outfile, ".pdf", sep=""))
+clust.col<-c(rep(c("orange","cyan"),k))
+heatmap.2(counts, Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), dendrogram="both", main="Matrix Heatmap", col=pal, 
           tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10),
-          hclustfun=function(d) hclust(d, method="complete"))
-                                        #        xlab="Columns", ylab="Rows", 
-                                        #    hclustfun=function(d) hclust(d, method="ward.D2") 
-                                        #        cellnote=xval, 
+          hclustfun=function(d) hclust(d, method="complete"), RowSideColors=clust.col[rlt$cl])
 dev.off()
+
+write.table(rlt$cl, file=paste(outfile, ".cluster.xls", sep=""), quote=F, sep = "\t",row.names = T, col.names = T)
 
 ## クラスタリングあり、数字表示
 #heatmap.2(
