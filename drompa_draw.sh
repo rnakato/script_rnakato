@@ -18,4 +18,4 @@ gt=$Ddir/genome_table
 GC=$Ddir/GCcontents
 genedensity=$Ddir/gene_density
 
-drompa_draw PC_SHARP $s $param -p $mdir/$output -scale_tag 20 -gt $gt
+drompa_draw PC_SHARP -gene $gene $s $param -p $mdir/$output -scale_tag 20 -gt $gt
