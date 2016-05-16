@@ -13,7 +13,7 @@ str_sed=$5
 
 for str in genes isoforms; do
     s=""
-    for prefix in $array; do s="$s rsem/$prefix-$build.$str.results"; done
+    for prefix in $array; do s="$s star/$prefix-$build.$str.results"; done
 
     rsem-generate-data-matrix     $s > $outname.$str.count.$build.txt
     rsem-generate-data-matrix-TPM $s > $outname.$str.TPM.$build.txt
@@ -22,7 +22,7 @@ for str in genes isoforms; do
 	head=$outname.$str.$tp.$build
 	cat $head.txt | sed -e 's/-'$build'.'$str'.results//g' > $head.temp
 	mv $head.temp $head.txt
-	for rem in $str_sed \" "rsem\/"
+	for rem in $str_sed \" "star\/"
 	  do
 	  cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
 	  mv $head.temp $head.txt
