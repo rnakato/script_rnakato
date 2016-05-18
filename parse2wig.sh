@@ -26,7 +26,7 @@ func(){
 	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize;
     fi
     for b in $binsize 100000; do
-	if test ! -e $pdir/$prefix-raw-mpbl-GR.$binsize.xls; then
+	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b;
 	fi
     done
