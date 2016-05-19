@@ -26,7 +26,7 @@ ex_hiseq(){
 
 ex_csfasta(){
     index=/home/Database/bowtie-indexes/UCSC-$build-cs
-    command="bowtie -S -C $index -f $fastq.csfasta -Q $fastq.qual -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
+    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
     echo $command
     eval $command
 }
