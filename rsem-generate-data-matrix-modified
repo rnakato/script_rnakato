@@ -73,7 +73,7 @@ for (my $i = 1; $i < $n; $i++) {
 @ids_arr = ("", @ids_arr);
 @matrix = (\@ids_arr, @matrix);
 
-for (my $i = 0; $i <= $M; $i++){ 
-    for (my $j = 0; $j < $n; $j++) { print "$matrix[$j][$i]\t"; }
-    print "$matrix[$n][$i]\n";
+for (my $i=0; $i<=$M; $i++){ 
+    for (my $j=0; $j<$n-1; $j++) { print "$matrix[$j][$i]\t"; }
+    print "$matrix[$n-1][$i]\n";
 }

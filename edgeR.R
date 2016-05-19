@@ -106,6 +106,9 @@ if(nrowname==2){
 name <- colnames(data)
 counts <- as.matrix(data)
 
+colnames(counts)
+dim(counts)
+
 # draw_density
 f <- paste(output, ".density.png", sep="")
 png(f, h=600, w=700, pointsize=20)
@@ -123,7 +126,6 @@ if(density) {
 }
 dev.off()
 if(density) { q(save="no",status=0)}
-
 
 group <- factor(c(rep("A",num1),rep("B",num2)))
 design <- model.matrix(~ group)
