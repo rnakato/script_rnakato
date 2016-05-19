@@ -15,9 +15,9 @@ build=$5
 
 Ddir=/home/Database/UCSC/$build
 gene=$Ddir/refFlat.dupremoved.txt
-gt=$Ddir/genometable
+gt=$Ddir/genome_table
 GC=$Ddir/GCcontents
-genedensity=$Ddir/gene_density
+genedensity=$Ddir/genedensity
 
 if test $type = "GV"; then
     drompa_draw GV -gt $gt $s $param -p $mdir/drompa3.GV.$output -GC $GC -gcsize 500000 -GD $genedensity -gdsize 500000 
