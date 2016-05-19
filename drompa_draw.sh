@@ -1,21 +1,27 @@
 #!/bin/bash
-if test $# -ne 4; then
-    echo "drompa_draw.sh <samples> <options> <output> <build>"
+if test $# -ne 5; then
+    echo "drompa_draw.sh <type> <samples> <options> <output> <build>"
     exit 0
 fi
 
 mdir=pdf
 if test ! -e $mdir; then mkdir $mdir; fi
 
-s=$1
-param=$2
-output=$3
-build=$4
+type=$1
+s=$2
+param=$3
+output=$4
+build=$5
 
 Ddir=/home/Database/UCSC/$build
 gene=$Ddir/refFlat.dupremoved.txt
-gt=$Ddir/genome_table
+gt=$Ddir/genometable
 GC=$Ddir/GCcontents
 genedensity=$Ddir/gene_density
 
-drompa_draw PC_SHARP -gene $gene $s $param -p $mdir/$output -scale_tag 20 -gt $gt
+if test $type = "GV"; then
+    drompa_draw GV -gt $gt $s $param -p $mdir/drompa3.GV.$output -GC $GC -gcsize 500000 -GD $genedensity -gdsize 500000 
+else
+    drompa_draw PC_SHARP -gene $gene $s $param -p $mdir/drompa3.PC.$output -gt $gt
+fi
+
