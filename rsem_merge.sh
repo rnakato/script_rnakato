@@ -15,20 +15,20 @@ for str in genes isoforms; do
     s=""
     for prefix in $array; do s="$s star/$prefix.$build.$str.results"; done
 
-    rsem-generate-data-matrix     $s > $outname.$str.count.$build.txt
-    rsem-generate-data-matrix-TPM $s > $outname.$str.TPM.$build.txt
-
     for tp in count TPM; do
 	head=$outname.$str.$tp.$build
-	cat $head.txt | sed -e 's/-'$build'.'$str'.results//g' > $head.temp
+	rsem-generate-data-matrix-modified $tp $s > $head.txt
+	cat $head.txt | sed -e 's/.'$build'.'$str'.results//g' > $head.temp
 	mv $head.temp $head.txt
-	for rem in $str_sed \" "star\/"
+	for rem in $str_sed "star\/"
 	  do
 	  cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
 	  mv $head.temp $head.txt
 	done
     done
 done
+
+exit 0
 
 for tp in count TPM; do
     add_genename_fromgtf.pl $outname.isoforms.$tp.$build.txt $gtf > $outname.isoforms.$tp.$build.addname.txt

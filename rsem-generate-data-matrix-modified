@@ -3,13 +3,17 @@
 use strict;
 
 if (scalar(@ARGV) == 0) {
-    print "Usage: rsem-generate-data-matrix sampleA.[alleles/genes/isoforms].results sampleB.[alleles/genes/isoforms].results ... > output_name.matrix\n";
+    print "Usage: rsem-generate-data-matrix-modified <count/TPM/FPKM> sampleA.[alleles/genes/isoforms].results sampleB.[alleles/genes/isoforms].results ... > output_name.matrix\n";
     print "All result files should have the same file type. The 'expected_count' columns of every result file are extracted to form the data matrix.\n";
     exit(-1);
 }
 
-my $offsite = 5; # for new file formats
-if ($ARGV[0] =~ /alleles.results$/) { $offsite = 5; }
+my $offsite=0;
+if ($ARGV[0] eq "count") { $offsite = 4; }
+elsif ($ARGV[0] eq "TPM") { $offsite = 5; }
+elsif ($ARGV[0] eq "FPKM") { $offsite = 6; }
+else { print "error: <count/TPM/FPKM>: $ARGV[0]\n"; exit; }
+if ($ARGV[1] =~ /alleles.results$/) { $offsite++; }
 
 my $line;
 my $n = scalar(@ARGV);
@@ -23,7 +27,7 @@ sub loadData {
     while ($line = <INPUT>) {
 	chomp($line); 
 	my @fields = split(/\t/, $line);
-	push(@{$_[2]}, "\"$fields[0]\"");
+	push(@{$_[2]}, "$fields[0]");
 	push(@{$_[1]}, $fields[$offsite]);
     }
     close(INPUT);
@@ -38,16 +42,14 @@ sub loadData {
 sub check {
     my $size = $_[0];
     for (my $i = 0; $i < $size; $i++) { 
-	if ($_[1]->[$i] ne $_[2]->[$i]) {
-	    return 0;
-	}
+	if ($_[1]->[$i] ne $_[2]->[$i]) { return 0;}
     }
     return 1;
 }
 
 my @ids_arr = ();
 
-for (my $i = 0; $i < $n; $i++) {
+for (my $i = 1; $i < $n; $i++) {
     my (@ids, @ecs) = ();
     &loadData($ARGV[$i], \@ecs, \@ids);
 
@@ -63,7 +65,7 @@ for (my $i = 0; $i < $n; $i++) {
     my $colname;
     if (substr($ARGV[$i], 0, 2) eq "./") { $colname = substr($ARGV[$i], 2); }
     else { $colname = $ARGV[$i]; }
-    $colname = "\"$colname\"";
+    $colname = "$colname";
     @ecs = ($colname, @ecs);
     push(@matrix, \@ecs);
 }
@@ -71,7 +73,7 @@ for (my $i = 0; $i < $n; $i++) {
 @ids_arr = ("", @ids_arr);
 @matrix = (\@ids_arr, @matrix);
 
-for (my $i = 0; $i <= $M; $i++) {
+for (my $i = 0; $i <= $M; $i++){ 
     for (my $j = 0; $j < $n; $j++) { print "$matrix[$j][$i]\t"; }
     print "$matrix[$n][$i]\n";
 }

@@ -5,7 +5,6 @@ if test $# -ne 4; then
     exit 0
 fi
 
-
 mdir=macs
 if test ! -e $mdir; then mkdir $mdir; fi
 
