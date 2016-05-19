@@ -28,8 +28,6 @@ for str in genes isoforms; do
     done
 done
 
-exit 0
-
 for tp in count TPM; do
     add_genename_fromgtf.pl $outname.isoforms.$tp.$build.txt $gtf > $outname.isoforms.$tp.$build.addname.txt
     mv $outname.isoforms.$tp.$build.addname.txt $outname.isoforms.$tp.$build.txt
