@@ -2,7 +2,7 @@
 
 =head1 SYNOPSIS
 
-    discard_erroneous_refFlat.pl [gtf|txt] <file>
+    discard_erroneous_refFlat.pl [gtf|ensgtf|txt] <file>
 
 =cut
 
@@ -14,7 +14,7 @@ use Array::Utils qw(unique);
 use Pod::Usage qw(pod2usage);
 
 my $type=shift;
-pod2usage if($type ne "gtf" && $type ne "txt");
+pod2usage if($type ne "gtf" && $type ne "ensgtf" && $type ne "txt");
 my $filename=shift;
 pod2usage unless $filename;
 
@@ -26,9 +26,12 @@ my $file = file($filename);
 my $hash = {};
 my $fh = $file->open('r') or die $!;
 while(<$fh>){
+    next if($_ =~ /^#/);
     my @cols = split("\t",$_);
     if($type eq "gtf"){
 	push @{$hash->{$1}},\@cols if($cols[8] =~ m/gene_id\s+\"(.+)\"/);
+    }elsif($type eq "ensgtf"){
+	push @{$hash->{$1}},\@cols if($cols[8] =~ m/gene_id\s+\"(.+)\"; gene_version (.+)/);
     }elsif($type eq "txt"){
 	push @{$hash->{$cols[1]}},\@cols;
     }
