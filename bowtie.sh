@@ -1,47 +1,74 @@
 #!/bin/bash
+cmdname=`basename $0`
+function usage()
+{
+    echo "bowtie.sh [-e] [-t <csfasta|-csfastq>] [-d bamdir] <fastq> <prefix> <build> <param>" 1>&2
+}
 
-if test $# -ne 4; then
-    echo "bowtie.sh <fastq> <prefix> <build> <type>"
-    exit 0
+type=hiseq
+bamdir=bam
+db=UCSC
+while getopts et:d: option
+do
+    case ${option} in
+	e)
+	    db=Ensembl
+	    ;;
+	t)
+	    type=${OPTARG}
+	    ;;
+	d)
+	    bamdir=${OPTARG}
+	    ;;
+	*)
+	    usage
+	    exit 1
+	    ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# check arguments
+if [ $# -ne 4 ]; then
+  usage
+  exit 1
 fi
 
 fastq=$1
 prefix=$2
 build=$3
-type=$4
+param=$4
+post=`echo $param | tr -d ' '`
 
-bamdir=bam
 if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
-Ddir=/home/Database/UCSC/$build
-
+Ddir=/home/Database/$db/$build
 
 ex_hiseq(){
-    index=/home/Database/bowtie-indexes/UCSC-$build
-    command="bowtie -S $index $fastq -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"    
+    index=/home/Database/bowtie-indexes/$db-$build
+    command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"    
     echo $command
     eval $command
 }
 
 ex_csfasta(){
-    index=/home/Database/bowtie-indexes/UCSC-$build-cs
-    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
+    index=/home/Database/bowtie-indexes/$db-$build-cs
+    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
     echo $command
     eval $command
 }
 
 ex_csfastq(){
-    index=/home/Database/bowtie-indexes/UCSC-$build-cs
-    command="bowtie -S -C $index $fastq -n2 -m1 --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix-n2-m1-$build.sort"
+    index=/home/Database/bowtie-indexes/$db-$build-cs
+    command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
     echo $command
     eval $command
 }
 
-if test $type = "stats"; then parsebowtielog.pl log/bowtie-$prefix-$build | grep -v mapped | sed -e 's/'$bamdir'\///g' -e 's/-n2-m1-'$build'.sort//g';
-elif test $type = "csfasta"; then  ex_csfasta >& log/bowtie-$prefix-$build; 
-elif test $type = "csfastq"; then  ex_csfastq >& log/bowtie-$prefix-$build;
-else ex_hiseq >& log/bowtie-$prefix-$build
+log=log/bowtie-$prefix$post-$build
+if test $type = "csfasta"; then  ex_csfasta >& $log; 
+elif test $type = "csfastq"; then  ex_csfastq >& $log;
+else ex_hiseq >& $log
 fi
-#echo "bamfile: $bamdir/$prefix-n2-m1-$build.sort.bam"
 
