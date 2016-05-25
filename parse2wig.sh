@@ -66,13 +66,13 @@ func(){
 	if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir
 	fi
+	parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls >& log/parsestats-$prefix-GC-depthoff-mpbl-GR
     else
-	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
+	if test ! -e $pdir/$prefix-raw-mpbl-GR.$binsize.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $binsize -odir $pdir;
 	fi
+	parsestats4DROMPA3.pl $pdir/$prefix-raw-mpbl-GR.$binsize.xls >& log/parsestats-$prefix-GC-depthoff-mpbl-GR
     fi
 }
 
-func >& log/parse2wig-$prefix
-#parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls > log/parsestats-$prefix
-
+func #>& log/parse2wig-$prefix
