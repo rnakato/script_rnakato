@@ -8,7 +8,7 @@ function usage()
 pppar=""
 pens=""
 pa=""
-while getopts se: option
+while getopts ase: option
 do
     case ${option} in
 	a)
