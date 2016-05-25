@@ -2,13 +2,14 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-s] [-e] [-a] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
+    echo "$cmdname [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
 }
 
 pppar=""
 pens=""
 pa=""
-while getopts ase: option
+pbam=""
+while getopts ased: option
 do
     case ${option} in
 	a)
@@ -20,6 +21,9 @@ do
 	e)
 	    pens="-e"
 	    ;;
+	d)
+	    pbam="-d ${OPTARG}"
+	        ;;
 	*)
 	    usage
 	    exit 1
@@ -45,7 +49,7 @@ head=$prefix$post-$build
 
 if test $type = "exec";then
     bam=bam/$head.sort.bam
-    bowtie.sh $pens -t fastq $fastq $prefix $build "$bowtieparam"
+    bowtie.sh $pens $pbam -t fastq $fastq $prefix $build "$bowtieparam"
     parse2wig.sh $pa $pens $bam $head $build
     pp.sh $pppar $bam $head
 elif test $type = "stats"; then
