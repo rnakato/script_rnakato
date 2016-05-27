@@ -31,7 +31,7 @@ for(my $i=0; $i<=$#input; $i++) {
     my $worksheet = $workbook->add_worksheet($tabname);
 
     my $file = file($input[$i]);
-    my $fh = $file->open('r') or die $!;
+    my $fh = $file->open('r') or die "Error: $input[$i] does not exist.\n";
     my $nrow=0;
     while(<$fh>){
 	chomp;

@@ -25,7 +25,7 @@ close (ListFile);
 
 open(ListFile, $file) ||die "error: can't open $file.\n";
 my $line = <ListFile>;
-print $line;
+print "\t$line";
 while(<ListFile>){
     next if($_ eq "\n");
     chomp;
