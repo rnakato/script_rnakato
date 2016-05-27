@@ -8,7 +8,7 @@ function usage()
 pppar=""
 pens=""
 pa=""
-pbam=""
+bamdir=bam
 while getopts ased: option
 do
     case ${option} in
@@ -22,7 +22,7 @@ do
 	    pens="-e"
 	    ;;
 	d)
-	    pbam="-d ${OPTARG}"
+	    bamdir=${OPTARG}
 	        ;;
 	*)
 	    usage
@@ -48,8 +48,8 @@ post=`echo $bowtieparam | tr -d ' '`
 head=$prefix$post-$build
 
 if test $type = "exec";then
-    bam=bam/$head.sort.bam
-    bowtie.sh $pens $pbam -t fastq $fastq $prefix $build "$bowtieparam"
+    bam=$bamdir/$head.sort.bam
+    bowtie.sh $pens -d $bamdir -t fastq $fastq $prefix $build "$bowtieparam"
     parse2wig.sh $pa $pens $bam $head $build
     pp.sh $pppar $bam $head
 elif test $type = "stats"; then
