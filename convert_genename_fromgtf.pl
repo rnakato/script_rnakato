@@ -7,7 +7,8 @@ die "add_genename_fromgtf.pl <file> <gtf>\n" if($#ARGV !=1);
 
 my $file=$ARGV[0];
 my $gtf=$ARGV[1];
-my %Hash;
+my %Hashgname;
+my %Hashtname;
 
 open(ListFile, $gtf) ||die "error: can't open $gtf.\n";
 while(<ListFile>){
@@ -16,11 +17,16 @@ while(<ListFile>){
     my @clm = split(/;/, $_);
     my $gene="";
     my $tr="";
+    my $genename="";
+    my $trname="";
     foreach my $str (@clm){
 	$gene = $2 if($str =~ /(.*)gene_id "(.+)"/);
 	$tr   = $2 if($str =~ /(.*)transcript_id "(.+)"/);
+	$genename = $2 if($str =~ /(.*)gene_name "(.+)"/);
+        $trname   = $2 if($str =~ /(.*)transcript_name "(.+)"/);
     }
-    $Hash{$tr}=$gene;
+    $Hashgname{$gene}=$genename;
+    $Hashtname{$tr}=$trname;
 }
 close (ListFile);
 
@@ -32,8 +38,10 @@ while(<ListFile>){
     chomp;
     my @clm = split(/\t/, $_);
 
-    if(exists($Hash{$clm[0]})){
-	print "$Hash{$clm[0]}\t$_\n";
+    if(exists($Hashgname{$clm[0]})){
+	print "$Hashgname{$clm[0]}\t$_\n";
+    }elsif(exists($Hashtname{$clm[0]})){
+	print "$Hashtname{$clm[0]}\t$_\n";
     }else{
 	print "\t$_\n";
     }

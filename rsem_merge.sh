@@ -1,8 +1,28 @@
 #!/bin/bash
+cmdname=`basename $0`
+function usage()
+{
+    echo "rsem_merge.sh [-n] <files> <output> <gtf> <build> <strings for sed>" 1>&2
+}
 
-if test $# -ne 5; then
-    echo "rsem_merge.sh <files> <output> <gtf> <build> <strings for sed>"
-    exit 0
+name=0
+while getopts n option
+do
+    case ${option} in
+        n)
+            name=1
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -ne 5 ]; then
+  usage
+  exit 1
 fi
 
 array=$1
@@ -32,6 +52,15 @@ for tp in count TPM; do
     add_genename_fromgtf.pl $outname.isoforms.$tp.$build.txt $gtf > $outname.isoforms.$tp.$build.addname.txt
     mv $outname.isoforms.$tp.$build.addname.txt $outname.isoforms.$tp.$build.txt
 done
+
+if test $name -eq 1; then
+    for str in genes isoforms; do
+	for tp in count TPM; do
+	    convert_genename_fromgtf.pl $outname.$str.$tp.$build.txt $gtf > $outname.$str.$tp.$build.temp.txt
+	    mv $outname.$str.$tp.$build.temp.txt $outname.$str.$tp.$build.txt
+	done
+    done
+fi
 
 s=""
 for str in genes isoforms; do
