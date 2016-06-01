@@ -170,10 +170,10 @@ cnts_sig_up <- cnts_sig[sig_up,]
 sig_down <- cnts_sig$logFC < 0
 cnts_sig_down <- cnts_sig[sig_down,]
 
-write.csv(cnts,          file=paste(output, ".edgeR.all.csv",      sep=""), quote=F, sep = "\t")
-write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv",     sep=""), quote=F, sep = "\t")
-write.csv(cnts_sig_up,   file=paste(output, ".edgeR.upDEGs.csv",   sep=""), quote=F, sep = "\t")
-write.csv(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F, sep = "\t")
+write.csv(cnts,          file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
+write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig_up,   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
 
 # zスコアを用いてクラスタリング
 library(som)

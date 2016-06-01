@@ -9,7 +9,8 @@ use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 my @input = ();
 my $output = "";
 my $delim = "\t";
-GetOptions('input|i=s' => \@input, 'output|o=s' => \$output, 'delim|d=s' => \$delim);
+my @name = ();
+GetOptions('input|i=s' => \@input, 'output|o=s' => \$output, 'delim|d=s' => \$delim, 'name|n=s' => \@name);
 
 if($#input ==-1 || $output eq ""){
     print "    csv2xlsx.pl: merge csv file(s) to xlsx.\n\n";
@@ -22,12 +23,17 @@ my $workbook = Excel::Writer::XLSX->new($output);
 
 my %hash;
 for(my $i=0; $i<=$#input; $i++) {
-    my $tabname_full=(split /\//,$input[$i])[-1];
-    my $tabname = substr($tabname_full, 0, 27);
-    while(exists($hash{$tabname})) {
-	$tabname = $tabname . "2";
+    my $tabname;
+    if($#name ==-1) {
+	my $tabname_full=(split /\//,$input[$i])[-1];
+        $tabname = substr($tabname_full, 0, 27);
+        while(exists($hash{$tabname})) {
+            $tabname = $tabname . "2";
+        }
+        $hash{$tabname}=1;
+    }else {
+	$tabname = $name[$i];
     }
-    $hash{$tabname}=1;
     my $worksheet = $workbook->add_worksheet($tabname);
 
     my $file = file($input[$i]);

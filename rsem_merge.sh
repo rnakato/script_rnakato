@@ -71,8 +71,8 @@ sname=""
 for str in genes isoforms; do
     for tp in count TPM; do
 	head=$outname.$str.$tp.$build
-	s="$s -i $head.txt"
-	sname="$sname -i $head.name.txt"
+	s="$s -i $head.txt -n $str-$tp"
+	sname="$sname -i $head.name.txt -n $str-$tp"
     done
 done
 
