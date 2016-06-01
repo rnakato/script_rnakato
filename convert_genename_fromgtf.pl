@@ -3,10 +3,12 @@
 use strict;
 use warnings;
 use autodie;
-die "add_genename_fromgtf.pl <file> <gtf>\n" if($#ARGV !=1);
+die "convert_genename_fromgtf.pl [gene|transcript] <file> <gtf> <line>\n" if($#ARGV !=3);
 
-my $file=$ARGV[0];
-my $gtf=$ARGV[1];
+my $type=$ARGV[0];
+my $file=$ARGV[1];
+my $gtf=$ARGV[2];
+my $nline=$ARGV[3];
 my %Hashgname;
 my %Hashtname;
 
@@ -38,12 +40,18 @@ while(<ListFile>){
     chomp;
     my @clm = split(/\t/, $_);
 
-    if(exists($Hashgname{$clm[0]})){
-	print "$Hashgname{$clm[0]}\t$_\n";
-    }elsif(exists($Hashtname{$clm[0]})){
-	print "$Hashtname{$clm[0]}\t$_\n";
-    }else{
-	print "\t$_\n";
+    if($type eq "gene") {
+	if(exists($Hashgname{$clm[$nline]})){
+	    print "$Hashgname{$clm[$nline]}\t$_\n";
+	}else{
+	    print "\t$_\n";
+	}
+    } else {
+	if(exists($Hashtname{$clm[$nline]})){
+            print "$Hashtname{$clm[$nline]}\t$_\n";
+        }else{
+            print "\t$_\n";
+        }
     }
 }
 close (ListFile);

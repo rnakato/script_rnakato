@@ -54,20 +54,27 @@ for tp in count TPM; do
 done
 
 if test $name -eq 1; then
-    for str in genes isoforms; do
-	for tp in count TPM; do
-	    convert_genename_fromgtf.pl $outname.$str.$tp.$build.txt $gtf > $outname.$str.$tp.$build.temp.txt
-	    mv $outname.$str.$tp.$build.temp.txt $outname.$str.$tp.$build.txt
-	done
+    str=genes
+    nline=0
+    for tp in count TPM; do
+	convert_genename_fromgtf.pl gene $outname.$str.$tp.$build.txt $gtf $nline > $outname.$str.$tp.$build.name.txt
+    done
+    str=isoforms
+    nline=1
+    for tp in count TPM; do
+        convert_genename_fromgtf.pl transcript $outname.$str.$tp.$build.txt $gtf $nline > $outname.$str.$tp.$build.name.txt
     done
 fi
 
 s=""
+sname=""
 for str in genes isoforms; do
     for tp in count TPM; do
 	head=$outname.$str.$tp.$build
 	s="$s -i $head.txt"
+	sname="$sname -i $head.name.txt"
     done
 done
 
 csv2xlsx.pl $s -o $outname.$build.xlsx
+if test $name -eq 1; then csv2xlsx.pl $sname -o $outname.$build.name.xlsx; fi
