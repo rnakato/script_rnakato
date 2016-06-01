@@ -47,7 +47,11 @@ convertname(){
 	head=$outname.$str.count.$build.edgeR.$ty
 	cat $head.csv | sed 's/,/\t/g' > $head.csv.temp
 	mv $head.csv.temp $head.csv
-	convert_genename_fromgtf.pl gene $head.csv $gtf $nline > $head.name.csv
+	if test $str = "genes"; then
+	    convert_genename_fromgtf.pl gene $head.csv $gtf $nline > $head.name.csv
+	else
+	    convert_genename_fromgtf.pl transcript $head.csv $gtf $nline > $head.name.csv
+	fi
 	s="$s -i $head.name.csv -n fitted-$str-$ty"
     done
     csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.name.xlsx
