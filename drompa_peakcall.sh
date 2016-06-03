@@ -16,7 +16,7 @@ binsize=$4
 build=$5
 k=$6
 
-Ddir=/home/Database/UCSC/$build
+Ddir=`database.sh`/UCSC/$build
 gt=$Ddir/genome_table
 map="$Ddir/mappability_Mosaics_${k}mer/map_fragL150"
 

@@ -15,7 +15,7 @@ prob=$6
 if test ! -e log; then mkdir log; fi
 if test ! -e rsem; then mkdir rsem; fi
 
-index=/home/Database/rsem-star-indexes/$db-$build/$db-$build
+index=`database.sh`/rsem-star-indexes/$db-$build/$db-$build
 
 if test $readtype = "paired"; then pair="--paired-end"; fi
 
@@ -58,7 +58,7 @@ STAR --runThreadN 12  --readFilesCommand zcat --genomeLoad NoSharedMemory --geno
 b
 
 
-#STAR --genomeDir /home/Database/rsem-star-indexes/UCSC-hg19  --outSAMunmapped Within  --outFilterType BySJout  --outSAMattributes NH HI AS NM MD  --outFilterMultimapNmax 20  --outFilterMismatch\
+#STAR --genomeDir `database.sh`/rsem-star-indexes/UCSC-hg19  --outSAMunmapped Within  --outFilterType BySJout  --outSAMattributes NH HI AS NM MD  --outFilterMultimapNmax 20  --outFilterMismatch\
 Nmax 999  --outFilterMismatchNoverLmax 0.04  --alignIntronMin 20  --alignIntronMax 1000000  --alignMatesGapMax 1000000  --alignSJoverhangMin 8  --alignSJDBoverhangMin 1  --sjdbScore 1  --runThre\
 adN 12  --genomeLoad NoSharedMemory  --outSAMtype BAM Unsorted  --quantMode TranscriptomeSAM  --outSAMheaderHD \@HD VN:1.4 SO:unsorted  --outFileNamePrefix test.temp/test  --readFilesIn data/WT1\
 -1_R1.fq data/WT1-1_R2.fq                                                                                                                                                                          

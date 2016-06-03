@@ -43,24 +43,24 @@ post=`echo $param | tr -d ' '`
 if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
-Ddir=/home/Database/$db/$build
+Ddir=`database.sh`
 
 ex_hiseq(){
-    index=/home/Database/bowtie-indexes/$db-$build
+    index=$Ddir/bowtie-indexes/$db-$build
     command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"    
     echo $command
     eval $command
 }
 
 ex_csfasta(){
-    index=/home/Database/bowtie-indexes/$db-$build-cs
+    index=$Ddir/bowtie-indexes/$db-$build-cs
     command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
     echo $command
     eval $command
 }
 
 ex_csfastq(){
-    index=/home/Database/bowtie-indexes/$db-$build-cs
+    index=$Ddir/bowtie-indexes/$db-$build-cs
     command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
     echo $command
     eval $command

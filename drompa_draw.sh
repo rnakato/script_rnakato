@@ -13,7 +13,7 @@ param=$3
 output=$4
 build=$5
 
-Ddir=/home/Database/UCSC/$build
+Ddir=`database.sh`/UCSC/$build
 gene=$Ddir/refFlat.dupremoved.txt
 gt=$Ddir/genome_table
 GC=$Ddir/GCcontents

@@ -47,7 +47,7 @@ build=$3
 
 if test ! -e log; then mkdir log; fi
 
-Ddir=/home/Database/$db/$build
+Ddir=`database.sh`/$db/$build
 gt=$Ddir/genome_table
 chrpath=$Ddir/chromosomes
 mpbl=$Ddir/mappability_Mosaics_${k}mer/map_fragL150
