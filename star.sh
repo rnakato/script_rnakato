@@ -34,13 +34,16 @@ if [ "`echo $fastq | grep '.gz'`" ] ; then
     pzip="--readFilesCommand zcat"
 fi
 
+STARdir=$(cd $(dirname $0) && pwd)/../STAR/bin/Linux_x86_64_static
+
 parSTAR="--genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM --runThreadN 12"
-STAR $parSTAR $pzip --genomeDir $index_star --readFilesIn $fastq $parstr --outFileNamePrefix $odir/$prefix.$build.
+$STARdir/STAR $parSTAR $pzip --genomeDir $index_star --readFilesIn $fastq $parstr --outFileNamePrefix $odir/$prefix.$build.
 log=log/star-$prefix.$build.txt
 echo -en "$prefix\t" > $log
 parse_starlog.pl $odir/$prefix.$build.Log.final.out >> $log
 wigdir=bedGraph
 if test ! -e $odir/$wigdir; then mkdir $odir/$wigdir; fi
-STAR --runMode inputAlignmentsFromBAM --runThreadN 12 --inputBAMfile $odir/${prefix}.$build.Aligned.sortedByCoord.out.bam --outWigType bedGraph $parWig --outFileNamePrefix $odir/$wigdir/$prefix.$build --outWigReferencesPrefix chr
+$STARdir/STAR --runMode inputAlignmentsFromBAM --runThreadN 12 --inputBAMfile $odir/${prefix}.$build.Aligned.sortedByCoord.out.bam --outWigType bedGraph $parWig --outFileNamePrefix $odir/$wigdir/$prefix.$build --outWigReferencesPrefix chr
 
-rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build #--calc-ci --ci-memory 30000 --seed 12345
+RSEMdir=$(cd $(dirname $0) && pwd)/../RSEM
+$RSEMdir/rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build #--calc-ci --ci-memory 30000 --seed 12345

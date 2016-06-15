@@ -2,14 +2,16 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
+    echo "$cmdname [-s] [-e] [-a] [-n] [-t <hiseq|csfasta|csfastq>] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
 }
 
 pppar=""
 pens=""
+btype="hiseq"
 pa=""
+nopp=0
 bamdir=bam
-while getopts ased: option
+while getopts ased:nt: option
 do
     case ${option} in
 	a)
@@ -24,6 +26,12 @@ do
 	d)
 	    bamdir=${OPTARG}
 	        ;;
+        n)
+            nopp=1
+            ;;
+        t)
+            btype=${OPTARG}
+            ;;
 	*)
 	    usage
 	    exit 1
@@ -49,9 +57,9 @@ head=$prefix$post-$build
 
 if test $type = "exec";then
     bam=$bamdir/$head.sort.bam
-    bowtie.sh $pens -d $bamdir -t fastq $fastq $prefix $build "$bowtieparam"
+    bowtie.sh $pens -d $bamdir -t $btype $fastq $prefix $build "$bowtieparam"
     parse2wig.sh $pa $pens $bam $head $build
-    pp.sh $pppar $bam $head
+    if test $nopp != 1; then pp.sh $pppar $bam $head; fi
 elif test $type = "stats"; then
     a=`parsebowtielog.pl log/bowtie-$head | grep -v Sample`
     b=`cat log/parsestats-$head | grep -v Sample | cut -f6,7,8,9,10,11,12`

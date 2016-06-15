@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "bowtie.sh [-e] [-t <csfasta|-csfastq>] [-d bamdir] <fastq> <prefix> <build> <param>" 1>&2
+    echo "bowtie.sh [-e] [-t <csfasta|csfastq>] [-d bamdir] <fastq> <prefix> <build> <param>" 1>&2
 }
 
 type=hiseq
