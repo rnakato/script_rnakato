@@ -1,10 +1,3 @@
-# edgeR.R
-# =============
-# Author: Ryuichiro Nakato
-# Email: rnakato@iam.u-tokyo.ac.jp
-# =============
-# MANDATORY ARGUMENTS
-
 print.usage <- function() {
 	cat('\nUsage: Rscript edgeR.R <options>\n',file=stderr())
 	cat('   MANDATORY ARGUMENTS\n',file=stderr())
