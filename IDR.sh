@@ -3,6 +3,7 @@ cmdname=`basename $0`
 function usage()
 {
     echo "IDR.sh [-b] <peakfile1> <peakfile2> <prefix> [signal.value|p.value|q.value]" 1>&2
+    echo " (REMEMBER TO USE RELAXED THRESHOLDS AND TRY TO CALL 150k to 300k peaks even if most of them are noise)" 1>&2
 }
 
 broad="F"

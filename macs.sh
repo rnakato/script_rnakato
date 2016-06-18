@@ -1,7 +1,24 @@
 #!/bin/bash
+function usage()
+{
+    echo "macs.sh [-s fraglen/2] <IP bam> <Input bam> <output> [sharp|broad|nomodel|broad-nomodel]" 1>&2
+}
+
+flen=100
+while getopts s: option
+do
+    case ${option} in
+	s)
+	    flen=${OPTARG}
+	    ;;
+	*)
+	    usage
+	    exit 1
+	    ;;
+    esac
+done
 
 if test $# -ne 4; then
-    echo "macs.sh <IP bam> <Input bam> <output> <mode>"
     exit 0
 fi
 
@@ -17,11 +34,11 @@ macs="macs2 callpeak -t $IP -c $Input -g hs -f BAM"
 if test -e $IP && test -s $IP ; then
     if test -e $Input && test -s $Inpput ; then
 	if test $mode = "nomodel"; then
-	    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -n $mdir/$peak-nomodel --nomodel --shift 200; fi
+	    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -n $mdir/$peak-nomodel --nomodel --shift $flen; fi
 	elif test $mode = "broad"; then
 	    if test ! -e $mdir/${peak}_summits.bed; then         $macs -n $mdir/$peak --broad; fi
 	elif test $mode = "broad-nomodel"; then
-	    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -n $mdir/$peak-nomodel --nomodel --shift 200 --broad; fi
+	    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -n $mdir/$peak-nomodel --nomodel --shift $flen --broad; fi
 	else 
 	    if test ! -e $mdir/${peak}_summits.bed; then         $macs -n $mdir/$peak; fi
 	fi

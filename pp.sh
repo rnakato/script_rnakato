@@ -1,5 +1,4 @@
 #!/bin/bash
-cmdname=`basename $0`
 function usage()
 {
     echo "pp.sh [-s] <IPbam> <Inputbam> <prefix>" 1>&2
@@ -26,6 +25,7 @@ if [ $# -ne 3 ]; then
   exit 1
 fi
 
+# If you have removed duplicates from your sample use run_spp_nodups.R instead of run_spp.R otherwise you will get errors
 R=$(cd $(dirname $0) && pwd)/../binaries/phantompeakqualtools/run_spp.R
 mdir=ppout
 if test ! -e $mdir; then mkdir $mdir; fi
