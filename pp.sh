@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "pp.sh [-s] <bam> <prefix>" 1>&2
+    echo "pp.sh [-s] <IPbam> <Inputbam> <prefix>" 1>&2
 }
 
 pmulti="-p=12"
@@ -21,7 +21,7 @@ done
 shift $((OPTIND - 1))
 
 # check arguments
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
   usage
   exit 1
 fi
@@ -31,9 +31,10 @@ mdir=ppout
 if test ! -e $mdir; then mkdir $mdir; fi
 
 IPbam=$1
-prefix=$2
+Inputbam=$2
+prefix=$3
 if test -e $IPbam && test -s $IPbam ; then
-    if test ! -e $mdir/$prefix.SN ; then Rscript $R $pmulti -c=$IPbam -i=$IPbam -rf -savn=$mdir/$prefix.narrowPeak -savr=$mdir/$prefix.regionPeak -out=$mdir/$prefix.resultfile -savp=$mdir/$prefix.pdf; fi
+    if test ! -e $mdir/$prefix.SN ; then Rscript $R $pmulti -c=$IPbam -i=$Inputbam -rf -savn=$mdir/$prefix.narrowPeak -savr=$mdir/$prefix.regionPeak -out=$mdir/$prefix.resultfile -savp=$mdir/$prefix.pdf; fi
     echo -en "$prefix\t" > $mdir/$prefix.SN
     cut -f9,10,11 $mdir/$prefix.resultfile >> $mdir/$prefix.SN
 else
