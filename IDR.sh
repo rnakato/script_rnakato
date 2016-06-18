@@ -38,3 +38,18 @@ if test ! -e $mdir; then mkdir $mdir; fi
 
 #Rscript $R [peakfile1] [peakfile2] [peak.half.width] [outfile.prefix] [min.overlap.ratio] [is.broadpeak] [ranking.measure]
 Rscript $R $bed1 $bed2 -1 $prefix 0 $broad $measure
+
+
+#### FOR SELF-CONSISTENCY ANALYSIS CALL PEAKS ON PSEUDOREPLICATES OF INDIVIDUAL REPLICATES
+
+#fileName='chipSampleRep1.tagAlign.gz' # input tagAlign file name
+#outputDir='/mapped/selfPseudoReps' # output directory for pseudoreplicate files
+#outputStub='chipSampleRep1' # prefix name for pseudoReplicate files
+
+#nlines=$( zcat ${fileName} | wc -l ) # Number of reads in the tagAlign file
+#nlines=$(( (nlines + 1) / 2 )) # half that number
+#zcat "${fileName}" | shuf | split -d -l ${nlines} - "${outputDir}/${outputStub}" # This will shuffle the lines in the file and split it into two parts
+#gzip "${outputDir}/${outputStub}00"
+#gzip "${outputDir}/${outputStub}01"
+#mv "${outputDir}/${outputStub}00.gz" "${outputDir}/${outputStub}.pr1.tagAlign.gz"
+#mv "${outputDir}/${outputStub}01.gz" "${outputDir}/${outputStub}.pr2.tagAlign.gz"
