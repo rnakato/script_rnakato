@@ -45,9 +45,11 @@ if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
 
+samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
+
 ex_hiseq(){
     index=$Ddir/bowtie-indexes/$db-$build
-    command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"    
+    command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $bamdir/$prefix$post-$build.sort"    
     echo $command
     eval $command
 }
