@@ -59,7 +59,7 @@ if test $type = "exec";then
     bam=$bamdir/$head.sort.bam
     bowtie.sh $pens -d $bamdir -t $btype $fastq $prefix $build "$bowtieparam"
     parse2wig.sh $pa $pens $bam $head $build
-    if test $nopp != 1; then pp.sh $pppar $bam $head; fi
+    if test $nopp != 1; then pp.sh $pppar $bam $bam $head; fi
 elif test $type = "stats"; then
     a=`parsebowtielog.pl log/bowtie-$head | grep -v Sample`
     b=`cat log/parsestats-$head | grep -v Sample | cut -f6,7,8,9,10,11,12`
