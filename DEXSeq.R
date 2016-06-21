@@ -72,6 +72,11 @@ for (each.arg in args) {
         if (! is.na(arg.split[2]) ) { output <- arg.split[2] }
         else { stop('No output file name provided for parameter -o=')}
     }
+    else if (grepl('^-l=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) { genelist <- arg.split[2] }
+        else { stop('No output file name provided for parameter -o=')}
+    }
 }
 
 files
@@ -81,6 +86,7 @@ num1
 num2
 flattenedFile
 output
+genelist
 
 sampleTable = data.frame(
     row.names = files,
@@ -98,7 +104,9 @@ BPPARAM <- SnowParam(workers = 8)
 dxd = DEXSeqDataSetFromHTSeq(countFiles, sampleData=sampleTable, 
                              design=~ sample + exon + condition:exon,
                              flattenedfile=flattenedFile )
-#genesForSubset = read.table("geneIDsinsubset.txt", stringsAsFactors=FALSE)[[1]]
+dir <- getwd()
+genesForSubset = read.table(genelist, stringsAsFactors=FALSE)[[1]]
+dxd <- dxd[geneIDs(dxd) %in% genesForSubset,]
 
 split(seq_len(ncol(dxd)), colData(dxd)$exon)
 #head( featureCounts(dxd), 5)

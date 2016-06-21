@@ -19,6 +19,7 @@ do
 done
 
 if test $# -ne 4; then
+    usage
     exit 0
 fi
 
