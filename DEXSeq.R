@@ -104,7 +104,7 @@ BPPARAM <- SnowParam(workers = 8)
 dxd = DEXSeqDataSetFromHTSeq(countFiles, sampleData=sampleTable, 
                              design=~ sample + exon + condition:exon,
                              flattenedfile=flattenedFile )
-dir <- getwd()
+
 genesForSubset = read.table(genelist, stringsAsFactors=FALSE)[[1]]
 dxd <- dxd[geneIDs(dxd) %in% genesForSubset,]
 
