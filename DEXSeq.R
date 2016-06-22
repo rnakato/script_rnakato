@@ -17,7 +17,7 @@ args <- commandArgs(trailingOnly = T)
 nargs = length(args);
 nargs
 minargs = 5;
-maxargs = 5;
+maxargs = 6;
 if (nargs < minargs | nargs > maxargs) {
 	print.usage()
 	q(save="no",status=1)
