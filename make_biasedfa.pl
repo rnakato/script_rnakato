@@ -1,13 +1,39 @@
 #!/usr/bin/env perl
 
-die "make_biasedfa.pl <chromosome dir> <chromosome name> <GCdist csv> <fragment length dist csv> <prop>\n" if($#ARGV !=4);
+use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
 
-my $tablepath=$ARGV[0];
-my $chr=$ARGV[1];
-my $csv=$ARGV[2];
-my $flenfile=$ARGV[3];
-my $p=$ARGV[4];
+my $tablepath="";
+my $chr="";
+my $csv="";
+my $flenfile="";
+my $p="";
+my $bed="";
 
+GetOptions('tablepath|t=s' => \$tablepath, 'chr|c=s' => \$chr, 'csv|v=s' => \$csv, 'flenfile|f=s' => \@flenfile, 'p|p=s' => \$p, 'bed|b=s' => \$bed);
+
+if($tablepath eq "" || $chr eq ""|| $csv eq ""|| $flenfile eq ""|| $p eq ""){
+    print "    make_biasedfa.pl: make random reads for fasta format.\n\n";
+    print "    Usage: make_biasedfa.pl -t <chromosome dir> -c <chromosome name> -v <GCdist csv> -f <fragment length dist csv> -p <prop>\n\n";
+    print "    Options:\n\t-b --bed = <str>: bedfile for peak regions\n\n";
+    exit;
+}
+
+my @bedchr;
+my @bedstart;
+my @bedend;
+if($bed ne "") {
+    open(IN, $bed) || die "error: cannot open $csv.\n";
+    while(<IN>) {
+	next if($_ eq "\n" || $_ =~ /#/);
+	chomp;
+	@clm= split(/\t/, $_);
+	push(@bedchr, $clm[0]);
+	push(@bedstart, $clm[1]);
+	push(@bedend, $clm[2]);
+    }
+    close IN;
+}
+    
 my $flen4gc=140;
 my $readlen=50;
 for($i=0;$i<=$flen4gc;$i++) {
