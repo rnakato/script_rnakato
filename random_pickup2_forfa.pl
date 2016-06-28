@@ -25,19 +25,4 @@ while(my $line = <File>){
 }
 close (File);
 
-#my $num=0;
-#for(;;){
-#    my $x = int(rand()*$nread);
-#    if($headarray[$x] ne "used"){#
-#	print $headarray[$x];
-#	print $faarray[$x];
-#	$headarray[$x] = "used";
-#	$num++;
-#	if($num>=$number){ exit;}
- #   }else{
-#	next;
- #   }
-#}
-
-
 
