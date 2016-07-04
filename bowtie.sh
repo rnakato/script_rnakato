@@ -47,25 +47,33 @@ Ddir=`database.sh`
 
 samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 
+file=$bamdir/$prefix$post-$build.sort
+
 ex_hiseq(){
     index=$Ddir/bowtie-indexes/$db-$build
-    command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $bamdir/$prefix$post-$build.sort"    
-    echo $command
-    eval $command
+    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
+	command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $file"    
+	echo $command
+	eval $command
+    fi
 }
 
 ex_csfasta(){
     index=$Ddir/bowtie-indexes/$db-$build-cs
-    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
-    echo $command
-    eval $command
+    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
+	command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
+	echo $command
+	eval $command
+    fi
 }
 
 ex_csfastq(){
     index=$Ddir/bowtie-indexes/$db-$build-cs
-    command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $bamdir/$prefix$post-$build.sort"
-    echo $command
-    eval $command
+    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
+	command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
+	echo $command
+	eval $command
+    fi
 }
 
 log=log/bowtie-$prefix$post-$build
