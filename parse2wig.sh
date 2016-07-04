@@ -67,9 +67,11 @@ func(){
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir
 	fi
     else
-	if test ! -e $pdir/$prefix-raw-mpbl-GR.$binsize.xls; then
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $binsize -odir $pdir;
-	fi
+        for b in $binsize 100000; do
+            if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
+                parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir;
+            fi
+        done
 	if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir
 	fi
