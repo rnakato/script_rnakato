@@ -11,11 +11,11 @@ my $bed="";
 
 GetOptions('tablepath|t=s' => \$tablepath, 'chr|c=s' => \$chr, 'csv|v=s' => \$csv, 'flenfile|f=s' => \$flenfile, 'p|p=s' => \$p);
 
-print "$tablepath\n";
-print "$chr\n";
-print "$csv\n";
-print "$flenfile\n";
-print "$p\n";
+#print "$tablepath\n";
+#print "$chr\n";
+#print "$csv\n";
+#print "$flenfile\n";
+#print "$p\n";
 
 if($tablepath eq "" || $chr eq ""|| $csv eq ""|| $flenfile eq ""|| $p eq ""){
     print "    make_biasedfa.pl: make random reads for fasta format.\n\n";
