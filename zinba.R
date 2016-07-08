@@ -24,6 +24,7 @@ if (nargs < minargs | nargs > maxargs) {
 
 flen   <- 200
 wigdir <- "align_athresh1_extension200/"
+numthread <- 4
 for (each.arg in args) {
     if (grepl('^-c=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -38,6 +39,13 @@ for (each.arg in args) {
             input <- arg.split[2]
         }
         else { stop('No data provided for parameter -g=')}
+    }
+    else if (grepl('^-p=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            numthread <- as.numeric(arg.split[2])
+        }
+        else { stop('No data provided for parameter -p=')}
     }
     else if (grepl('^-t=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
