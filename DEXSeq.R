@@ -1,5 +1,3 @@
-#flattenedFile = "Homo_sapiens.GRCh38.83.chr.gff"
-
 print.usage <- function() {
 	cat('\nUsage: Rscript DEXSeq.R <options>\n',file=stderr())
 	cat('   MANDATORY ARGUMENTS\n',file=stderr())
@@ -101,7 +99,7 @@ countFiles = rownames(sampleTable)
 library("DEXSeq")
 library("BiocParallel")
 #BPPARAM <- MulticoreParam(workers = 8)
-BPPARAM <- SnowParam(workers = 8)
+BPPARAM <- SnowParam(workers = 12)
 
 dxd = DEXSeqDataSetFromHTSeq(countFiles, sampleData=sampleTable, 
                              design=~ sample + exon + condition:exon,
@@ -127,9 +125,9 @@ dev.off()
 dxd = testForDEU(dxd, BPPARAM=BPPARAM ) # for each exon 
 dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
 dxr1 = DEXSeqResults( dxd )  # summary
-dxr1
-mcols(dxr1)$description    # 各列の説明
-table ( dxr1$padj < 0.1 )  # FDR<0.1のexonx
+#dxr1
+#mcols(dxr1)$description    # 各列の説明
+table ( dxr1$padj < 0.1 )  # FDR<0.1のexon
 table ( tapply( dxr1$padj < 0.1, dxr1$groupID, any ) )
 
 f <- paste(output, ".MAplot.png", sep="")
@@ -137,21 +135,22 @@ png(f, h=600, w=700, pointsize=20)
 plotMA( dxr1, cex=0.8 )    # FDR<0.1が赤
 dev.off()
 
-#visualization
-gid <- "ENSG00000164190"
-f <- paste(output, ".", gid, ".png", sep="")
-plotDEXSeq( dxr2, gid, displayTranscripts=TRUE, legend=TRUE, norCounts=TRUE, cex.axis=1.2, cex=1.3, lwd=2 ) 
-dev.off()
-#plotDEXSeq( dxr2, gid, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # conditionごとの平均plot
-#plotDEXSeq( dxr2, gid, displayTranscripts=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # show all transcripts
-#plotDEXSeq( dxr2, gid, expression=FALSE, norCounts=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # total read normalization
-#plotDEXSeq( dxr2, gid, expression=FALSE, splicing=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # 遺伝子全体の差をキャンセルしたplot (splicingの差だけに特化)
+DEXSeqHTML(dxr1, FDR=0.1, color=c("#FF000080", "#0000FF80"))
 
-DEXSeqHTML(dxr2, FDR=0.1, color=c("#FF000080", "#0000FF80"))
-
-
+save(list=ls(), file=paste(output, ".all.Rdata", sep=""))
 
 q(save="no",status=1)
+
+load("all.Rdata")
+library("DEXSeq")
+library("BiocParallel")
+
+#visualization
+gid <- "ENSG00000164190"
+plotDEXSeq( dxr1, gid, displayTranscripts=TRUE, splicing=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # show all transcripts
+#plotDEXSeq( dxr1, gid, expression=FALSE, norCounts=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # total read normalization
+#plotDEXSeq( dxr1, gid, expression=FALSE, splicing=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )  # 遺伝子全体の差をキャンセルしたplot (splicingの差だけに特化)
+
 #Additional technical or experimental variables (single vs. pair など他の条件を考慮したい場合)
 sampleAnnotation(dxd)
 formulaFullModel = ~ sample + exon + libType:exon + condition:exon
