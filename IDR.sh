@@ -22,7 +22,7 @@ done
 shift $((OPTIND - 1))
 
 # check arguments
-if [ $# -ne 3 ]; then
+if [ $# -ne 4 ]; then
   usage
   exit 1
 fi

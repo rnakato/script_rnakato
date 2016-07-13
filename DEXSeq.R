@@ -88,10 +88,12 @@ flattenedFile
 output
 genelist
 
+numtotal <- num1 + num2
+
 sampleTable = data.frame(
     row.names = files,
-    condition = c(rep(name1, num1), rep(name2, num2))
-#    libType = c(rep("paired-end",20))
+    condition = c(rep(name1, num1), rep(name2, num2)),
+    libType = c(rep("paired-end",numtotal))
 )
 sampleTable
 countFiles = rownames(sampleTable)
@@ -99,6 +101,7 @@ countFiles = rownames(sampleTable)
 library("DEXSeq")
 library("BiocParallel")
 #BPPARAM <- MulticoreParam(workers = 8)
+BPPARAM <- SnowParam(workers = 8)
 
 dxd = DEXSeqDataSetFromHTSeq(countFiles, sampleData=sampleTable, 
                              design=~ sample + exon + condition:exon,
@@ -114,17 +117,15 @@ split(seq_len(ncol(dxd)), colData(dxd)$exon)
 #standard annotation
 sampleAnnotation( dxd )
 dxd = estimateSizeFactors( dxd ) # Total read normalization
-#dxd = estimateDispersions( dxd, BPPARAM=BPPARAM) # dispersionを推定
-dxd = estimateDispersions( dxd) # dispersionを推定
+dxd = estimateDispersions( dxd, BPPARAM=BPPARAM) # dispersionを推定
 
 f <- paste(output, ".disp.png", sep="")
 png(f, h=600, w=700, pointsize=20)
 plotDispEsts( dxd )  # dispersion plot
 dev.off()
 
-dxd = testForDEU( dxd) # for each exon , BPPARAM=BPPARAM 
-#dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
-dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition")  # fold change
+dxd = testForDEU(dxd, BPPARAM=BPPARAM ) # for each exon 
+dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
 dxr1 = DEXSeqResults( dxd )  # summary
 dxr1
 mcols(dxr1)$description    # 各列の説明
