@@ -122,7 +122,13 @@ png(f, h=600, w=700, pointsize=20)
 plotDispEsts( dxd )  # dispersion plot
 dev.off()
 
-dxd = testForDEU(dxd, BPPARAM=BPPARAM ) # for each exon 
+dxd = testForDEU(dxd, BPPARAM=BPPARAM ) # for each exon
+
+head  <- paste("log2fold_", name1, "_", name2, sep="")
+s <- paste("na <- is.na(dxd@rowRanges$", head, ")", sep="")
+eval(parse(text=s))
+
+dxd@rowRanges$allZero[na] <- TRUE
 dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
 dxr1 = DEXSeqResults( dxd )  # summary
 #dxr1
@@ -135,7 +141,7 @@ png(f, h=600, w=700, pointsize=20)
 plotMA( dxr1, cex=0.8 )    # FDR<0.1が赤
 dev.off()
 
-DEXSeqHTML(dxr1, FDR=0.1, color=c("#FF000080", "#0000FF80"))
+DEXSeqHTML(dxr1, path=paste(output, ".DEXSeqReport", sep=""), FDR=0.1, color=c("#FF000080", "#0000FF80"))
 
 save(list=ls(), file=paste(output, ".all.Rdata", sep=""))
 
