@@ -112,6 +112,8 @@ split(seq_len(ncol(dxd)), colData(dxd)$exon)
 #head( featureCounts(dxd), 5)
 #head( rowRanges(dxd), 3 )
 
+#write.table(geneIDs(dxd), file="geneIDsinsubset.temp.txt", quote=F, sep = "\t",row.names = F, col.names = F)
+
 #standard annotation
 sampleAnnotation( dxd )
 dxd = estimateSizeFactors( dxd ) # Total read normalization
@@ -131,8 +133,9 @@ eval(parse(text=s))
 dxd@rowRanges$allZero[na] <- TRUE
 dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
 dxr1 = DEXSeqResults( dxd )  # summary
-#dxr1
-#mcols(dxr1)$description    # 各列の説明
+#write.table(dxr1, file="dxr.txt", quote=F, sep = "\t",row.names = T, col.names = T)
+                                        #mcols(dxr1)$description    # 各列の説明
+#dxr2 <- dxr1[,-is.na(dxr1[,10])]
 table ( dxr1$padj < 0.1 )  # FDR<0.1のexon
 table ( tapply( dxr1$padj < 0.1, dxr1$groupID, any ) )
 
