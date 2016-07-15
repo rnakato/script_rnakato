@@ -1,6 +1,6 @@
 #!/bin/bash
 if test $# -ne 5; then
-    echo "drompa_draw.sh <type> <samples> <options> <output> <build>"
+    echo "drompa_draw.sh [PC|GV|BROAD] <samples> <options> <output> <build>"
     exit 0
 fi
 
@@ -21,7 +21,8 @@ genedensity=$Ddir/genedensity
 
 if test $type = "GV"; then
     drompa_draw GV -gt $gt $s $param -p $mdir/drompa3.GV.$output -GC $GC -gcsize 500000 -GD $genedensity -gdsize 500000 
+elif test $type = "BROAD"; then
+    drompa_draw PC_ENRICH -gene $gene $s $param -p $mdir/drompa3.BROAD.$output -gt $gt -ls 20000 -binsize 100000 -nosig -offbg
 else
     drompa_draw PC_SHARP -gene $gene $s $param -p $mdir/drompa3.PC.$output -gt $gt
 fi
-
