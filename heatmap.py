@@ -10,6 +10,7 @@ import notebook
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import math
 
 status = []
 num = 0
@@ -36,16 +37,27 @@ file.close()
 #print len(status)
 
 window = 100
-data = [[0 for i in range(len(hash))] for j in range(len(status))]
+lendata = len(status)/window +1
+data = [[0 for i in range(len(hash))] for j in range(lendata)]
 for i in range(0, len(status)):
 #    print status[i]
  #   print hash[status[i]]
-    data[i/window][hash[status[i]]] += 1
+    data[i/window][hash[status[i]]] += 1.0/window
 
 label = []
 for st in hash:
 #    print hash[st], st
     label.insert(hash[st], st)
+    
+#upstream	downstream	genic	intergenic
+#4.41	3.62	38.93	53.04
+
+all = 4.41 + 3.62 + 38.93
+p = [38.93/all, 4.41/all, 3.62/all]
+
+for i in range(0, len(data)):
+    for j in range(len(hash)):
+        data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
 
 #fig = matplotlib.pyplot.figure()
 #ax = fig.add_subplot(1,1,1)
