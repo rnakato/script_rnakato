@@ -126,11 +126,10 @@ dev.off()
 
 dxd = testForDEU(dxd, BPPARAM=BPPARAM ) # for each exon
 
-head  <- paste("log2fold_", name1, "_", name2, sep="")
-s <- paste("na <- is.na(dxd@rowRanges$", head, ")", sep="")
-eval(parse(text=s))
-
-dxd@rowRanges$allZero[na] <- TRUE
+#head  <- paste("log2fold_", name1, "_", name2, sep="")
+#s <- paste("na <- is.na(dxd@rowRanges$", head, ")", sep="")
+#eval(parse(text=s))
+#dxd@rowRanges$allZero[na] <- TRUE
 dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)  # fold change
 dxr1 = DEXSeqResults( dxd )  # summary
 #write.table(dxr1, file="dxr.txt", quote=F, sep = "\t",row.names = T, col.names = T)

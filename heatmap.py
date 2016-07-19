@@ -16,7 +16,6 @@ status = []
 num = 0
 hash = {}
 
-file=open("/home/rnakato/temp/2015_017A_KT55_D-n2-m1-hg38-raw-mpbl-sm0.comp1.bed", 'r')
 file=open(sys.argv[1], 'r')
 for line in file:
     if '#' in line or 'chromosome' in line:
@@ -59,6 +58,7 @@ for i in range(0, len(data)):
     for j in range(len(hash)):
         data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
 
+        
 #fig = matplotlib.pyplot.figure()
 #ax = fig.add_subplot(1,1,1)
 ax = sns.heatmap(data, cmap='Blues')
