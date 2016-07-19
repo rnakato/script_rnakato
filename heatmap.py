@@ -56,11 +56,12 @@ p = [38.93/all, 4.41/all, 3.62/all]
 
 for i in range(0, len(data)):
     for j in range(len(hash)):
-        data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
+        if(data[i][j] != 0):
+            data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
 
-        
-#fig = matplotlib.pyplot.figure()
-#ax = fig.add_subplot(1,1,1)
+
+fig = matplotlib.pyplot.figure()
+ax = fig.add_subplot(1,1,1)
 ax = sns.heatmap(data, cmap='Blues')
 labels = ax.set_xticklabels(label,fontsize ="small")
 sns.plt.axis()
