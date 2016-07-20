@@ -114,8 +114,6 @@ if(density) {
  dat <- data.frame(log10exp = logexp, cells = cells)
  cat('\nprint density plot in', f, '\n',file=stderr())
  ggplot(dat, aes(x = log10exp, fill = cells)) + geom_density(alpha = 0.5)
-
-
 }
 dev.off()
 if(density) { q(save="no",status=0)}
