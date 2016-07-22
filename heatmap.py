@@ -50,9 +50,13 @@ for st in hash:
     
 #upstream	downstream	genic	intergenic
 #4.41	3.62	38.93	53.04
+# upstream   downstream exon intron   intergenic
+# 13.98 10.41 1.46  17.96    56.20
+# 13.98 10.41 35.10 40.52
 
-all = 4.41 + 3.62 + 38.93
-p = [38.93/all, 4.41/all, 3.62/all]
+
+all = 100.0
+p = [13.98/all, 10.41/all, 35.10/all, 40.52/all]
 
 for i in range(0, len(data)):
     for j in range(len(hash)):
