@@ -16,7 +16,6 @@ status = []
 num = 0
 hash = {}
 
-file=open("/home/rnakato/temp/2015_017A_KT55_D-n2-m1-hg38-raw-mpbl-sm0.comp1.bed", 'r')
 file=open(sys.argv[1], 'r')
 for line in file:
     if '#' in line or 'chromosome' in line:
@@ -51,16 +50,22 @@ for st in hash:
     
 #upstream	downstream	genic	intergenic
 #4.41	3.62	38.93	53.04
+# upstream   downstream exon intron   intergenic
+# 13.98 10.41 1.46  17.96    56.20
+# 13.98 10.41 35.10 40.52
 
-all = 4.41 + 3.62 + 38.93
-p = [38.93/all, 4.41/all, 3.62/all]
+
+all = 100.0
+p = [13.98/all, 10.41/all, 35.10/all, 40.52/all]
 
 for i in range(0, len(data)):
     for j in range(len(hash)):
-        data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
+        if(data[i][j] != 0):
+            data[i][j] = math.log(data[i][j]/p[j], 2) # log2x
 
-#fig = matplotlib.pyplot.figure()
-#ax = fig.add_subplot(1,1,1)
+
+fig = matplotlib.pyplot.figure()
+ax = fig.add_subplot(1,1,1)
 ax = sns.heatmap(data, cmap='Blues')
 labels = ax.set_xticklabels(label,fontsize ="small")
 sns.plt.axis()

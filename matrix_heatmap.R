@@ -13,16 +13,19 @@ counts <- as.matrix(counts)
 
 if(t == "T"){
     counts <- t(counts)
+cn <- colnames(counts)	
 }
 
-cn <- colnames(counts)
 
-for (i in 2:length(cn)){
-    cn[i-1] <- cn[i]
-}       
-colnames(counts) <- cn
-temp <- counts[,-length(cn)]
-counts <- temp
+
+#for (i in 2:length(cn)){
+#    cn[i-1] <- cn[i]
+#}    
+#colnames(counts) <- cn
+#temp <- counts[,-length(cn)]
+#counts <- temp
+
+counts
 
 xval <- formatC(counts, format="f", digits=2)	
 pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
@@ -67,12 +70,17 @@ rlt <- classify(rlt, k)
 
 pdf(paste(outfile, ".pdf", sep=""))
 clust.col<-c(rep(c("orange","cyan"),k))
+if(clst) {
 heatmap.2(counts, Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), dendrogram="both", main="Matrix Heatmap", col=pal, 
           tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10),
           hclustfun=function(d) hclust(d, method="complete"), RowSideColors=clust.col[rlt$cl])
+} else {
+heatmap.2(counts, dendrogram="none", Rowv=F, Colv=F, main="Matrix Heatmap", col=pal,
+          tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10))
+}
 dev.off()
 
-write.table(rlt$cl, file=paste(outfile, ".cluster.xls", sep=""), quote=F, sep = "\t",row.names = T, col.names = T)
+#write.table(rlt$cl, file=paste(outfile, ".cluster.xls", sep=""), quote=F, sep = "\t",row.names = T, col.names = T)
 
 ## クラスタリングあり、数字表示
 #heatmap.2(
