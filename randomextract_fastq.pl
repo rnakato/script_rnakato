@@ -3,31 +3,47 @@
 use strict;
 use warnings;
 use autodie;
-die "randomextract_fastq.pl <fastq> <p> <postfix>\n" if($#ARGV !=2);
+die "randomextract_fastq.pl <fastq> <num|p> <postfix>\n" if($#ARGV !=2);
 
+my $fastqfile=$ARGV[0];
+my $num=$ARGV[1];
+my $postfix=$ARGV[2];
 
-$fastqfile=$ARGV[0];
-$p=$ARGV[1];
-$postfix=$ARGV[2];
+my $linenum=0;
+open(File, $fastqfile) ||die "error: can't open $fastqfile.\n";
+while(<File>){ $linenum++; }
+close (File);
 
-open(File1, $fastqfile) ||die "error: can't open $fastqfile.\n";
-open(OUT1, ">$fastqfile-$postfix.fastq"); 
+my $p=0;
+if($num <= 1) {
+    $p=$num;
+} else {
+    $p=4*$num/$linenum;
+}
 
-while($line = <File1>){
-    $x = rand();
+print "$p, $linenum, $num\n";
+if($p > 1 || $p < 0){
+    print "invalid p=$p\n";
+    exit;
+}
+
+open(File, $fastqfile) ||die "error: can't open $fastqfile.\n";
+open(OUT, ">$fastqfile-$postfix.fastq"); 
+while(my $line = <File>){
+    my $x = rand();
     if($x < $p){
-	print OUT1 $line;
-	$line = <File1>;
-	print OUT1 $line;
-	$line = <File1>;
-	print OUT1 $line;
-	$line = <File1>;
-	print OUT1 $line;
+	print OUT $line;
+	$line = <File>;
+	print OUT $line;
+	$line = <File>;
+	print OUT $line;
+	$line = <File>;
+	print OUT $line;
     }else{
-	$line = <File1>;
-	$line = <File1>;
-	$line = <File1>;
+	$line = <File>;
+	$line = <File>;
+	$line = <File>;
     }
 }
-close (File1);
-close (OUT1);
+close (File);
+close (OUT);
