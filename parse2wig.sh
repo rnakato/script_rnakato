@@ -69,5 +69,5 @@ func(){
     fi
 }
 
-func #>& log/parse2wig-$prefix
+func
 parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls >& log/parsestats-$prefix

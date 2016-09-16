@@ -1,13 +1,14 @@
 #!/bin/bash
 function usage()
 {
-    echo "macs.sh [-p species] [-s fraglen/2] [-q qvalue] <IP bam> <Input bam> <output> [sharp|broad|nomodel|broad-nomodel]" 1>&2
+    echo "macs.sh [-p species] [-s fraglen/2] [-q qvalue] [-d dir] <IP bam> <Input bam> <output> [sharp|broad|nomodel|broad-nomodel]" 1>&2
 }
 
 flen=100
 qval=0.05
 species="hs"
-while getopts p:s:q: option
+mdir=macs
+while getopts p:s:q:d: option
 do
     case ${option} in
         p)
@@ -19,6 +20,9 @@ do
 	q)
 	    qval=${OPTARG}
 	    ;;
+	d)
+            mdir=${OPTARG}
+            ;;
 	*)
 	    usage
 	    exit 1
@@ -32,7 +36,6 @@ if test $# -ne 4; then
     exit 0
 fi
 
-mdir=macs
 if test ! -e $mdir; then mkdir $mdir; fi
 
 IP=$1
@@ -57,11 +60,11 @@ else
 fi
 
 if test $mode = "nomodel"; then
-    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir/$peak-nomodel --nomodel --shift $flen; fi
+    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir-nomodel/$peak --nomodel --shift $flen; fi
 elif test $mode = "broad"; then
     if test ! -e $mdir/${peak}_summits.bed; then         $macs -q $qval -n $mdir/$peak --broad; fi
 elif test $mode = "broad-nomodel"; then
-    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir/$peak-nomodel --nomodel --shift $flen --broad; fi
+    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir-nomodel/$peak --nomodel --shift $flen --broad; fi
 else 
     if test ! -e $mdir/${peak}_summits.bed; then         $macs -q $qval -n $mdir/$peak; fi
 fi
