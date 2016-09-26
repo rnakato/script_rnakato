@@ -60,11 +60,11 @@ else
 fi
 
 if test $mode = "nomodel"; then
-    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir-nomodel/$peak --nomodel --shift $flen; fi
+    if test ! -e $mdir/${peak}_summits.bed; then $macs -q $qval -n $mdir/$peak --nomodel --shift $flen; fi
 elif test $mode = "broad"; then
     if test ! -e $mdir/${peak}_summits.bed; then         $macs -q $qval -n $mdir/$peak --broad; fi
 elif test $mode = "broad-nomodel"; then
-    if test ! -e $mdir/${peak}-nomodel_summits.bed; then $macs -q $qval -n $mdir-nomodel/$peak --nomodel --shift $flen --broad; fi
+    if test ! -e $mdir/${peak}_summits.bed; then $macs -q $qval -n $mdir/$peak --nomodel --shift $flen --broad; fi
 else 
     if test ! -e $mdir/${peak}_summits.bed; then         $macs -q $qval -n $mdir/$peak; fi
 fi
