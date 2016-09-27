@@ -2,18 +2,15 @@
 
 function usage()
 {
-    echo "CRM.sh [-g genome_table] [-t threshold] <bed> <bed> ..." 1>&2
+    echo "CRM.sh [-g genome_table] <bed> <bed> ..." 1>&2
 }
 
-while getopts g:t: option
+while getopts g: option
 do
     case ${option} in
         g)
             gt=${OPTARG}
             ;;
-	t)
-	    thre=${OPTARG}
-	    ;;
 	*)
 	    usage
 	    exit 1
@@ -27,7 +24,9 @@ if test $# -lt 2 -o -z "${gt+x}"; then
     exit 0
 fi
 
+tmpfile=$(mktemp)
+
 BEDs=$@
-overlap_morethan.sh -g $gt -t 0 $BEDs > CRM.temp
-bedtools multiinter -i CRM.temp $BEDs -sorted | awk '{ if ($6 == 1.) print }' 
-rm CRM.temp
+overlap_morethan.sh -g $gt -t 0 $BEDs > $tmpfile
+bedtools multiinter -i $tmpfile $BEDs -sorted | awk '{ if ($6 == 1.) print }' 
+rm $tmpfile
