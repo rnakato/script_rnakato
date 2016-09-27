@@ -13,15 +13,14 @@ counts <- as.matrix(counts)
 
 if(t == "T"){
     counts <- t(counts)
-cn <- colnames(counts)	
 }
 
 
-
-#for (i in 2:length(cn)){
-#    cn[i-1] <- cn[i]
-#}    
-#colnames(counts) <- cn
+cn <- colnames(counts)	
+for (i in 2:length(cn)){
+    cn[i-1] <- cn[i]
+}    
+colnames(counts) <- cn
 #temp <- counts[,-length(cn)]
 #counts <- temp
 
