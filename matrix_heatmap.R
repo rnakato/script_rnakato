@@ -11,18 +11,15 @@ library(gplots)
 counts <- read.table(infile, row.names=1, header=T, sep="\t")
 counts <- as.matrix(counts)
 
-if(t == "T"){
-    counts <- t(counts)
-}
-
+if(t == "T"){ counts <- t(counts)}
 
 cn <- colnames(counts)	
 for (i in 2:length(cn)){
     cn[i-1] <- cn[i]
 }    
 colnames(counts) <- cn
-#temp <- counts[,-length(cn)]
-#counts <- temp
+temp <- counts[,-length(cn)]
+counts <- temp
 
 counts
 

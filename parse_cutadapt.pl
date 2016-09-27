@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
-use autodie;
+#use strict;
+#use warnings;
+#use autodie;
 my $all;
 my $ad;
 my $rad;
@@ -36,5 +36,5 @@ while(<File>){
     }
 }
 
-print STDERR "Total reads\twith adapters\t%\ttoo short\t%\tpassing filters\t%\tTotal bases\tTotal written\t%\n";
-print "$all\t$ad\t$rad\t$short\t$rshort\t$pass\t$rpass\t$allbp\t$passbp\t$rpassbp\n";
+#print STDERR "Total reads\twith adapters\t%\ttoo short\t%\tpassing filters\t%\tTotal bases\tTotal written\t%\n";
+print "$all\t$ad\t$rad\t$short\t$rshort\t$pass\t$rpass\t$allbp\t$passbp\t$rpassbp";
