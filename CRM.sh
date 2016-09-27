@@ -2,7 +2,7 @@
 
 function usage()
 {
-    echo "overlap_morethan.sh [-g genome_table] [-t threshold] <bed> <bed> ..." 1>&2
+    echo "CRM.sh [-g genome_table] [-t threshold] <bed> <bed> ..." 1>&2
 }
 
 while getopts g:t: option
@@ -22,10 +22,12 @@ do
 done
 shift $((OPTIND - 1))
 
-if test $# -lt 2 -o -z "${gt+x}" -o -z "${thre+x}"; then
+if test $# -lt 2 -o -z "${gt+x}"; then
     usage
     exit 0
 fi
 
 BEDs=$@
-cat $BEDs | sort -k1,1 -k2,2n | bedtools genomecov -i - -g $gt -bg | awk '{if($4 > '$thre') print}' | bedtools merge
+overlap_morethan.sh -g $gt -t 0 $BEDs > CRM.temp
+bedtools multiinter -i CRM.temp $BEDs -sorted | awk '{ if ($6 == 1.) print }' 
+rm CRM.temp
