@@ -63,7 +63,7 @@ for(my $j=0; $j<$nline; $j++) {
 	my $val = $array[$i+3][$j];
 	for(my $l=0; $l<$nline; $l++) {
 	    if($val == $array[$ncol+$i][$l]) {
-		printf("%f\t",($l+1)/$nline);
+		printf("%f\t",($nline-$l-1)/($nline-1));
 		last;
 	    }
 	}
