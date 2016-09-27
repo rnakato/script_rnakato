@@ -14,8 +14,8 @@
 
 =cut
 
-#use strict;
-#use warnings;
+use strict;
+use warnings;
 use autodie;
 use Path::Class;
 use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
@@ -57,13 +57,13 @@ for(my $i=0; $i<$nsample; $i++) {
 
 for(my $j=0; $j<$nline; $j++) {
     for(my $i=0; $i<$ncol; $i++) {
-    print "$array[$i][$j]\t";
+	print "$array[$i][$j]\t";
     }
     for(my $i=0; $i<$nsample; $i++) {
 	my $val = $array[$i+3][$j];
 	for(my $l=0; $l<$nline; $l++) {
 	    if($val == $array[$ncol+$i][$l]) {
-		printf("%d\t",$l+1);
+		printf("%f\t",($l+1)/$nline);
 		last;
 	    }
 	}
