@@ -1,11 +1,74 @@
-args <- commandArgs(trailingOnly = T) # コマンドライン引数を読み込む
-infile  <- args[1] # 1番目の引数を入力ファイル名として代入する。
-outfile <- args[2] # 2番目の引数を出力ファイル名として代入する。
-t <- args[3]       # 転置行列にするか
-clst <- as.logical(args[4])
-k <- args[5]
-method <- args[6]
+print.usage <- function() {
+	cat('\nUsage: Rscript matrix_heatmap.R <options>\n',file=stderr())
+	cat('   MANDATORY ARGUMENTS\n',file=stderr())
+	cat('      -i=<input file>  , input file \n',file=stderr())
+	cat('      -o=<output> , prefix of output file \n',file=stderr())
+	cat('   OPTIONAL ARGUMENTS\n',file=stderr())
+	cat('      -t, Transposed matrix \n',file=stderr())
+	cat('      -clst, implement clustering (hclust) \n',file=stderr())
+	cat('      -k=<int> , number of clusters classified (default: 3) \n',file=stderr())
+	cat('      -method=<string> , method for hclust (default: ward.D2) \n',file=stderr())
+	cat('      -fsize=<float> , font size of row and column (default: 0.5) \n',file=stderr())
+	cat('\n',file=stderr())
+}
 
+args <- commandArgs(trailingOnly = T) # コマンドライン引数を読み込む
+#infile  <- args[1] # 1番目の引数を入力ファイル名として代入する。
+#outfile <- args[2] # 2番目の引数を出力ファイル名として代入する。
+#t <- args[3]       # 転置行列にするか
+#clst <- as.logical(args[4])
+#k <- args[5]
+#method <- args[6]
+
+t <- 0
+clst <- 0
+fsize <- 0.5
+k <- 3
+method <- "ward.D2"
+for (each.arg in args) {
+    if (grepl('^-i=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            infile <- arg.split[2]
+        }
+    }
+    else if (grepl('^-o=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            outfile <- arg.split[2]
+        }
+    }
+    else if (grepl('^-t',each.arg)) {
+        t <- 1
+    }
+    else if (grepl('^-clst',each.arg)) {
+        clst <- 1
+    }
+    else if (grepl('^-k=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            k <- as.numeric(arg.split[2])
+        }
+    }
+    else if (grepl('^-method=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            method <- arg.split[2]
+        }
+    }
+    else if (grepl('^-fsize=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            fsize <- as.numeric(arg.split[2])
+        }
+    }
+}
+
+infile
+outfile
+t
+clst
+k
 method
 
 library(RColorBrewer)
@@ -16,15 +79,15 @@ counts <- as.matrix(counts)
 
 if(t == "T"){ counts <- t(counts)}
 
-cn <- colnames(counts)	
-for (i in 2:length(cn)){
-    cn[i-1] <- cn[i]
-}    
-colnames(counts) <- cn
-temp <- counts[,-length(cn)]
-counts <- temp
+#cn <- colnames(counts)	
+#for (i in 2:length(cn)){
+#    cn[i-1] <- cn[i]
+#}    
+#colnames(counts) <- cn
+#temp <- counts[,-length(cn)]
+#counts <- temp
 
-counts
+head(counts)
 
 xval <- formatC(counts, format="f", digits=2)	
 pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
@@ -65,45 +128,16 @@ classify <- function(rlt, k){
 rlt <- classify(rlt, k)
 
 pdf(paste(outfile, ".pdf", sep=""))
-clust.col<-c(rep(c("orange","cyan"),k))
+clust.col <- c(rep(c("orange", "brown", "green", "pink", "purple", "cyan", "grey", "blue"), k))
 if(clst) {
-heatmap.2(counts, dendrogram="both", Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), main="Correlation Heatmap", col=pal, 
-          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, margins=c(10, 10), RowSideColors=clust.col[rlt$cl])
+    heatmap.2(counts, dendrogram="both", Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), main="Correlation Heatmap"
+            , col=pal, tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, cexRow=fsize, cexCol=fsize
+            , margins=c(10, 10), RowSideColors=clust.col[rlt$cl])
+#        hclustfun=function(d) hclust(d, method="ward.D2"))
 } else {
 heatmap.2(counts, dendrogram="none", Rowv=F, Colv=F, main="Correlation Heatmap", col=pal,
-          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, margins=c(10, 10))
+          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, cexRow=fsize, cexCol=fsize, margins=c(10, 10))
 }
 dev.off()
 
 #write.table(rlt$cl, file=paste(outfile, ".cluster.xls", sep=""), quote=F, sep = "\t",row.names = T, col.names = T)
-
-## クラスタリングあり、数字表示
-#heatmap.2(
-#  counts, scale = "none",
-#  dendrogram = "both", Rowv = TRUE, Colv = TRUE,
-#  trace = "none",
-#  main = "Density none", # グラフにヒストグラムを表示させない
-#  col = redgreen(256)
-#  col = heat.colors(256)
-#)
-
-#heatmap.2(
-#  counts, scale = "row",
-#  dendrogram = "both", Rowv = TRUE, Colv = TRUE,
-#  trace = "none",
-#  main = "Density none", # グラフにヒストグラムを表示させない
-#  col = redgreen(256)
-#)
-
-#heatmap.2(
-#  counts,
-#  scale = "row",              # ?
-#  dendrogram = "both",        # 系統樹の描画を指定（both, row, column, none）
-#  Rowv = TRUE,               # dendrogramにboth,rowを指定した時にTRUEにする必要があります
-#  Colv = TRUE,               # dendrogramにboth,columnを指定した時にTRUEにする必要があります
-#  col = greenred(256),
-#  key = TRUE,                 # スケールを表示
-#  density.info = "density",   # スケールバーに密度をグラフに示す
-#  main = "Peak overlap correlation"
-#)
- 
