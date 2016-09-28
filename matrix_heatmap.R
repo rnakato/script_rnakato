@@ -4,6 +4,9 @@ outfile <- args[2] # 2番目の引数を出力ファイル名として代入す�
 t <- args[3]       # 転置行列にするか
 clst <- as.logical(args[4])
 k <- args[5]
+method <- args[6]
+
+method
 
 library(RColorBrewer)
 library(gplots)
@@ -28,10 +31,8 @@ pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
 
 dist <- dist(counts)
 tdist <- dist(t(counts))
-rlt <- hclust(dist, method="ward.D2")
-trlt <- hclust(tdist, method="ward.D2")
-#plot(rlt)
-#plot(trlt)
+rlt <- hclust(dist, method=method)
+trlt <- hclust(tdist, method=method)
 
 sortree <- function(rlt){
     name <- rlt$labels
@@ -61,18 +62,16 @@ classify <- function(rlt, k){
     return (rlt)
 }
 
-k<-3
 rlt <- classify(rlt, k)
 
 pdf(paste(outfile, ".pdf", sep=""))
 clust.col<-c(rep(c("orange","cyan"),k))
 if(clst) {
-heatmap.2(counts, Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), dendrogram="both", main="Matrix Heatmap", col=pal, 
-          tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10),
-          hclustfun=function(d) hclust(d, method="complete"), RowSideColors=clust.col[rlt$cl])
+heatmap.2(counts, dendrogram="both", Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), main="Correlation Heatmap", col=pal, 
+          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, margins=c(10, 10), RowSideColors=clust.col[rlt$cl])
 } else {
-heatmap.2(counts, dendrogram="none", Rowv=F, Colv=F, main="Matrix Heatmap", col=pal,
-          tracecol="#303030", trace="none", notecol="black", notecex=0.5, keysize = 1.5, margins=c(10, 10))
+heatmap.2(counts, dendrogram="none", Rowv=F, Colv=F, main="Correlation Heatmap", col=pal,
+          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, margins=c(10, 10))
 }
 dev.off()
 
