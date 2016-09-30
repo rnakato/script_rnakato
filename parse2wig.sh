@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-a] [-e] [-b binsize] [-k kmer] [-o dir] <bam> <prefix> <build>" 1>&2
+    echo "$cmdname [-a] [-e] [-b binsize] [-k kmer] [-o dir] [-f of] <bam> <prefix> <build>" 1>&2
 }
 
 binsize=100
@@ -10,7 +10,8 @@ k=50
 pdir=parse2wigdir
 all=0
 db=UCSC
-while getopts aeb:k:o: option
+of=0
+while getopts aeb:k:o:f: option
 do
     case ${option} in
 	a)
@@ -28,7 +29,10 @@ do
 	o)
 	    pdir=${OPTARG}
 	    ;;
-	*)
+	f)
+            of=${OPTARG}
+            ;;
+       	*)
 	    usage
 	    exit 1
 	    ;;
@@ -56,16 +60,16 @@ mpbin=$Ddir/mappability_Mosaics_${k}mer/map
 func(){
     if test $all = 1; then
 	if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls; then
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir;
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of;
 	fi
     fi
     for b in $binsize 100000; do
 	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir;
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of;
 	fi
     done
     if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
-	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir
+	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
     fi
 }
 
