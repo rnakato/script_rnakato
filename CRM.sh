@@ -29,6 +29,6 @@ tmpfile=$(mktemp)
 BEDs=$@
 overlap_morethan.sh -g $gt -t 0 $BEDs > $tmpfile
 echo -en "chromosome\tstart\tend\tcount\tsample\tall\t"
-echo $BEDs | sed -e 's/\s+/\t/g'
+`cat $BEDs | sed -e 's/\s+/\t/g'`
 bedtools multiinter -i $tmpfile $BEDs -sorted | awk '{ if ($6 == 1.) print }' 
 rm $tmpfile
