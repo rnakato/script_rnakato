@@ -36,7 +36,7 @@ while(<$fh>){
     my @clm = split(/\t/, $_);
     if(!$nline) {
 	$ncol = $#clm +1;
-	$nsample = $ncol - 3;
+	$nsample = $ncol - 6;
 #	print "$ncol $nsample\n";
 	for(my $i=0; $i<$ncol+$nsample; $i++) {
 	    my @a;
@@ -52,7 +52,7 @@ while(<$fh>){
 $fh->close;
 
 for(my $i=0; $i<$nsample; $i++) {
-    @{$array[$i+$ncol]} = sort { $b <=> $a } @{$array[$i+3]};
+    @{$array[$i+$ncol]} = sort { $b <=> $a } @{$array[$i+6]};
 }
 
 for(my $j=0; $j<$nline; $j++) {
@@ -60,7 +60,7 @@ for(my $j=0; $j<$nline; $j++) {
 	print "$array[$i][$j]\t";
     }
     for(my $i=0; $i<$nsample; $i++) {
-	my $val = $array[$i+3][$j];
+	my $val = $array[$i+6][$j];
 	for(my $l=0; $l<$nline; $l++) {
 	    if($val == $array[$ncol+$i][$l]) {
 		printf("%f\t",($nline-$l-1)/($nline-1));
