@@ -22,7 +22,7 @@ my $file = file($file1);
 my $fh = $file->open('r') or die $!;
 my $len=0;
 while(<$fh>){
-    next if($_ eq "\n" || $_ =~ /start/);
+    next if($_ eq "\n" || $_ =~ /start/ || $_ =~ /\#/);
     chomp;
     my @clm = split(/\s/, $_);
     $len += $clm[2] - $clm[1];
