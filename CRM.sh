@@ -2,14 +2,18 @@
 
 function usage()
 {
-    echo "CRM.sh [-g genome_table] <bed> <bed> ..." 1>&2
+    echo "CRM.sh [-g genome_table] [-t <int>] <bed> <bed> ..." 1>&2
 }
 
-while getopts g: option
+t=0
+while getopts g:t: option
 do
     case ${option} in
         g)
             gt=${OPTARG}
+            ;;
+	t)
+            t=${OPTARG}
             ;;
 	*)
 	    usage
@@ -27,7 +31,7 @@ fi
 tmpfile=$(mktemp)
 
 BEDs=$@
-overlap_morethan.sh -g $gt -t 0 $BEDs > $tmpfile
+overlap_morethan.sh -g $gt -t $t $BEDs > $tmpfile
 echo -en "chromosome\tstart\tend\tcount\tsample\tall\t"
 echo "`ls $BEDs | tr '\n' '\t'`"
 
