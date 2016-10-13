@@ -42,17 +42,21 @@ for(each.arg in args){
 files
 output
 
-width <- NULL
-for (file in files) {
-  print (file)
-  t <- read.table(file, header=T, sep="\t", quote="")
-  width <- cbind(width, t[,3] - t[,2])
+filelabel <- paste("bed",c(1:length(files)), sep="")
+
+for (i in 1:length(files)) {
+  print (files[i])
+  t <- read.table(files[i], header=T, sep="\t", quote="")
+  assign(filelabel[i], t[,3] - t[,2])
 }
 
-q(save="no",status=1)
-
-
 library(vioplot)
-png(paste(outputname,".png", sep=""), width = 480, height = 480)
-vioplot(width[,0], ylim=c(0,1000), col="lightpink")
+png(paste(output,".png", sep=""), width = 480, height = 480)
+plot(0, 0, type ="n", xlab ="", ylab ="", axes=F, xlim = c(0.5, length(files)+0.5), ylim = range(get(filelabel[1:length(files)])), log="y")
+ #axis(side = 1, at = 1:length(files), labels = files)
+axis(side = 1, at = 1:length(files), labels = filelabel[1:length(files)])
+axis(side = 2) 
+for (i in 1:length(files)) {
+    vioplot(get(filelabel[i]), at = i, col = "orange", add =T)
+}
 dev.off()
