@@ -62,16 +62,19 @@ func(){
 	if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of;
 	fi
+	if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
+	fi
     fi
     for b in $binsize 100000; do
 	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of;
 	fi
     done
-    if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
-	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
+    if test ! -e $pdir/$prefix-GC-mpbl-GR.100.xls; then
+	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -odir $pdir -of $of
     fi
 }
 
 func
-parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls >& log/parsestats-$prefix
+parsestats4DROMPA3.pl $pdir/$prefix-GC-mpbl-GR.100.xls >& log/parsestats-$prefix
