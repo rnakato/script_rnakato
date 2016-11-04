@@ -63,7 +63,8 @@ if test $type = "exec";then
     if test $nopp != 1; then pp.sh $pppar $bam $bam $head; fi
 elif test $type = "stats"; then
     a=`parsebowtielog.pl log/bowtie-$head | grep -v Sample`
-    b=`cat log/parsestats-$head | grep -v Sample | cut -f6,7,8,9,10,11,12`
+    b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9,10,11,12`
+    b2=`cat log/parsestats-$head.100 | grep -v Sample | cut -f11`
     c=`cut -f2,3,4 ppout/$head.SN`
-    echo -e "$a\t$b\t$c"
+    echo -e "$a\t$b\t$b2\t$c"
 fi
