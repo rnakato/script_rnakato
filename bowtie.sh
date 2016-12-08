@@ -48,32 +48,34 @@ Ddir=`database.sh`
 samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 
 file=$bamdir/$prefix$post-$build.sort
+if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
+    echo "$file.bam already exist. quit"
+    exit 0
+fi
 
 ex_hiseq(){
     index=$Ddir/bowtie-indexes/$db-$build
-    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
-	command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $file"    
-	echo $command
-	eval $command
-    fi
+    if [ `echo $fastq | grep '.gz'` ] ; then
+	command="bowtie -S $index <(zcat $fastq) $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $file"
+    else 
+	command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort - $file"
+    fi 
+    echo $command
+    eval $command
 }
 
 ex_csfasta(){
     index=$Ddir/bowtie-indexes/$db-$build-cs
-    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
-	command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
-	echo $command
-	eval $command
-    fi
+    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
+    echo $command
+    eval $command
 }
 
 ex_csfastq(){
     index=$Ddir/bowtie-indexes/$db-$build-cs
-    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
-	command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
-	echo $command
-	eval $command
-    fi
+    command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort - $file"
+    echo $command
+    eval $command
 }
 
 log=log/bowtie-$prefix$post-$build
