@@ -45,7 +45,7 @@ if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
 
-samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
+#samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 
 file=$bamdir/$prefix$post-$build.sort
 if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
