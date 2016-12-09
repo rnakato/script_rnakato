@@ -44,14 +44,21 @@ Ddir=`database.sh`
 samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 
 file=$bamdir/$prefix$post-$build.sort
+if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
+    echo "$file.bam already exist. quit"
+    exit 0
+fi
+
 
 ex_hiseq(){
     index=$Ddir/bowtie2-indexes/$db-$build
-    if test ! -e $file.bam || test 1000 -gt `wc -c < $file.bam` ; then
-	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort - $file"    
-	echo $command
-	eval $command
+    if [ `echo $fastq | grep '.gz'` ] ; then
+	command="bowtie2 $param -p12 -x $index <(zcat $fastq) | $samtools view -bS - | $samtools sort - $file"
+    else
+	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort - $file"
     fi
+    echo $command
+    eval $command
 }
 
 log=log/bowtie2-$prefix-$build
