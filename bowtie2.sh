@@ -41,9 +41,10 @@ if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
 
-samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
+#samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
+samtools=samtools
 
-file=$bamdir/$prefix$post-$build.sort
+file=$bamdir/$prefix$post-$build.sort.bam
 if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
     echo "$file.bam already exist. quit"
     exit 0
@@ -53,9 +54,9 @@ fi
 ex_hiseq(){
     index=$Ddir/bowtie2-indexes/$db-$build
     if [ `echo $fastq | grep '.gz'` ] ; then
-	command="bowtie2 $param -p12 -x $index <(zcat $fastq) | $samtools view -bS - | $samtools sort - $file"
+	command="bowtie2 $param -p12 -x $index <(zcat $fastq) | $samtools view -bS - | $samtools sort > $file"
     else
-	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort - $file"
+	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort > $file"
     fi
     echo $command
     eval $command
