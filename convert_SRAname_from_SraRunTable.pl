@@ -1,11 +1,16 @@
 #!/usr/bin/env perl
 
 #use strict;
-#use warnings;
+use warnings;
 #use autodie;
+
+if($#ARGV !=1){
+    print "    convert_SRAname_from_SraRunTable.pl <file> <line for output (int)>.\n\n";
+    exit;
+}
+
 $file=$ARGV[0];
 $line_name=$ARGV[1];
-$sep=$ARGV[2];
 open(IN, $file) || die;
 $file=<IN>;
 @clm= split(/\t/, $file);
@@ -20,13 +25,9 @@ while(<IN>) {
     chomp;
     @clm= split(/\t/, $_);
     my $srr = $clm[$line_id];
-    if($sep eq "space"){
-	my ($name, $gsm) = split(' ', $clm[$line_name]);
-    }else{
-	my ($gsm, $name) = split(': ', $clm[$line_name]);
-    }
+    $name = $clm[$line_name];
     $name =~ s/(?:\()/_/g;
-    $name =~ s/(?:\))/_/g;
+    $name =~ s/\s/_/g;
     $type{$name} = $clm[$line_type];
     $species{$name} = $clm[$line_org];
     $infos->{$name} ||= [];
@@ -35,7 +36,7 @@ while(<IN>) {
 }
 close IN;
 
-foreach $name (keys($infos)){
+foreach $name (keys(%{$infos})){
     $fastq{$name} ||= "";
     for($i=1;$i<=$infos->{$name}[0];$i++){
 	$fastq{$name} = $fastq{$name} . "\$dir/$infos->{$name}[$i].fastq";
@@ -44,13 +45,13 @@ foreach $name (keys($infos)){
 }
 
 print "FASTQ=(\n";
-foreach $name (sort keys($infos)){
+foreach $name (sort keys(%{$infos})){
     print "\"$fastq{$name}\"\n";
 }
 print ")\n";
 
 print "NAME=(\n";
-foreach $name (sort keys($infos)){
-    print "\"$name\"\t# $species{$name}, $type{$name}\n";
+foreach $name (sort keys(%{$infos})){
+    print "\"$name\"\t # $species{$name}, $type{$name}\n";
 }
 print ")\n";
