@@ -5,6 +5,7 @@ print.usage <- function() {
 	cat('      -n=<num1>:<num2> , num of replicates for each group \n',file=stderr())
 	cat('   OPTIONAL ARGUMENTS\n',file=stderr())
 	cat('      -nrowname=<int> , row name (default: 1) \n',file=stderr())
+	cat('      -gname=<name1>:<name2> , name of each group \n',file=stderr())
 	cat('      -p=<float>      , threshold for FDR (default: 0.01) \n',file=stderr())
 	cat('      -color=<color>  , heatmap color (blue|orange|purple|green , default: blue) \n',file=stderr())
 	cat('      -density        , density plot of expression level \n',file=stderr())
@@ -26,6 +27,8 @@ nrowname <- 1
 p <- 0.01
 color <- "blue"
 density <- 0
+gname1 <- "groupA"
+gname2 <- "groupB"
 for (each.arg in args) {
     if (grepl('^-i=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -40,16 +43,30 @@ for (each.arg in args) {
             sep.vals <- arg.split[2]
             sep.vals.split <- strsplit(sep.vals,':',fixed=TRUE)[[1]]     
             if (length(sep.vals.split) != 2) {
-                stop('Strand shift limits must be specified as -n=<num1>:<num2>')                    
+                stop('must be specified as -n=<num1>:<num2>')                    
             } else {
                 if (any(is.na(as.numeric(sep.vals.split)))) { # check that sep vals are numeric
-                    stop('Strand shift limits must be numeric values')
+                    stop('must be numeric values')
                 }
                 num1 <- as.numeric(sep.vals.split[1])
                 num2 <- as.numeric(sep.vals.split[2])
             }      
         }
         else { stop('No value provided for parameter -n=')}
+    }
+    else if (grepl('^-gname=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            sep.vals <- arg.split[2]
+            sep.vals.split <- strsplit(sep.vals,':',fixed=TRUE)[[1]]     
+            if (length(sep.vals.split) != 2) {
+                stop('must be specified as -gname=<num1>:<num2>')                    
+            } else {
+                gname1 <- sep.vals.split[1]
+                gname2 <- sep.vals.split[2]
+            }      
+        }
+        else { stop('No value provided for parameter -gname=')}
     }
     else if (grepl('^-color=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -89,39 +106,40 @@ p
 num1
 num2
 output
+
+group <- factor(c(rep(gname1,num1),rep(gname2,num2)))
+design <- model.matrix(~ group)
+design
+
+### read data
+cat('\nread in', filename, '\n',file=stdout())
 if(nrowname==2){
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
     data <- data[,-1]
 }else{
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
 }
-
 name <- colnames(data)
 counts <- as.matrix(data)
 
 colnames(counts)
+
+cat('\ndim(', filename, ')\n',file=stdout())
 dim(counts)
 
-# draw_density
-f <- paste(output, ".density.png", sep="")
-png(f, h=600, w=700, pointsize=20)
-if(density) {
- library(ggplot2)
- counts1<- counts +1
- exp <- as.vector(counts1)
- logexp <- log10(exp)
- cells <- rep(name, each = nrow(data))
- dat <- data.frame(log10exp = logexp, cells = cells)
- cat('\nprint density plot in', f, '\n',file=stderr())
- ggplot(dat, aes(x = log10exp, fill = cells)) + geom_density(alpha = 0.5)
-}
-dev.off()
-if(density) { q(save="no",status=0)}
+### omit 0 rows
+cat('\ndim(', filename, ') after omitting non-expressed transcripts\n',file=stdout())
+counts <- subset(counts,rowSums(counts)!=0)
+dim(counts)
 
-group <- factor(c(rep("A",num1),rep("B",num2)))
-design <- model.matrix(~ group)
-design
+### log and z_score
+cat('\nlog(count+1) and z-scored\n',file=stdout())
+library(som)
+logcounts <- log2(counts+1)
+zlog <- normalize(logcounts, byrow=T)
+colnames(zlog) <- colnames(logcounts)
 
+### fitted count
 library(edgeR)
 d <- DGEList(counts = counts, group = group)
 d <- calcNormFactors(d)  # TMM norm factor
@@ -129,14 +147,47 @@ d$samples
 d <- estimateGLMCommonDisp(d, design)  # variance  μ(1 + μφ)  for all genes
 d <- estimateGLMTrendedDisp(d, design)
 d <- estimateGLMTagwiseDisp(d, design) # variance  μ(1 + μφ)  for each gene
+fit <- glmFit(d, design)
+lrt <- glmLRT(fit, coef = 2)
+fittedcount <- lrt$fitted.values
 
-pdf(paste(output, ".BCV-MDS.pdf", sep=""), height=7, width=14)
+pdf(paste(output, ".edgeR.BCV-MDS.pdf", sep=""), height=7, width=14)
 par(mfrow=c(1,2))
 plotBCV(d) # coefficient of variation of biological variation
 plotMDS(d, method="bcv")
 dev.off()
 
-# exact test
+### QQ plot
+cat('\nmake QQ plot\n',file=stdout())
+pdf(paste(output, ".QQplot.1stSample.pdf", sep=""), height=7, width=14)
+par(mfrow=c(1,2))
+qqnorm(counts[,1], main="linear scale")
+qqnorm(logcounts[,1], main="log2 scale")
+dev.off()
+
+### density plot
+f <- paste(output, ".density.png", sep="")
+cat('\ndensity plot in', f, '\n',file=stdout())
+library(ggplot2)
+png(f, h=600, w=700, pointsize=20)
+cells <- rep(name, each = nrow(logcounts))
+dat <- data.frame(log2exp = as.vector(logcounts), cells = cells)
+ggplot(dat, aes(x = log2exp, fill = cells)) + geom_density(alpha = 0.5)
+dev.off()
+
+### PCA
+cat('\nmake PCA plot\n',file=stdout())
+library(ggfortify)
+pdf(paste(output, ".samplePCA.pdf", sep=""), height=7, width=7)
+autoplot(prcomp(t(counts)), shape=F, label=T, label.size=3, data=d$samples, colour = 'group', main="raw counts")
+autoplot(prcomp(t(logcounts)), shape=F, label=T, label.size=3, data=d$samples, colour = 'group', main="log counts")
+autoplot(prcomp(t(zlog)), shape=F, label=T, label.size=3, data=d$samples, colour = 'group', main="z score")
+autoplot(prcomp(t(fittedcount)), shape=F, label=T, label.size=3, data=d$samples, colour = 'group', main="fitted counts")
+dev.off()
+
+### DEGs
+cat('\nobtain DEGs\n',file=stdout())
+# Exact test (fitしていないデータを利用)
 result <- exactTest(d)
 table <- as.data.frame(topTags(result, n = nrow(counts)))
 is.DEG <- as.logical(table$FDR < p)
@@ -146,40 +197,34 @@ plotSmear(result, de.tags = DEG.names)
 dev.off()
 
 # 2群の尤度比検定
-fit <- glmFit(d, design)
-lrt <- glmLRT(fit, coef = 2)
 tt <- topTags(lrt, sort.by="none", n=nrow(data))
 cnts <- cbind(lrt$fitted.values, tt$table)
-cnts <- cnts[order(cnts$FDR),]
 significant <- cnts$FDR < p
 cnts_sig <- cnts[significant,]
-#cnts_sig[cnts_sig==0] <- NA
-#cnts_sig <- na.omit(cnts_sig)
+cnts_sig_up <- subset(cnts_sig, cnts_sig$logFC > 0)
+cnts_sig_down <- subset(cnts_sig, cnts_sig$logFC < 0)
 
-sig_up <- cnts_sig$logFC > 0
-cnts_sig_up <- cnts_sig[sig_up,]
-sig_down <- cnts_sig$logFC < 0
-cnts_sig_down <- cnts_sig[sig_down,]
+# FDRでソートすると同値が発生するので、PValueでソートする
+write.csv(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
+write.csv(cnts_sig[order(cnts_sig$PValue),],      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig_up[order(cnts_sig_up$PValue),],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig_down[order(cnts_sig_down$PValue),], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
 
-write.csv(cnts,          file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
-write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig_up,   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig_down, file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
-
-# zスコアを用いてクラスタリング
-library(som)
-t <- apply(cnts_sig[,1:ncol(counts)], c(1,2), as.numeric)
-t <- t+1
-logt <- apply(t, c(1,2), log2)
+# DEGsのクラスタリング
+logt <- apply(fittedcount[significant,]+1, c(1,2), log2)
 logt.z <- normalize(logt, byrow=T)
-logt.z <- na.omit(logt.z)      # NANを除去（全カラムが0の遺伝子）
 colnames(logt.z) <- colnames(logt)
 dist.z <- dist(logt.z)
 tdist.z <- dist(t(logt.z))
 rlt.z <- hclust(dist.z, method="ward.D2")
 trlt.z <- hclust(tdist.z, method="ward.D2")
 
+pdf(paste(output, ".samplesCluster.inDEGs.pdf", sep=""), height=7, width=7)
+plot(trlt.z)
+dev.off()
+
 #heatmap
+cat('\nmake heatmap\n',file=stdout())
 library("RColorBrewer")
 library("gplots")
 
