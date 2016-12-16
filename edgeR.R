@@ -8,7 +8,6 @@ print.usage <- function() {
 	cat('      -gname=<name1>:<name2> , name of each group \n',file=stderr())
 	cat('      -p=<float>      , threshold for FDR (default: 0.01) \n',file=stderr())
 	cat('      -color=<color>  , heatmap color (blue|orange|purple|green , default: blue) \n',file=stderr())
-	cat('      -density        , density plot of expression level \n',file=stderr())
 	cat('   OUTPUT ARGUMENTS\n',file=stderr())
 	cat('      -o=<output> , prefix of output file \n',file=stderr())
 	cat('\n',file=stderr())
@@ -26,7 +25,6 @@ if (nargs < minargs | nargs > maxargs) {
 nrowname <- 1
 p <- 0.01
 color <- "blue"
-density <- 0
 gname1 <- "groupA"
 gname2 <- "groupB"
 for (each.arg in args) {
@@ -74,9 +72,6 @@ for (each.arg in args) {
             color <- arg.split[2]
         }
         else { stop('No value provided for parameter -color=')}
-    }
-    else if (grepl('^-density',each.arg)) {
-        density <- 1
     }
     else if (grepl('^-nrowname=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
@@ -136,7 +131,8 @@ dim(counts)
 cat('\nlog(count+1) and z-scored\n',file=stdout())
 library(som)
 logcounts <- log2(counts+1)
-zlog <- normalize(logcounts, byrow=T)
+zlog <- normalize(logcounts, byrow=T)  # logcountsを元にしたz-score
+zlog[which(is.na(zlog))] <- 0          # 欠損値(全サンプルで同じ値)を0で置換
 colnames(zlog) <- colnames(logcounts)
 
 ### fitted count

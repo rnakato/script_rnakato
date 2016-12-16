@@ -2,7 +2,9 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "edgeR.sh [-n] <Matrix> <build> <num of reps> <FDR> <gtf>" 1>&2
+    echo "edgeR.sh [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
+    echo "  Example:" 1>&2
+    echo "  edgeR.sh -n star/Matrix GRCh38 2:2 WT:KD 0.05 GRCh38.gtf" 1>&2
 }
 
 name=0
@@ -20,7 +22,7 @@ do
 done
 shift $((OPTIND - 1))
 
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
   usage
   exit 1
 fi
@@ -28,8 +30,9 @@ fi
 outname=$1
 build=$2
 n=$3
-p=$4
-gtf=$5
+gname=$4
+p=$5
+gtf=$6
 
 Rdir=$(cd $(dirname $0) && pwd)
 R="Rscript $Rdir/edgeR.R"
@@ -57,21 +60,16 @@ convertname(){
     csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.name.xlsx
 }
 
-if test $p = "density"; then
-    ex "$R -i=$outname.genes.TPM.$build.txt    -n=$n -o=$outname.genes.TPM.$build    -density"
-    ex "$R -i=$outname.isoforms.TPM.$build.txt -n=$n -o=$outname.isoforms.TPM.$build -density -nrowname=2"
-else
-    ex "$R -i=$outname.genes.count.$build.txt    -n=$n -o=$outname.genes.count.$build    -p=$p"
-    ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -o=$outname.isoforms.count.$build -p=$p -nrowname=2 -color=orange"
-    for str in genes isoforms; do
-	s=""
-	for ty in all DEGs upDEGs downDEGs;do
-	    s="$s -i $outname.$str.count.$build.edgeR.$ty.csv -n fitted-$str-$ty"
-	done
-	csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.xlsx -d,
+ex "$R -i=$outname.genes.count.$build.txt    -n=$n -gname=$gname -o=$outname.genes.count.$build    -p=$p"
+ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -gname=$gname -o=$outname.isoforms.count.$build -p=$p -nrowname=2 -color=orange"
+for str in genes isoforms; do
+    s=""
+    for ty in all DEGs upDEGs downDEGs;do
+	s="$s -i $outname.$str.count.$build.edgeR.$ty.csv -n fitted-$str-$ty"
     done
-    if test $name -eq 1; then
-	convertname genes 0
-	convertname isoforms 0
-    fi
+    csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.xlsx -d,
+done
+if test $name -eq 1; then
+    convertname genes 0
+    convertname isoforms 0
 fi
