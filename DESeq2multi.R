@@ -132,6 +132,10 @@ head(res.A.C)
 summary(res.A.B)
 summary(res.A.C)
 
+sum(res.A.B$padj < p & res.A.C$padj < p)
+sum(res.A.B$padj < p & res.A.B$log2FoldChange > 0 & res.A.C$padj < p & res.A.C$log2FoldChange > 0)
+sum(res.A.B$padj < p & res.A.B$log2FoldChange < 0 & res.A.C$padj < p & res.A.C$log2FoldChange < 0)
+
 pdf(paste(output, ".DESeq2.FCScatter.pdf", sep=""), height=7, width=7)
 FCnonzero <- (res.A.B$log2FoldChange != 0) & (res.A.C$log2FoldChange != 0)
 smoothScatter(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], nrpoints = 500, xlab=paste("log2(", gname1, "/", gname2, ")", sep=""), ylab=paste("log2(", gname1, "/", gname3, ")", sep=""))
