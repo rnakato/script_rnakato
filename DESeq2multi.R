@@ -92,13 +92,16 @@ for (each.arg in args) {
 filename
 nrowname
 p
-#num1
-#num2
 output
 
 group <- data.frame(group = factor(c(rep(gname1,num1),rep(gname2,num2),rep(gname3,num3))))
 
 # filename <- "Matrix.isoforms.count.GRCh38.txt"
+#num1 <- 4
+#num2 <- 2
+#num3 <- 4
+#p <- 0.01
+#nrowname <- 2
 # group <- data.frame(group = factor(c(rep("Normal",4),rep("CdLS",2),rep("CHOPS",4))))
 # data <- read.table(filename, header=T, row.names=2, sep="\t")
 # data <- data[,-1]
@@ -128,54 +131,49 @@ head(res.A.C)
 # 結果表示
 summary(res.A.B)
 summary(res.A.C)
+
+pdf(paste(output, ".DESeq2.FCScatter.pdf", sep=""), height=7, width=7)
+FCnonzero <- (res.A.B$log2FoldChange != 0) & (res.A.C$log2FoldChange != 0)
+smoothScatter(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], nrpoints = 500, xlab=paste("log2(", gname1, "/", gname2, ")", sep=""), ylab=paste("log2(", gname1, "/", gname3, ")", sep=""))
+cc <- cor(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], method="spearman")
+legend("bottomright", legend = paste("R = ", cc))
+dev.off()
+
 pdf(paste(output, ".DESeq2.MAplot.pdf", sep=""), height=7, width=7)
 plotMA(res.A.B, main=paste(gname1, gname2, sep="-"), ylim=c(-2,2), alpha = p)
 plotMA(res.A.C, main=paste(gname1, gname3, sep="-"), ylim=c(-2,2), alpha = p)
 dev.off()
 
 ## ----log+1よりも頑健な補正法
-#rld <- rlog(dds)
 vsd <- varianceStabilizingTransformation(dds)  #　これを推奨
-#vsd.fast <- vst(dds)                          #　vsdをサンプル抽出でこなす
-
-#rlogMat <- assay(rld)
 vsdMat <- assay(vsd)
-#vsdfastMat <- assay(vsd.fast)
 
-
-# FDRでランキング
-resAndvsd <- transform(exp=assay(vsd), res)
-resOrdered <- resAndvsd[order(res$padj),]
-
-pdf(paste(output, ".topDEGs.pdf", sep=""), height=14, width=14)
-par(mfrow=c(3,3))
-topDEGsid <- order(res$padj, decreasing=F)[1:9]
-for(i in topDEGsid) {
-    plotCounts(dds, gene=i, intgroup="group")
-}
-dev.off()
-
-## SD against mean
-library("vsn")
-pdf(paste(output, ".MeanVariance.pdf", sep=""), height=7, width=9)
-par(mfrow=c(1,2))
-meanSdPlot(log2(counts(dds,normalized=T) + 1))
-#meanSdPlot(rlogMat)
-meanSdPlot(vsdMat)
-#meanSdPlot(vsdfastMat)
-dev.off()
-
-# heatmap of top20 highly-expressed genes
+output <- "temp"
 library(pheatmap)
-select <- order(rowMeans(counts(dds,normalized=TRUE)), decreasing=TRUE)[1:20]
+plotTopDEGs <- function(res, str){
+    # FDRでランキング
+    resAndvsd <- transform(exp=assay(vsd), res)
+    resOrdered <- resAndvsd[order(res$padj),]
+    
+    pdf(paste(output, ".topDEGs", ".", str, ".pdf", sep=""), height=16, width=12)
+    par(mfrow=c(4,3))
+    topDEGsid <- order(res$padj, decreasing=F)[1:12]
+    for(i in topDEGsid) {
+        plotCounts(dds, gene=i, intgroup="group")
+    }
+    dev.off()
 
-nt <- normTransform(dds) # log2(x+1)
-df <- as.data.frame(colData(dds)[,c("group","group")])
-pdf(paste(output, ".HighlyExpressedGenes.pdf", sep=""), height=7, width=7)
-#par(mfrow=c(1,2))
-pheatmap(assay(nt)[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
-pheatmap(vsdMat[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
+    select <- order(res$padj, decreasing=F)[1:60]
+    nt <- normTransform(dds) # log2(x+1)
+    df <- as.data.frame(colData(dds)[,c("group","group")])
+    pdf(paste(output, ".topDEGsHeatmap", ".", str, ".pdf", sep=""), height=7, width=7)
+    pheatmap(assay(nt)[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
+    pheatmap(vsdMat[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
 dev.off()
+}
+
+plotTopDEGs(res.A.B, paste(gname1, gname2, sep="-"))
+plotTopDEGs(res.A.C, paste(gname1, gname3, sep="-"))
 
 # sample clustering
 library("RColorBrewer")
@@ -192,42 +190,3 @@ dev.off()
 pdf(paste(output, ".samplePCA.pdf", sep=""), height=7, width=7)
 plotPCA(vsd, intgroup=c("group"))
 dev.off()
-
-q("no")
-
-
-# multifactor designs
-#designの中の特定のtypeをcontrastにする（single-factor Wald test）
-res.A.B <- results(dds, contrast=c("condition","A","B"))
-res.A.C <- results(dds, contrast=c("condition","A","C"))
-res.B.C <- results(dds, contrast=c("condition","B","C"))
-
-head()
-resOrdered <- res.A.B[order(res.A.B$padj),]
-
-# one-way ANOVA (p-value indicates difference at least in one condition)
-ddsLRT <- DESeq(dds, test="LRT", reduced= ~ 1)
-resLRT <- results(ddsLRT)
-
-
-# 多群間二因子比較
-group <- data.frame(
-  condition = factor(c(rep("K",6),rep("W",6))),
-  day = factor(c(rep(c(0,2,7),4)))
-)
-model.matrix(~ group$con + group$day)
-
-dds <- nbinomLRT(dds, full = ~ condition + day, reduced = ~ day)
-res <- results(dds)
-res
-head(res[order(res$pvalue), ])
-
-dds <- nbinomLRT(dds, full = ~ condition + day, reduced = ~ condition)
-res <- results(dds)
-res
-head(res[order(res$pvalue), ])
-
-dds <- estimateSizeFactors(dds)
-dds <- estimateDispersions(dds)
-res <- results(dds)
-
