@@ -197,14 +197,13 @@ tt <- topTags(lrt, sort.by="none", n=nrow(data))
 cnts <- cbind(lrt$fitted.values, tt$table)
 significant <- cnts$FDR < p
 cnts_sig <- cnts[significant,]
-cnts_sig_up <- subset(cnts_sig, cnts_sig$logFC > 0)
-cnts_sig_down <- subset(cnts_sig, cnts_sig$logFC < 0)
+cnts_sig <- cnts_sig[order(cnts_sig$PValue),]
 
 # FDRでソートすると同値が発生するので、PValueでソートする
 write.csv(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
-write.csv(cnts_sig[order(cnts_sig$PValue),],      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig_up[order(cnts_sig_up$PValue),],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig_down[order(cnts_sig_down$PValue),], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig[cnts_sig$logFC > 0,],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
+write.csv(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
 
 # DEGsのクラスタリング
 logt <- apply(fittedcount[significant,]+1, c(1,2), log2)
