@@ -96,10 +96,13 @@ output
 
 group <- data.frame(group = factor(c(rep(gname1,num1),rep(gname2,num2),rep(gname3,num3))))
 
-# filename <- "Matrix.isoforms.count.GRCh38.txt"
+# filename <- "Matrix.ALL.isoforms.count.GRCh38.txt"
 #num1 <- 4
 #num2 <- 2
-#num3 <- 4
+                                        #num3 <- 4
+#gname1 <- "Normal"
+#    gname2 <-"CdLS"
+#        gname3 <- "CHOPS"
 #p <- 0.01
 #nrowname <- 2
 # group <- data.frame(group = factor(c(rep("Normal",4),rep("CdLS",2),rep("CHOPS",4))))
@@ -132,9 +135,37 @@ head(res.A.C)
 summary(res.A.B)
 summary(res.A.C)
 
-sum(res.A.B$padj < p & res.A.C$padj < p)
-sum(res.A.B$padj < p & res.A.B$log2FoldChange > 0 & res.A.C$padj < p & res.A.C$log2FoldChange > 0)
-sum(res.A.B$padj < p & res.A.B$log2FoldChange < 0 & res.A.C$padj < p & res.A.C$log2FoldChange < 0)
+## ----log+1よりも頑健な補正法
+vsd <- varianceStabilizingTransformation(dds)  #　これを推奨
+vsdMat <- assay(vsd)
+res <- transform(exp=vsdMat, res.A.B)
+
+sigA.B <- res.A.B$padj < p
+sigA.C <- res.A.C$padj < p
+sigA.B[is.na(sigA.B)] <- FALSE
+sigA.C[is.na(sigA.C)] <- FALSE
+sigA.Bup <- sigA.B & res.A.B$log2FoldChange > 0
+sigA.Bdown <- sigA.B & res.A.B$log2FoldChange < 0
+sigA.Cup <- sigA.C & res.A.C$log2FoldChange > 0
+sigA.Cdown <- sigA.C & res.A.C$log2FoldChange < 0
+
+drawVenn <- function(num1, num2, numshare, str) {
+    library(VennDiagram)
+    png(paste(output, ".Venn.", str, ".png", sep=""), height=400, width=400)
+    draw.pairwise.venn(area1=num1, area2=num2, cross.area=numshare,
+                       category=c(gname2,gname3), cat.pos=c(0,33), cat.dist=c(0.01,0.04),
+                       fontfamily='Arial', cat.fontfamily='Arial', col=c(colors()[139], 'blue'),
+                       alpha=0.5,fill=c(colors()[72],'blue') ,ext.pos=5)
+    dev.off()
+}
+
+drawVenn(sum(sigA.B), sum(sigA.C), sum(sigA.B & sigA.C), "DEGs")
+drawVenn(sum(sigA.Bup), sum(sigA.Cup), sum(sigA.Bup & sigA.Cup), "upDEGs")
+drawVenn(sum(sigA.Bdown), sum(sigA.Cdown), sum(sigA.Bdown & sigA.Cdown), "downDEGs")
+
+write.csv(res[sigA.B & sigA.C,], file=paste(output, ".bothDESs.all.csv", sep=""), quote=F)
+write.csv(res[sigA.Bup & sigA.Cup,], file=paste(output, ".bothDESs.up.csv", sep=""), quote=F)
+write.csv(res[sigA.Bdown & sigA.Cdown,], file=paste(output, ".bothDESs.down.csv", sep=""), quote=F)
 
 pdf(paste(output, ".DESeq2.FCScatter.pdf", sep=""), height=7, width=7)
 FCnonzero <- (res.A.B$log2FoldChange != 0) & (res.A.C$log2FoldChange != 0)
@@ -148,11 +179,6 @@ plotMA(res.A.B, main=paste(gname1, gname2, sep="-"), ylim=c(-2,2), alpha = p)
 plotMA(res.A.C, main=paste(gname1, gname3, sep="-"), ylim=c(-2,2), alpha = p)
 dev.off()
 
-## ----log+1よりも頑健な補正法
-vsd <- varianceStabilizingTransformation(dds)  #　これを推奨
-vsdMat <- assay(vsd)
-
-output <- "temp"
 library(pheatmap)
 plotTopDEGs <- function(res, str){
     # FDRでランキング
