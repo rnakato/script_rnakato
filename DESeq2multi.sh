@@ -2,9 +2,9 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "DESeq2.sh [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
+    echo "DESeq2multi.sh [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
     echo "  Example:" 1>&2
-    echo "  DESeq2.sh -n star/Matrix GRCh38 2:2 WT:KD 0.05 GRCh38.gtf" 1>&2
+    echo "  DESeq2multi.sh -n star/Matrix GRCh38 2:2:2 WT:KD1:KD2 0.05 GRCh38.gtf" 1>&2
 }
 
 name=0
@@ -35,7 +35,7 @@ p=$5
 gtf=$6
 
 Rdir=$(cd $(dirname $0) && pwd)
-R="Rscript $Rdir/DESeq2.R"
+R="Rscript $Rdir/DESeq2multi.R"
 
 ex(){
     echo $1
@@ -46,8 +46,8 @@ convertname(){
     str=$1
     nline=$2
     s=""
-    for ty in all DEGs upDEGs downDEGs; do
-	head=$outname.$str.count.$build.DESeq2.$ty
+    for ty in all bothDEGs.all bothDEGs.up bothDEGs.down; do
+	head=$outname.$str.count.$build.DESeq2multi.$ty
 	cat $head.csv | sed 's/,/\t/g' > $head.csv.temp
 	mv $head.csv.temp $head.csv
 	if test $str = "genes"; then
@@ -57,7 +57,7 @@ convertname(){
 	fi
 	s="$s -i $head.name.csv -n $str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.count.$build.DESeq2.name.xlsx
+    csv2xlsx.pl $s -o $outname.$str.count.$build.DESeq2multi.name.xlsx
 }
 
 ex "$R -i=$outname.genes.count.$build.txt    -n=$n -gname=$gname -o=$outname.genes.count.$build    -p=$p"
@@ -65,10 +65,10 @@ ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -gname=$gname -o=$outname.iso
 
 for str in genes isoforms; do
     s=""
-    for ty in all DEGs upDEGs downDEGs; do
-	s="$s -i $outname.$str.count.$build.DESeq2.$ty.csv -n $str-$ty"
+    for ty in all bothDEGs.all bothDEGs.up bothDEGs.down; do
+	s="$s -i $outname.$str.count.$build.DESeq2multi.$ty.csv -n $str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.count.$build.DESeq2.xlsx -d,
+    csv2xlsx.pl $s -o $outname.$str.count.$build.DESeq2multi.xlsx -d,
 done
 
 if test $name -eq 1; then

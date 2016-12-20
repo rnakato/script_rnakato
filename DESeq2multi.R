@@ -163,18 +163,19 @@ drawVenn(sum(sigA.B), sum(sigA.C), sum(sigA.B & sigA.C), "DEGs")
 drawVenn(sum(sigA.Bup), sum(sigA.Cup), sum(sigA.Bup & sigA.Cup), "upDEGs")
 drawVenn(sum(sigA.Bdown), sum(sigA.Cdown), sum(sigA.Bdown & sigA.Cdown), "downDEGs")
 
-write.csv(res[sigA.B & sigA.C,], file=paste(output, ".bothDESs.all.csv", sep=""), quote=F)
-write.csv(res[sigA.Bup & sigA.Cup,], file=paste(output, ".bothDESs.up.csv", sep=""), quote=F)
-write.csv(res[sigA.Bdown & sigA.Cdown,], file=paste(output, ".bothDESs.down.csv", sep=""), quote=F)
+write.csv(res, file=paste(output, ".DESeq2multi.all.csv", sep=""), quote=F)
+write.csv(res[sigA.B & sigA.C,], file=paste(output, ".DESeq2multi.bothDEGs.all.csv", sep=""), quote=F)
+write.csv(res[sigA.Bup & sigA.Cup,], file=paste(output, ".DESeq2multi.bothDEGs.up.csv", sep=""), quote=F)
+write.csv(res[sigA.Bdown & sigA.Cdown,], file=paste(output, ".DESeq2multi.bothDEGs.down.csv", sep=""), quote=F)
 
-pdf(paste(output, ".DESeq2.FCScatter.pdf", sep=""), height=7, width=7)
+pdf(paste(output, ".DESeq2multi.FCScatter.pdf", sep=""), height=7, width=7)
 FCnonzero <- (res.A.B$log2FoldChange != 0) & (res.A.C$log2FoldChange != 0)
 smoothScatter(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], nrpoints = 500, xlab=paste("log2(", gname1, "/", gname2, ")", sep=""), ylab=paste("log2(", gname1, "/", gname3, ")", sep=""))
 cc <- cor(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], method="spearman")
 legend("bottomright", legend = paste("R = ", cc))
 dev.off()
 
-pdf(paste(output, ".DESeq2.MAplot.pdf", sep=""), height=7, width=7)
+pdf(paste(output, ".DESeq2multi.MAplot.pdf", sep=""), height=7, width=7)
 plotMA(res.A.B, main=paste(gname1, gname2, sep="-"), ylim=c(-2,2), alpha = p)
 plotMA(res.A.C, main=paste(gname1, gname3, sep="-"), ylim=c(-2,2), alpha = p)
 dev.off()
@@ -185,7 +186,7 @@ plotTopDEGs <- function(res, str){
     resAndvsd <- transform(exp=assay(vsd), res)
     resOrdered <- resAndvsd[order(res$padj),]
     
-    pdf(paste(output, ".topDEGs", ".", str, ".pdf", sep=""), height=16, width=12)
+    pdf(paste(output, ".DESeq2multi.topDEGs", ".", str, ".pdf", sep=""), height=16, width=12)
     par(mfrow=c(4,3))
     topDEGsid <- order(res$padj, decreasing=F)[1:12]
     for(i in topDEGsid) {
@@ -196,7 +197,7 @@ plotTopDEGs <- function(res, str){
     select <- order(res$padj, decreasing=F)[1:60]
     nt <- normTransform(dds) # log2(x+1)
     df <- as.data.frame(colData(dds)[,c("group","group")])
-    pdf(paste(output, ".topDEGsHeatmap", ".", str, ".pdf", sep=""), height=7, width=7)
+    pdf(paste(output, ".DESeq2multi.topDEGsHeatmap", ".", str, ".pdf", sep=""), height=7, width=7)
     pheatmap(assay(nt)[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
     pheatmap(vsdMat[select,], cluster_rows=F, show_rownames=F, cluster_cols=F, annotation_col=df)
 dev.off()
@@ -212,11 +213,11 @@ sampleDistMatrix <- as.matrix(sampleDists)
 #rownames(sampleDistMatrix) <- paste(rld$condition, rld$type, sep="-")
 colnames(sampleDistMatrix) <- NULL
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
-pdf(paste(output, ".sampleClustering.pdf", sep=""), height=7, width=8)
+pdf(paste(output, ".DESeq2multi.sampleClustering.pdf", sep=""), height=7, width=8)
 pheatmap(sampleDistMatrix, clustering_distance_rows=sampleDists, clustering_distance_cols=sampleDists, col=colors)
 dev.off()
 
 # PCA plot
-pdf(paste(output, ".samplePCA.pdf", sep=""), height=7, width=7)
+pdf(paste(output, ".DESeq2multi.samplePCA.pdf", sep=""), height=7, width=7)
 plotPCA(vsd, intgroup=c("group"))
 dev.off()
