@@ -57,7 +57,7 @@ for (each.arg in args) {
             sep.vals <- arg.split[2]
             sep.vals.split <- strsplit(sep.vals,':',fixed=TRUE)[[1]]     
             if (length(sep.vals.split) != 2) {
-                stop('must be specified as -gname=<num1>:<num2>')                    
+                stop('must be specified as -gname=<gname1>:<gname2>')                    
             } else {
                 gname1 <- sep.vals.split[1]
                 gname2 <- sep.vals.split[2]
