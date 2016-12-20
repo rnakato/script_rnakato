@@ -71,9 +71,12 @@ if test $type = "exec";then
     else
 	bowtie.sh $pens -d $bamdir -t $btype $fastq $prefix $build "$bowtieparam"
     fi
+
     if test ! -e $bam.bai; then samtools index $bam; fi
     parse2wig.sh $pa $pens $bam $head $build
+
     if test $nopp != 1; then pp.sh $pppar $bam $bam $head; fi
+
 elif test $type = "stats"; then
     
     if test $program = "bowtie2";then

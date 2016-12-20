@@ -45,12 +45,11 @@ if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
 
-#samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 samtools=samtools
 
 file=$bamdir/$prefix$post-$build.sort.bam
-if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
-    echo "$file.bam already exist. quit"
+if test -e $file && test 1000 -lt `wc -c < $file` ; then
+    echo "$file already exist. quit"
     exit 0
 fi
 
