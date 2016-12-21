@@ -119,7 +119,9 @@ if(nrowname==2){
 }
 counts <- as.matrix(data)
 counts <- floor(counts) # DESeq2は整数しか受け付けない
-counts <- subset(counts,rowSums(counts)>1) # 値が1より大きいものだけ残す
+counts <- subset(counts,rowSums(counts[,1:num1])>1) # 値が1より大きいものだけ残す
+counts <- subset(counts,rowSums(counts[,(num1+1):(num1+num2)])>1) # 値が1より大きいものだけ残す
+counts <- subset(counts,rowSums(counts[,(num1+num2+1):(num1+num2+num3)])>1) # 値が1より大きいものだけ残す
 
 library(DESeq2)
 library(ggplot2)
