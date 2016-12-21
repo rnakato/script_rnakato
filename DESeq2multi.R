@@ -172,7 +172,7 @@ write.csv(res[sigA.Bdown & sigA.Cdown,], file=paste(output, ".DESeq2multi.bothDE
 
 pdf(paste(output, ".DESeq2multi.FCScatter.pdf", sep=""), height=7, width=7)
 smoothScatter(res.A.B$log2FoldChange, res.A.C$log2FoldChange, nrpoints = 500, xlab=paste("log2(", gname1, "/", gname2, ")", sep=""), ylab=paste("log2(", gname1, "/", gname3, ")", sep=""))
-cc <- cor(res.A.B$log2FoldChange[FCnonzero], res.A.C$log2FoldChange[FCnonzero], method="spearman")
+cc <- cor(res.A.B$log2FoldChange, res.A.C$log2FoldChange, method="spearman")
 legend("bottomright", legend = paste("R = ", cc))
 dev.off()
 
