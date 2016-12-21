@@ -1,2 +1,6 @@
 #!/bin/bash
-for fastq in `ls *.fastq`; do gzip $fastq; done
+for fastq in `ls *.fastq`
+do
+    echo $fastq
+    gzip $fastq
+done
