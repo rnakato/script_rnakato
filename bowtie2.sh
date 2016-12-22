@@ -34,7 +34,7 @@ fi
 fastq=$1
 prefix=$2
 build=$3
-post="bowtie2"
+post="-bowtie2"
 
 if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
