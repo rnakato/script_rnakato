@@ -55,7 +55,8 @@ fi
 
 ex_hiseq(){
     index=$Ddir/bowtie-indexes/$db-$build
-    if [ `echo "$fastq" | grep '.gz'` ] ; then
+#    if [ `echo $fastq | grep '.gz'` ]; then
+    if [[ $fastq = *.gz ]]; then
 	command="bowtie -S $index <(zcat $fastq) $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort > $file"
     else 
 	command="bowtie -S $index $fastq $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort > $file"
