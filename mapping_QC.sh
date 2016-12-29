@@ -67,9 +67,9 @@ if test $type = "exec";then
     bam=$bamdir/$head.sort.bam
 
     if test $program = "bowtie2";then
-    	bowtie2.sh $pens -d $bamdir $fastq $prefix $build
+    	bowtie2.sh $pens -d $bamdir "$fastq" $prefix $build
     else
-	bowtie.sh $pens -d $bamdir -t $btype $fastq $prefix $build "$bowtieparam"
+	bowtie.sh $pens -d $bamdir -t $btype "$fastq" $prefix $build "$bowtieparam"
     fi
 
     if test ! -e $bam.bai; then samtools index $bam; fi
