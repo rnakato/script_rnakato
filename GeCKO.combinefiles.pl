@@ -33,19 +33,26 @@ if($type eq "separate") {
 
 my @Hasharray = ();
 my %keys = ();
+my $head="";
+my $headflag=0;
 
 for(my $i=1;$i<=$#ARGV;$i++) {
-    print "$ARGV[$i]\n";
+#    print "$ARGV[$i]\n";
     
     my %Hash = ();
     my $file = file($ARGV[$i]);
     my $fh = $file->open('r') or die $!;
+
     while(<$fh>){
 	next if($_ eq "\n");
 	chomp;
 	my @clm = split(/\s/, $_);
 	$Hash{$clm[$nline]} = $clm[$clmline];
 	
+	if(!$headflag) {
+	    $head = $clm[$nline];
+	    $headflag=1;
+	}
 	if($type eq "separate") {
 	    $keys{$clm[$nline]} = "$clm[0]\t$clm[1]\t$clm[2]";
 	}else{
@@ -56,7 +63,21 @@ for(my $i=1;$i<=$#ARGV;$i++) {
     push(@Hasharray, \%Hash);
 }
 
+print "$keys{$head}";
+for my $Hash (@Hasharray) {
+    print "\t$Hash->{$head}";
+}
+print "\n";
+
 for my $key (keys %keys) {
+    next if($key eq $head);
+    my $on=0;
+    for my $Hash (@Hasharray) {
+	$on=1 if(!exists($Hash->{$key}));
+    }
+    next if($on);
+
+
     print "$keys{$key}";
     for my $Hash (@Hasharray) {
 	print "\t$Hash->{$key}";
