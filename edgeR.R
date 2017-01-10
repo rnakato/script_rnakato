@@ -5,6 +5,7 @@ print.usage <- function() {
 	cat('      -n=<num1>:<num2> , num of replicates for each group \n',file=stderr())
 	cat('   OPTIONAL ARGUMENTS\n',file=stderr())
 	cat('      -nrowname=<int> , row name (default: 1) \n',file=stderr())
+	cat('      -ncolskip=<int> , colmun num to be skiped (default: 0) \n',file=stderr())
 	cat('      -gname=<name1>:<name2> , name of each group \n',file=stderr())
 	cat('      -p=<float>      , threshold for FDR (default: 0.01) \n',file=stderr())
 	cat('      -color=<color>  , heatmap color (blue|orange|purple|green , default: blue) \n',file=stderr())
@@ -16,13 +17,14 @@ print.usage <- function() {
 args <- commandArgs(trailingOnly = T) 
 nargs = length(args);
 minargs = 1;
-maxargs = 7;
+maxargs = 8;
 if (nargs < minargs | nargs > maxargs) {
 	print.usage()
 	q(save="no",status=1)
 }
 
 nrowname <- 1
+ncolskip <- 0
 p <- 0.01
 color <- "blue"
 gname1 <- "groupA"
@@ -80,6 +82,14 @@ for (each.arg in args) {
         }
         else { stop('No value provided for parameter -nrowname=')}
     }
+    else if (grepl('^-ncolskip=',each.arg)) {
+        arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
+        if (! is.na(arg.split[2]) ) {
+            ncolskip <- as.numeric(arg.split[2])
+        }
+        else { stop('No value provided for parameter -ncolskip=')}
+    }
+
     else if (grepl('^-p=',each.arg)) {
         arg.split <- strsplit(each.arg,'=',fixed=TRUE)[[1]]
         if (! is.na(arg.split[2]) ) {
@@ -108,9 +118,12 @@ design
 
 ### read data
 cat('\nread in', filename, '\n',file=stdout())
-if(nrowname==2){
+if(ncolskip==1){
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
     data <- data[,-1]
+}else if(ncolskip==2){
+    data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    data <- data[,-1:-2]
 }else{
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
 }
