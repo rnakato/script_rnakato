@@ -118,14 +118,20 @@ design
 
 ### read data
 cat('\nread in', filename, '\n',file=stdout())
+
 if(ncolskip==1){
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    data <- subset(data,rowSums(data[,-1])!=0)
+    colhead <- data[,1]
     data <- data[,-1]
 }else if(ncolskip==2){
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    data <- subset(data,rowSums(data[,-1:-2])!=0)
+    colhead <- data[,1:2]
     data <- data[,-1:-2]
 }else{
     data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    counts <- subset(data,rowSums(data)!=0)
 }
 name <- colnames(data)
 counts <- as.matrix(data)
@@ -137,7 +143,7 @@ dim(counts)
 
 ### omit 0 rows
 cat('\ndim(', filename, ') after omitting non-expressed transcripts\n',file=stdout())
-counts <- subset(counts,rowSums(counts)!=0)
+#counts <- subset(counts,rowSums(counts)!=0)
 dim(counts)
 
 ### log and z_score
@@ -207,7 +213,13 @@ dev.off()
 
 # 2群の尤度比検定
 tt <- topTags(lrt, sort.by="none", n=nrow(data))
-cnts <- cbind(lrt$fitted.values, tt$table)
+
+if(ncolskip==0){
+	cnts <- cbind(lrt$fitted.values, tt$table)
+}else{
+	cnts <- cbind(colhead, lrt$fitted.values, tt$table)
+}
+
 significant <- cnts$FDR < p
 cnts_sig <- cnts[significant,]
 cnts_sig <- cnts_sig[order(cnts_sig$PValue),]
