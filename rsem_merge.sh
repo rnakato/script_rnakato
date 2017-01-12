@@ -25,7 +25,7 @@ if [ $# -ne 5 ]; then
   exit 1
 fi
 
-array=$1
+files=$1
 outname=$2
 gtf=$3
 build=$4
@@ -33,7 +33,7 @@ str_sed=$5
 
 for str in genes isoforms; do
     s=""
-    for prefix in $array; do s="$s star/$prefix.$build.$str.results"; done
+    for prefix in $files; do s="$s star/$prefix.$build.$str.results"; done
 
     for tp in count TPM; do
 	head=$outname.$str.$tp.$build
@@ -58,11 +58,13 @@ if test $name -eq 1; then
     nline=0
     for tp in count TPM; do
 	convert_genename_fromgtf.pl gene $outname.$str.$tp.$build.txt $gtf $nline > $outname.$str.$tp.$build.name.txt
+	rm $outname.$str.$tp.$build.txt
     done
     str=isoforms
     nline=1
     for tp in count TPM; do
         convert_genename_fromgtf.pl transcript $outname.$str.$tp.$build.txt $gtf $nline > $outname.$str.$tp.$build.name.txt
+	rm $outname.$str.$tp.$build.txt
     done
 fi
 
@@ -76,5 +78,8 @@ for str in genes isoforms; do
     done
 done
 
-csv2xlsx.pl $s -o $outname.$build.xlsx
-if test $name -eq 1; then csv2xlsx.pl $sname -o $outname.$build.name.xlsx; fi
+if test $name -eq 1; then csv2xlsx.pl $sname -o $outname.$build.name.xlsx
+else csv2xlsx.pl $s -o $outname.$build.xlsx
+fi
+
+

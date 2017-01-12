@@ -42,12 +42,21 @@ ex(){
     eval $1
 }
 
+postfix=count.$build
+if test $name -eq 1; then
+    ex "$R -i=$outname.genes.count.$build.name.txt    -n=$n -gname=$gname -o=$outname.genes.$postfix    -p=$p -nrowname=2 -ncolskip=1"
+    ex "$R -i=$outname.isoforms.count.$build.name.txt -n=$n -gname=$gname -o=$outname.isoforms.$postfix -p=$p -nrowname=3 -ncolskip=2 -color=orange"
+else
+    ex "$R -i=$outname.genes.count.$build.txt    -n=$n -gname=$gname -o=$outname.genes.$postfix    -p=$p -nrowname=1"
+    ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -gname=$gname -o=$outname.isoforms.$postfix -p=$p -nrowname=2 -ncolskip=1 -color=orange"
+fi
+
 convertname(){
     str=$1
     nline=$2
     s=""
     for ty in all DEGs upDEGs downDEGs; do
-	head=$outname.$str.count.$build.edgeR.$ty
+	head=$outname.$str.$postfix.edgeR.$ty
 	cat $head.csv | sed 's/,/\t/g' > $head.csv.temp
 	mv $head.csv.temp $head.csv
 	if test $str = "genes"; then
@@ -57,18 +66,19 @@ convertname(){
 	fi
 	s="$s -i $head.name.csv -n fitted-$str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.name.xlsx
+    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.name.xlsx
 }
 
-ex "$R -i=$outname.genes.count.$build.txt    -n=$n -gname=$gname -o=$outname.genes.count.$build    -p=$p"
-ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -gname=$gname -o=$outname.isoforms.count.$build -p=$p -nrowname=2 -color=orange"
 for str in genes isoforms; do
     s=""
     for ty in all DEGs upDEGs downDEGs;do
-	s="$s -i $outname.$str.count.$build.edgeR.$ty.csv -n fitted-$str-$ty"
+	s="$s -i $outname.$str.$postfix.edgeR.$ty.csv -n fitted-$str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.count.$build.edgeR.xlsx -d,
+    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.xlsx -d,
 done
+
+exit 0
+
 if test $name -eq 1; then
     convertname genes 0
     convertname isoforms 0
