@@ -48,6 +48,8 @@ if test -e $IP && test -s $IP ; then
 else
     echo "$IP does not exist."
 fi
+
+source $PYENV_ROOT/versions/anaconda3-4.2.0/bin/activate py2
 if test $Input = "none"; then
     macs="macs2 callpeak -t $IP -g $species -f BAM"
 else
@@ -68,3 +70,4 @@ elif test $mode = "broad-nomodel"; then
 else 
     if test ! -e $mdir/${peak}_summits.bed; then         $macs -q $qval -n $mdir/$peak; fi
 fi
+source deactivate py2
