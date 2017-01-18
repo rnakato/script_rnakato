@@ -5,5 +5,6 @@ if [ $# -ne 3 ]; then
   exit 1
 fi
 
-cat $1 | head -$3 | tail -`expr $3 - $2 + 1`
+#cat $1 | head -n$3 | tail -n`expr $3 - $2 + 1`
+head -n$3 $1 | tail -n`expr $3 - $2 + 1`
 
