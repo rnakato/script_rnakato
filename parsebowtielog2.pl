@@ -14,7 +14,7 @@ use strict;
 use warnings;
 use autodie;
 use Path::Class;
-use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help/;
+use Getopt::Long;
 use Pod::Usage qw/pod2usage/;
 my $pair=0;
 GetOptions('pair' => \$pair);
