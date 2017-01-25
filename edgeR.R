@@ -121,7 +121,6 @@ cat('\nread in', filename, '\n',file=stdout())
 
 data <- read.table(filename, header=F, row.names=nrowname, sep="\t")
 colnames(data) <- unlist(data[1,])   # ヘッダ文字化け対策 header=Tで読み込むと記号が.になる
-name <- colnames(data)
 data <- data[-1,]
 
 if(ncolskip==1){
@@ -138,6 +137,7 @@ if(ncolskip==1){
     data <- subset(data,rowSums(data)!=0)
 }
 
+name <- colnames(data)
 counts <- as.matrix(data)
 
 colnames(counts)
