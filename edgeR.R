@@ -119,21 +119,25 @@ design
 ### read data
 cat('\nread in', filename, '\n',file=stdout())
 
+data <- read.table(filename, header=F, row.names=nrowname, sep="\t")
+colnames(data) <- unlist(data[1,])   # ヘッダ文字化け対策 header=Tで読み込むと記号が.になる
+name <- colnames(data)
+data <- data[-1,]
+
 if(ncolskip==1){
-    data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    data[,-1] <- lapply(data[,-1], function(x) as.numeric(as.character(x)))
     data <- subset(data,rowSums(data[,-1])!=0)
     colhead <- data[,1]
     data <- data[,-1]
 }else if(ncolskip==2){
-    data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
+    data[,-1:-2] <- lapply(data[,-1:-2], function(x) as.numeric(as.character(x)))
     data <- subset(data,rowSums(data[,-1:-2])!=0)
     colhead <- data[,1:2]
     data <- data[,-1:-2]
 }else{
-    data <- read.table(filename, header=T, row.names=nrowname, sep="\t")
-    counts <- subset(data,rowSums(data)!=0)
+    data <- subset(data,rowSums(data)!=0)
 }
-name <- colnames(data)
+
 counts <- as.matrix(data)
 
 colnames(counts)
