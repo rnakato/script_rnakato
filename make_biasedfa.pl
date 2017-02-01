@@ -7,20 +7,22 @@ my $chr="";
 my $csv="";
 my $flenfile="";
 my $p="";
-my $bed="";
+my $both=0;
 
-GetOptions('tablepath|t=s' => \$tablepath, 'chr|c=s' => \$chr, 'csv|v=s' => \$csv, 'flenfile|f=s' => \$flenfile, 'p|p=s' => \$p);
+GetOptions('tablepath|t=s' => \$tablepath, 'chr|c=s' => \$chr, 'csv|v=s' => \$csv, 'flenfile|f=s' => \$flenfile, 'p|p=s' => \$p, 'both|b' => \$both);
 
 #print "$tablepath\n";
 #print "$chr\n";
 #print "$csv\n";
 #print "$flenfile\n";
 #print "$p\n";
+#print "$both\n";
+#exit;
 
 if($tablepath eq "" || $chr eq ""|| $csv eq ""|| $flenfile eq ""|| $p eq ""){
     print "    make_biasedfa.pl: make random reads for fasta format.\n\n";
     print "    Usage: make_biasedfa.pl -t <chromosome dir> -c <chromosome name> -v <GCdist csv> -f <fragment length dist csv> -p <prop>\n\n";
-    print "    Options:\n\t-b --bed = <str>: bedfile for peak regions\n\n";
+    print "    Options:\n\t-b --both: output paired-end\n\n";
     exit;
 }
 
@@ -89,14 +91,23 @@ for($i=0; $i<$len-5-300; $i++){
     $gc = 0 if($gc eq "");
     
     if(rand($max) < $GCarray[$gc]*$p){
-	if(rand(1) < 0.5) {
+	if($both) {
 	    my $read = substr($fasta, $i, $readlen);
 	    print ">chr${chr}_$i:+\n$read\n";
-	}else {
-	    my $read = substr($fasta, $i+$flen-$readlen, $readlen);
+	    $read = substr($fasta, $i+$flen-$readlen, $readlen);
 	    my $rev = reverse $read =~ tr/AaTtGgCc/TtAaCcGg/r;
 	    print ">chr${chr}_$i:-\n$rev\n";
+	    $num += 2;
+	}else {
+	    if(rand(1) < 0.5) {
+		my $read = substr($fasta, $i, $readlen);
+		print ">chr${chr}_$i:+\n$read\n";
+	    }else {
+		my $read = substr($fasta, $i+$flen-$readlen, $readlen);
+		my $rev = reverse $read =~ tr/AaTtGgCc/TtAaCcGg/r;
+		print ">chr${chr}_$i:-\n$rev\n";
+	    }
+	    $num++;
 	}
-	$num++;
     }
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if test $# -ne 6; then
-    echo "star.sh <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build>  <--forward-prob [0-1]>"
+    echo "star.sh <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build> <--forward-prob [0-1]>"
     exit 0
 fi
 
@@ -16,8 +16,13 @@ odir=star
 if test ! -e log; then mkdir log; fi
 if test ! -e $odir; then mkdir $odir; fi
 
-index_star=`database.sh`/rsem-star-indexes/$db-$build
-index_rsem=`database.sh`/rsem-star-indexes/$db-$build/$db-$build
+if test $build = "S_pombe"; then
+    index_star=`database.sh`/rsem-star-indexes/$build
+    index_rsem=`database.sh`/rsem-star-indexes/$build/$build
+else
+    index_star=`database.sh`/rsem-star-indexes/$db-$build
+    index_rsem=`database.sh`/rsem-star-indexes/$db-$build/$db-$build
+fi
 
 #paramENCODE="--outSAMunmapped Within --outFilterType BySJout --outSAMattributes NH HI AS NM MD --outFilterMultimapNmax 20 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.04 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --sjdbScore 1" # --genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000
 #paramENCODEmeta="--outSAMheaderCommentFile commentsENCODElong.txt --outSAMheaderHD @HD VN:1.4 SO:coordinate"
