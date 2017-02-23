@@ -30,11 +30,11 @@ if [ $# -ne 3 ]; then
 fi
 
 # If you have removed duplicates from your sample use run_spp_nodups.R instead of run_spp.R otherwise you will get errors
-if test nodup = 0; then
+#if test $nodup = 0; then
     R=$(cd $(dirname $0) && pwd)/../phantompeakqualtools/run_spp.R
-else
-    R=$(cd $(dirname $0) && pwd)/../phantompeakqualtools/run_spp_nodups.R
-fi
+#else
+ #   R=$(cd $(dirname $0) && pwd)/../phantompeakqualtools/run_spp_nodups.R
+#fi
 
 mdir=ppout
 if test ! -e $mdir; then mkdir $mdir; fi

@@ -1,3 +1,5 @@
+options(bitmapType='cairo')
+
 print.usage <- function() {
 	cat('\nUsage: Rscript edgeR.R <options>\n',file=stderr())
 	cat('   MANDATORY ARGUMENTS\n',file=stderr())
