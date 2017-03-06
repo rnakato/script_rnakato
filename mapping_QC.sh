@@ -57,7 +57,7 @@ bowtieparam=$4
 build=$5
 
 if test $program = "bowtie2";then
-    post="bowtie2"
+    post="-bowtie2"
 else
     post=`echo $bowtieparam | tr -d ' '`
 fi
