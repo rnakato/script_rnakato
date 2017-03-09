@@ -41,7 +41,6 @@ if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
 
-#samtools=$(cd $(dirname $0) && pwd)/../binaries/bwa-current/samtools
 samtools=samtools
 
 file=$bamdir/$prefix$post-$build.sort.bam
@@ -52,7 +51,13 @@ fi
 
 
 ex_hiseq(){
-    index=$Ddir/bowtie2-indexes/$db-$build
+    if test $build = "scer"; then
+	index=$Ddir/bowtie2-indexes/S_cerevisiae
+    else if test $build = "pombe"; then
+	index=$Ddir/bowtie2-indexes/S_pombe
+    else
+	index=$Ddir/bowtie2-indexes/$db-$build
+    fi
     if [ `echo $fastq | grep '.gz'` ] ; then
 	command="bowtie2 $param -p12 -x $index <(zcat $fastq) | $samtools view -bS - | $samtools sort > $file"
     else

@@ -54,8 +54,14 @@ if test -e $file && test 1000 -lt `wc -c < $file` ; then
 fi
 
 ex_hiseq(){
-    index=$Ddir/bowtie-indexes/$db-$build
-#    if [ `echo $fastq | grep '.gz'` ]; then
+    if test $build = "scer"; then
+	index=$Ddir/bowtie-indexes/S_cerevisiae
+    elif test $build = "pombe"; then
+	index=$Ddir/bowtie-indexes/S_pombe
+    else
+	index=$Ddir/bowtie-indexes/$db-$build
+    fi
+
     if [[ $fastq = *.gz ]]; then
 	command="bowtie -S $index <(zcat $fastq) $param --chunkmbs 2048 -p12 | $samtools view -bS - | $samtools sort > $file"
     else 
@@ -66,14 +72,26 @@ ex_hiseq(){
 }
 
 ex_csfasta(){
-    index=$Ddir/bowtie-indexes/$db-$build-cs
+    if test $build = "scer"; then
+	index=$Ddir/bowtie-indexes/S_cerevisiae-cs
+    elif test $build = "pombe"; then
+	index=$Ddir/bowtie-indexes/S_pombe-cs
+    else
+	index=$Ddir/bowtie-indexes/$db-$build-cs
+    fi
     command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
     echo $command
     eval $command
 }
 
 ex_csfastq(){
-    index=$Ddir/bowtie-indexes/$db-$build-cs
+    if test $build = "scer"; then
+	index=$Ddir/bowtie-indexes/S_cerevisiae-cs
+    elif test $build = "pombe"; then
+	index=$Ddir/bowtie-indexes/S_pombe-cs
+    else
+	index=$Ddir/bowtie-indexes/$db-$build-cs
+    fi
     command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
     echo $command
     eval $command

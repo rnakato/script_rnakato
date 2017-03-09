@@ -51,7 +51,13 @@ build=$3
 
 if test ! -e log; then mkdir log; fi
 
-Ddir=`database.sh`/$db/$build
+if test $build = "scer"; then
+    Ddir=`database.sh`/others/S_cerevisiae
+elif test $build = "pombe"; then
+    Ddir=`database.sh`/others/S_pombe
+else
+    Ddir=`database.sh`/$db/$build
+fi
 gt=$Ddir/genome_table
 chrpath=$Ddir/chromosomes
 mpbl=$Ddir/mappability_Mosaics_${k}mer/map_fragL150
