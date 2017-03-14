@@ -92,7 +92,12 @@ ex_csfastq(){
     else
 	index=$Ddir/bowtie-indexes/$db-$build-cs
     fi
-    command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    
+    if [[ $fastq = *.gz ]]; then
+	command="bowtie -S -C $index <(zcat $fastq) $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    else 
+	command="bowtie -S -C $index $fastq $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    fi 
     echo $command
     eval $command
 }
