@@ -53,7 +53,7 @@ fi
 ex_hiseq(){
     if test $build = "scer"; then
 	index=$Ddir/bowtie2-indexes/S_cerevisiae
-    else if test $build = "pombe"; then
+    elif test $build = "pombe"; then
 	index=$Ddir/bowtie2-indexes/S_pombe
     else
 	index=$Ddir/bowtie2-indexes/$db-$build
