@@ -16,7 +16,7 @@ odir=star
 if test ! -e log; then mkdir log; fi
 if test ! -e $odir; then mkdir $odir; fi
 
-if test $build = "S_pombe" -o test $build = "S_serevisiae"; then
+if test $build = "S_pombe" -o $build = "S_cerevisiae"; then
     index_star=`database.sh`/rsem-star-indexes/$build
     index_rsem=`database.sh`/rsem-star-indexes/$build/$build
 else
