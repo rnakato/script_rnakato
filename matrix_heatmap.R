@@ -12,13 +12,7 @@ print.usage <- function() {
 	cat('\n',file=stderr())
 }
 
-args <- commandArgs(trailingOnly = T) # コマンドライン引数を読み込む
-#infile  <- args[1] # 1番目の引数を入力ファイル名として代入する。
-#outfile <- args[2] # 2番目の引数を出力ファイル名として代入する。
-#t <- args[3]       # 転置行列にするか
-#clst <- as.logical(args[4])
-#k <- args[5]
-#method <- args[6]
+args <- commandArgs(trailingOnly = T)
 
 t <- 0
 clst <- 0
