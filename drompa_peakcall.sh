@@ -21,14 +21,16 @@ Ddir=`database.sh`/UCSC/$build
 gt=$Ddir/genome_table
 map="$Ddir/mappability_Mosaics_${k}mer/map_fragL150"
 
-if test -e $IP.$binsize.binarray_dist.xls && test -s $IP.$binsize.binarray_dist.xls ; then
+IPfile=$IP.$binsize.binarray_dist.xls
+Inputfile=$Input.$binsize.binarray_dist.xls
+if test -e $IPfile && test -s $IPfile ; then
     if test $IP == $Input; then
 	drompa_peakcall PC_SHARP -i $IP -binsize $binsize -gt $gt -p $mdir/$output -mp $map $opt
-    elif test -e $Input.binarray_dist.xls && test -s $Input.binarray_dist.xls ; then
+    elif test -e $Inputfile && test -s $Inputfile ; then
 	drompa_peakcall PC_SHARP -i $IP,$Input -binsize $binsize -gt $gt -p $mdir/$output -mp $map $opt
     else
-	echo "$Input.binarray_dist.xls does not exist."
+	echo "$Inputfile does not exist."
     fi
 else
-    echo "$IP.binarray_dist.xls does not exist."
+    echo "$IPfile does not exist."
 fi
