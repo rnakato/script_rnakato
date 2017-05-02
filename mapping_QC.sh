@@ -84,8 +84,9 @@ elif test $type = "stats"; then
     else
 	a=`parsebowtielog.pl log/bowtie-$head | grep -v Sample`
     fi
-    b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9,10,11,12`
-    b2=`cat log/parsestats-$head.100 | grep -v Sample | cut -f10`
+    b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
+    gcov=`cat log/parsestats-$head.100 | grep -v Sample | cut -f10`
+    b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`
     c=`cut -f2,3,4,5 ppout/$head.SN`
-    echo -e "$a\t$b\t$b2\t$c"
+    echo -e "$a\t$b\t$gcov\t$b2\t$c"
 fi
