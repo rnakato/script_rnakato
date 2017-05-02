@@ -21,7 +21,7 @@ Ddir=`database.sh`/UCSC/$build
 gt=$Ddir/genome_table
 map="$Ddir/mappability_Mosaics_${k}mer/map_fragL150"
 
-if test -e $IP.binarray_dist.xls && test -s $IP.binarray_dist.xls ; then
+if test -e $IP.$binsize.binarray_dist.xls && test -s $IP.$binsize.binarray_dist.xls ; then
     if test $IP == $Input; then
 	drompa_peakcall PC_SHARP -i $IP -binsize $binsize -gt $gt -p $mdir/$output -mp $map $opt
     elif test -e $Input.binarray_dist.xls && test -s $Input.binarray_dist.xls ; then
