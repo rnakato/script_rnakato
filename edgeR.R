@@ -222,20 +222,26 @@ dev.off()
 tt <- topTags(lrt, sort.by="none", n=nrow(data))
 
 if(ncolskip==0){
-	cnts <- cbind(lrt$fitted.values, tt$table)
+	cnts <- cbind(rownames(lrt$fitted.values), lrt$fitted.values, tt$table)
 }else{
-	cnts <- cbind(genename, lrt$fitted.values, tt$table)
+	cnts <- cbind(rownames(lrt$fitted.values), genename, lrt$fitted.values, tt$table)
 }
 
+colnames(cnts)[1] <- "Ensembl ID"
 significant <- cnts$FDR < p
 cnts_sig <- cnts[significant,]
 cnts_sig <- cnts_sig[order(cnts_sig$PValue),]
 
 # FDRでソートすると同値が発生するので、PValueでソートする
-write.csv(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
-write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig[cnts_sig$logFC > 0,],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
-write.csv(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
+#write.csv(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F)
+#write.csv(cnts_sig,      file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F)
+#write.csv(cnts_sig[cnts_sig$logFC > 0,],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F)
+#write.csv(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F)
+write.table(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig, file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig[cnts_sig$logFC > 0,],   file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+
 
 # DEGsのクラスタリング
 logt <- apply(fittedcount[significant,]+1, c(1,2), log2)

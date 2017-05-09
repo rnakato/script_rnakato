@@ -74,7 +74,7 @@ for str in genes isoforms; do
     for ty in all DEGs upDEGs downDEGs;do
 	s="$s -i $outname.$str.$postfix.edgeR.$ty.csv -n fitted-$str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.xlsx -d,
+    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.xlsx #-d,
 done
 
 exit 0
