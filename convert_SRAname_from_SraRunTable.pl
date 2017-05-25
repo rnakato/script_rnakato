@@ -39,7 +39,7 @@ close IN;
 foreach $name (keys(%{$infos})){
     $fastq{$name} ||= "";
     for($i=1;$i<=$infos->{$name}[0];$i++){
-	$fastq{$name} = $fastq{$name} . "\$dir/$infos->{$name}[$i].fastq";
+	$fastq{$name} = $fastq{$name} . "\$dir/$infos->{$name}[$i].fastq.gz";
 	if($i!=$infos->{$name}[0]){$fastq{$name} = $fastq{$name} . ",";}
     }
 }
