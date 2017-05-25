@@ -2,9 +2,14 @@
 
 #use strict;
 use warnings;
+use Getopt::Long qw/:config/;
+use Pod::Usage qw/pod2usage/;
 #use autodie;
 
-if($#ARGV !=1){
+my $pair=0;
+GetOptions( "pair|p" => \$pair ) or pod2usage(1);
+
+if($#ARGV <1){
     print "    convert_SRAname_from_SraRunTable.pl <file> <line for output (int)>.\n\n";
     exit;
 }
@@ -40,13 +45,19 @@ foreach $name (keys(%{$infos})){
     $fastq{$name} ||= "";
     for($i=1;$i<=$infos->{$name}[0];$i++){
 	$fastq{$name} = $fastq{$name} . "\$dir/$infos->{$name}[$i].fastq.gz";
+	$fastq1{$name} = $fastq1{$name} . "\$dir/$infos->{$name}[$i]_1.fastq.gz";
+	$fastq2{$name} = $fastq2{$name} . "\$dir/$infos->{$name}[$i]_2.fastq.gz";
 	if($i!=$infos->{$name}[0]){$fastq{$name} = $fastq{$name} . ",";}
     }
 }
 
 print "FASTQ=(\n";
 foreach $name (sort keys(%{$infos})){
-    print "\"$fastq{$name}\"\n";
+    if($pair) {
+	print "\"$fastq1{$name} $fastq2{$name}\"\t # $species{$name}, $type{$name}\n";
+    }else {
+	print "\"$fastq{$name}\"\n";
+    }
 }
 print ")\n";
 

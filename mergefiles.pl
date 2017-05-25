@@ -30,11 +30,11 @@ for(my $i=0; $i<=$#ARGV; $i++) {
     my %Hash;
     while(<$fh>){
 	chomp;
-	if($_ =~ /Making Jaccard index profile.../){
-	    $on=1;
-	    next;
-	}
-	next if(!$on);
+#	if($_ =~ /Making Jaccard index profile.../){
+#	    $on=1;
+#	    next;
+#	}
+#	next if(!$on);
 	my @clm = split(/\t/, $_);
 	$Hash{$clm[0]} = $clm[1];
 	$Hashall{$clm[0]} = 1;
