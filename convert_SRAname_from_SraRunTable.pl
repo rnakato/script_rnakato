@@ -43,11 +43,17 @@ close IN;
 
 foreach $name (keys(%{$infos})){
     $fastq{$name} ||= "";
+    $fastq1{$name} ||= "";
+    $fastq2{$name} ||= "";
     for($i=1;$i<=$infos->{$name}[0];$i++){
 	$fastq{$name} = $fastq{$name} . "\$dir/$infos->{$name}[$i].fastq.gz";
-	$fastq1{$name} = $fastq1{$name} . "\$dir/$infos->{$name}[$i]_1.fastq.gz";
-	$fastq2{$name} = $fastq2{$name} . "\$dir/$infos->{$name}[$i]_2.fastq.gz";
-	if($i!=$infos->{$name}[0]){$fastq{$name} = $fastq{$name} . ",";}
+	$fastq1{$name} = $fastq1{$name} . "\$dir/$infos->{$name}[$i]\_1.fastq.gz";
+	$fastq2{$name} = $fastq2{$name} . "\$dir/$infos->{$name}[$i]\_2.fastq.gz";
+	if($i!=$infos->{$name}[0]){
+	    $fastq{$name} = $fastq{$name} . ",";
+	    $fastq1{$name} = $fastq1{$name} . ",";
+	    $fastq2{$name} = $fastq2{$name} . ",";
+	}
     }
 }
 
