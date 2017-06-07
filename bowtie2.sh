@@ -58,8 +58,8 @@ ex_hiseq(){
     else
 	index=$Ddir/bowtie2-indexes/$db-$build
     fi
-    if [ `echo $fastq | grep '.gz'` ] ; then
-	command="bowtie2 $param -p12 -x $index <(zcat $fastq) | $samtools view -bS - | $samtools sort > $file"
+    if [ `echo "$fastq" | grep '.gz'` ] ; then
+	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort > $file"
     else
 	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort > $file"
     fi
