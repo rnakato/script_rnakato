@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-s] [-e] [-a] [-n] [-f of] [-t <hiseq|csfasta|csfastq>] [-p <bowtie|bowtie2>] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
+    echo "$cmdname [-s] [-e] [-a] [-b binsize] [-n] [-f of] [-t <hiseq|csfasta|csfastq>] [-p <bowtie|bowtie2>] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>" 1>&2
 }
 
 pppar=""
@@ -13,12 +13,16 @@ nopp=0
 bamdir=bam
 program="bowtie"
 of=0
-while getopts ased:nt:p:f: option
+binsize=100
+while getopts ab:sed:nt:p:f: option
 do
     case ${option} in
 	a)
 	    pa="-a"
 	    ;;
+	b)
+	    binsize=${OPTARG}
+                ;;
 	s)
 	    pppar="-s"
 	    ;;
@@ -87,7 +91,7 @@ if test $type = "exec";then
     fi
 
     if test ! -e $bam.bai; then samtools index $bam; fi
-    parse2wig.sh $pa $pens -f $of $bam $head $build
+    parse2wig.sh $pa -b $binsize $pens -f $of $bam $head $build
 
     #if test $nopp != 1; then pp.sh $pppar $bam $bam $head; fi
     ssp.sh $bam $head $build
