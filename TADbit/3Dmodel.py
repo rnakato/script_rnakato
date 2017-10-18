@@ -9,7 +9,7 @@ from pytadbit.modelling.structuralmodels import load_structuralmodels
 if not os.path.exists('TADbit'):
     os.makedirs("TADbit")
 
-pwd=os.path.dirname(os.path.abspath(__file__))
+pwd=os.getcwd()
 
 def main():
     args = getArgs()

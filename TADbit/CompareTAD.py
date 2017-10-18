@@ -4,10 +4,12 @@ from pytadbit import load_chromosome
 Ct="Control,RPE_Ct/chr19_R_Ct_100000_iced_dense.matrix"
 CTCF="CTCFKD,RPE_CTCFKD/chr19_R_si628_100000_iced_dense.matrix"
 Rad21="Rad21KD,RPE_Rad21KD/chr19_R_si621_100000_iced_dense.matrix"
+NIPBL="NIPBLKD,RPE_NIPBLKD/chr19_R_si7_100000_iced_dense.matrix"
 
 tdbfile="RPE.tdb"
-samples=[Ct,CTCF,Rad21]
+samples=[Ct,CTCF,Rad21,NIPBL]
 my_chrom = loadData(tdbfile, samples)
+ncpu=24
 
 # Compare two TADs in one sample
 tad1 = list(my_chrom.iter_tads('k562'))[31]
@@ -17,9 +19,8 @@ align1, align2, score = optimal_cmo(tad1[1], tad2[1],
                                     method='frobenius')
 
 ### 2サンプル比較
-label1="k562"
-label2="gm06690"
-# 複数サンプルからTADを検出
+label1="Control"
+label2="Rad21KD"
 my_chrom.find_tad([label1, label2], batch_mode=True, n_cpus=ncpu)
 print my_chrom.experiments
 
