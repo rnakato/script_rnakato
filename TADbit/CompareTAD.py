@@ -33,7 +33,7 @@ def main():
     # Check alignment consistency through randomization
     ali = my_chrom.alignment[labels]
     print ali
-    ali.draw(savefig="TADbit/" + '-'.join(labels) + ".TADs.png")
+    ali.draw(savefig="TADbit/" + output + "." + '-'.join(labels) + ".TADs.png")
     #ali.draw(focus=(1, 250))
     score, pval = my_chrom.align_experiments(names=labels, randomize=True, rnd_method="interpolate", rnd_num=100)
     print 'score:', score

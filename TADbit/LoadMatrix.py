@@ -27,7 +27,7 @@ def main():
         label, path = sample.split(",")
         print(label)
         print(path)
-        getHiCData(my_chrom, label, path, resolution, ncpu)
+        getHiCData(my_chrom, output, label, path, resolution, ncpu)
 
     my_chrom.save_chromosome(output + ".tdb", force=True)
     
@@ -43,7 +43,7 @@ def getArgs():
     args = parser.parse_args()
     return args
 
-def getHiCData(Chr, label, HiCpath, resolution, ncpu):
+def getHiCData(Chr, output, label, HiCpath, resolution, ncpu):
     Chr.add_experiment(
         label,
         cell_type='wild type',
@@ -55,12 +55,12 @@ def getHiCData(Chr, label, HiCpath, resolution, ncpu):
     )
     Chr.find_tad(label, n_cpus=ncpu)
     exp = Chr.experiments[label]
-    exp.filter_columns(draw_hist=True, savefig="TADbit/" + label + ".histgram.png")
+    exp.filter_columns(draw_hist=True, savefig="TADbit/" + output + "." + label + ".histgram.png")
     exp.normalize_hic(iterations=30, max_dev=0.1)
 #    exp.tads
     #exp.view()
-    Chr.visualize(exp.name, paint_tads=True, savefig="TADbit/" + label + ".Map.png", show=False)
-    Chr.tad_density_plot(label, savefig="TADbit/" + label + ".TAD.png")
+    Chr.visualize(exp.name, paint_tads=True, savefig="TADbit/" + output + "." + label + ".Map.png", show=False)
+    Chr.tad_density_plot(label, savefig="TADbit/" + output + "." + label + ".TAD.png")
 
 if __name__ == "__main__":
     exit(main())
