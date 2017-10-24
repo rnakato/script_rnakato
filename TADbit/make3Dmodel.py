@@ -57,7 +57,10 @@ def getModels(exp, ps, pe, ncpu):
               'reference': 'gm cell from Job Dekker 2009'}
 
     # Build 3D models by IMP based on the HiC data.
-    models = exp.model_region(ps, pe, n_models=500, n_keep=100, n_cpus=ncpu, keep_all=True, config=optpar)
+    if pe == -1:
+        models = exp.model_region(ps, None, n_models=500, n_keep=100, n_cpus=ncpu, keep_all=True, config=optpar)
+    else:
+        models = exp.model_region(ps, pe, n_models=500, n_keep=100, n_cpus=ncpu, keep_all=True, config=optpar)
     return models
 
 def loadData(tdbfile, samples):
