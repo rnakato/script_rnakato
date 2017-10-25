@@ -28,8 +28,11 @@ def main():
         print(label)
         print(path)
         getHiCData(my_chrom, output, label, path, resolution, ncpu)
+        
+    if not os.path.exists('tdb'):
+        os.makedirs("tdb")
 
-    my_chrom.save_chromosome(output + ".tdb", force=True)
+    my_chrom.save_chromosome("tdb/" + output + ".tdb", force=True)
     
 def getArgs():
     parser = argparse.ArgumentParser(description = "Generate and store TADbit chromosome object")
