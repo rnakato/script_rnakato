@@ -19,4 +19,4 @@ elif len(sys.argv) > 4:
     e = int(sys.argv[4])
     matrix = matrix[s:e,s:e]
 
-np.savetxt(outputfile, matrix)
+np.save(outputfile, matrix)
