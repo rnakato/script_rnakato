@@ -4,6 +4,7 @@ use warnings;
 
 my $filename=$ARGV[0];
 my $bedgraph=$ARGV[1];
+my $start=$ARGV[2];
 my $output=$filename . ".addCompartment.pdb";
 
 open(File, $bedgraph) ||die "error: can't open $bedgraph\n";
@@ -26,7 +27,7 @@ close (File);
 
 open(FILE, ">", $output) or die;
 open(PDB, $filename) ||die "error: can't open $filename\n";
-my $num = 0;
+my $num = $start;
 while(<PDB>) {
     next if($_ eq "\n");
     if($compartment[$num] eq "B") {
