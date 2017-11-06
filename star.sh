@@ -1,7 +1,8 @@
 #!/bin/bash
 
+scriptname=${0##*/}
 if test $# -ne 6; then
-    echo "star.sh <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build> <--forward-prob [0-1]>"
+    echo "$scriptname <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build> <--forward-prob [0-1]>"
     exit 0
 fi
 
