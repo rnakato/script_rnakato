@@ -6,9 +6,6 @@ from pytadbit import load_chromosome
 from pytadbit.modelling.structuralmodels import load_structuralmodels
 #from pytadbit.imp.impoptimizer import IMPoptimizer
 
-if not os.path.exists('TADbit'):
-    os.makedirs("TADbit")
-
 pwd=os.getcwd()
 
 def main():
@@ -30,18 +27,12 @@ def main():
         print "Lowest 100 IMP OF models:"
         models.define_best_models(100)
         print models
-        if not os.path.exists('TADbit/IMP_OF'):
-            os.makedirs("TADbit/IMP_OF")
         for i in range(len(models.clusters)):
-            models[i].objective_function(log=True, smooth=False, savefig="TADbit/IMP_OF/" + output + "." + exp.name + ".cl" + str(i) +".png")
+            models[i].objective_function(log=True, smooth=False, savefig=output + "." + exp.name + ".IMP_OF.cl" + str(i) +".png")
       
-        if not os.path.exists('TADbit/ContactMap'):
-            os.makedirs("TADbit/ContactMap")
-        models.contact_map(models=range(5,10), cutoff=1200, savedata="TADbit/ContactMap/" + output + "." + exp.name + ".ContactMap.txt")
+        models.contact_map(models=range(5,10), cutoff=1200, savedata=output + "." + exp.name + ".ContactMap.txt")
         
-        if not os.path.exists('TADbit/Modelfile'):
-            os.makedirs("TADbit/Modelfile")
-        models.save_models("TADbit/Modelfile/" + output + "." + exp.name + "." + str(ps) + "-" + str(pe) + ".models") # save data
+        models.save_models(output + "." + exp.name + "." + str(ps) + "-" + str(pe) + ".models") # save data
 
 def getModels(exp, ps, pe, ncpu):
     # Pre-defined parameters for modeling

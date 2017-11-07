@@ -3,9 +3,6 @@ import os
 import argparse
 from pytadbit import Chromosome
 
-if not os.path.exists('TADbit/Heatmap'):
-    os.makedirs("TADbit/Heatmap")
-
 def main():
     args = getArgs()
     samples = args.i
@@ -32,7 +29,7 @@ def main():
     if not os.path.exists('tdb'):
         os.makedirs("tdb")
 
-    my_chrom.save_chromosome("tdb/" + output + ".tdb", force=True)
+    my_chrom.save_chromosome(output + ".tdb", force=True)
     
 def getArgs():
     parser = argparse.ArgumentParser(description = "Generate and store TADbit chromosome object")
@@ -58,12 +55,12 @@ def getHiCData(Chr, output, label, HiCpath, resolution, ncpu):
     )
     Chr.find_tad(label, n_cpus=ncpu)
     exp = Chr.experiments[label]
-    exp.filter_columns(draw_hist=True, savefig="TADbit/Heatmap/" + output + "." + label + ".histgram.png")
+    exp.filter_columns(draw_hist=True, savefig=output + "." + label + ".histgram.png")
     exp.normalize_hic(iterations=30, max_dev=0.1)
 #    exp.tads
     #exp.view()
-    Chr.visualize(exp.name, paint_tads=True, savefig="TADbit/Heatmap/" + output + "." + label + ".Map.png", show=False)
-    Chr.tad_density_plot(label, savefig="TADbit/Heatmap/" + output + "." + label + ".TAD.png")
+    Chr.visualize(exp.name, paint_tads=True, savefig=output + "." + label + ".Map.png", show=False)
+    Chr.tad_density_plot(label, savefig=output + "." + label + ".TAD.png")
 
 if __name__ == "__main__":
     exit(main())
