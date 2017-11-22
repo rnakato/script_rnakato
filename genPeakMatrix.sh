@@ -29,7 +29,8 @@ done
 
 
 for bam in $bams; do
-    echo -en "\t$bam" 
+    name=`basename $bam`
+    echo -en "\t$name" 
 done
 echo "" 
 cat $tmpfile2
