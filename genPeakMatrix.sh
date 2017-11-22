@@ -28,6 +28,7 @@ for bam in $bams; do
 done
 
 
+echo -en "\t\t" 
 for bam in $bams; do
     name=`basename $bam`
     echo -en "\t$name" 
