@@ -28,6 +28,6 @@ fi
 tmpfile=$(mktemp)
 
 BAMs=$@
-cut -f1,2,3 $bed | bedtools multicov -bams $BAMs -bed - > $tmpfile
-addranking4multiBamCov.pl $tmpfile
-rm $tmpfile
+cut -f1,2,3 $bed | grep -v \# | grep -v chromosome | bedtools multicov -bams $BAMs -bed - #> $tmpfile
+#addranking4multiBamCov.pl $tmpfile
+#rm $tmpfile
