@@ -1,8 +1,9 @@
 #!/bin/bash
 
+cmdname=`basename $0`
 function usage()
 {
-    echo "CRM.sh [-g genome_table] [-t <int>] <bed> <bed> ..." 1>&2
+    echo "$cmdname [-g genome_table] [-t <int>] <bed> <bed> ..." 1>&2
 }
 
 t=0
