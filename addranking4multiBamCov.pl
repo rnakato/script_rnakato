@@ -36,10 +36,10 @@ while(<$fh>){
     my @clm = split(/\t/, $_);
     if(!$nline) {
 	$ncol = $#clm +1;
-	$nsample = $ncol - 6;
+	$nsample = $ncol - 3;
 #	print "$ncol $nsample\n";
 	for(my $i=0; $i<$ncol; $i++) { print "$clm[$i]\t";}
-	for(my $i=6; $i<$ncol; $i++) { print "$clm[$i]\t";}
+	for(my $i=3; $i<$ncol; $i++) { print "$clm[$i]\t";}
 	print "\n";
 	for(my $i=0; $i<$ncol+$nsample; $i++) {
 	    my @a;
