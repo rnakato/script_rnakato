@@ -79,7 +79,14 @@ ex_csfasta(){
     else
 	index=$Ddir/bowtie-indexes/$db-$build-cs
     fi
-    command="bowtie -S -C $index -f $fastq.csfasta -Q ${fastq}.QV.qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    csfasta=`ls $fastq*csfasta*`
+    qual=`ls $fastq*qual*`
+
+    if [[ $csfasta = *.gz ]]; then
+	command="bowtie -S -C $index -f <(zcat $csfasta) -Q <(zcat $qual) $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    else
+	command="bowtie -S -C $index -f $csfasta -Q $qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+    fi
     echo $command
     eval $command
 }
