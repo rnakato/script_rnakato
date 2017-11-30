@@ -93,8 +93,7 @@ if test $type = "exec";then
     if test ! -e $bam.bai; then samtools index $bam; fi
     parse2wig.sh $pa -b $binsize $pens -f $of $bam $head $build
 
-    #if test $nopp != 1; then pp.sh $pppar $bam $bam $head; fi
-    ssp.sh $bam $head $build
+    if test $nopp != 1; then ssp.sh $bam $head $build; fi
     
 elif test $type = "stats"; then
     if test $program = "bowtie2";then

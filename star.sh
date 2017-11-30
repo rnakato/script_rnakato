@@ -25,9 +25,6 @@ else
     index_rsem=`database.sh`/rsem-star-indexes/$db-$build/$db-$build
 fi
 
-#paramENCODE="--outSAMunmapped Within --outFilterType BySJout --outSAMattributes NH HI AS NM MD --outFilterMultimapNmax 20 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.04 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --sjdbScore 1" # --genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000
-#paramENCODEmeta="--outSAMheaderCommentFile commentsENCODElong.txt --outSAMheaderHD @HD VN:1.4 SO:coordinate"
-
 if test $readtype = "paired"; then pair="--paired-end"; fi
 if test $prob = "0.5"; then  # unstraned
     parstr="--outSAMstrandField intronMotif"
@@ -42,8 +39,11 @@ fi
 
 STARdir=$(cd $(dirname $0) && pwd)/../STAR/bin/Linux_x86_64_static
 
-parSTAR="--genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM --runThreadN 12"
-$STARdir/STAR $parSTAR $pzip --genomeDir $index_star --readFilesIn $fastq $parstr --outFileNamePrefix $odir/$prefix.$build.
+$STARdir/STAR --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM \
+    --runThreadN 12 --outSAMattributes All $pzip \
+    --genomeDir $index_star --readFilesIn $fastq $parstr \
+    --outFileNamePrefix $odir/$prefix.$build.
+
 log=log/star-$prefix.$build.txt
 echo -en "$prefix\t" > $log
 parse_starlog.pl $odir/$prefix.$build.Log.final.out >> $log
