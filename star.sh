@@ -1,10 +1,26 @@
 #!/bin/bash
 
+odir=star
+while getopts d: option
+do
+    case ${option} in
+        d)
+            odir=${OPTARG}
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
 scriptname=${0##*/}
 if test $# -ne 6; then
-    echo "$scriptname <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build> <--forward-prob [0-1]>"
+    echo "$scriptname [-d outputdir] <single|paired> <output prefix> <fastq> <Ensembl|UCSC> <build> <--forward-prob [0-1]>"
     exit 0
 fi
+
 
 readtype=$1
 prefix=$2
@@ -13,9 +29,7 @@ db=$4
 build=$5
 prob=$6
 
-odir=star
-if test ! -e log; then mkdir log; fi
-if test ! -e $odir; then mkdir $odir; fi
+mkdir -p log $odir
 
 if test $build = "S_pombe" -o $build = "S_cerevisiae"; then
     index_star=`database.sh`/rsem-star-indexes/$build

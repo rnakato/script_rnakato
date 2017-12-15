@@ -6,9 +6,9 @@
     parseuniq.pl [--sort] <file>
 =cut
 
-use strict;
-use warnings;
-use autodie;
+#use strict;
+#use warnings;
+#use autodie;
 use Path::Class;
 use Array::Utils qw(unique);
 use Getopt::Long qw(:config posix_default bundling no_ignore_case auto_help);
