@@ -20,9 +20,9 @@ open(IN, $file) || die;
 $file=<IN>;
 @clm= split(/\t/, $file);
 for($i=0;$i<=$#clm;$i++){
-    $line_id = $i if($clm[$i] eq "Run_s");
-    $line_org = $i if($clm[$i] eq "Organism_s");
-    $line_type = $i if($clm[$i] eq "LibraryLayout_s");
+    $line_id = $i if($clm[$i] eq "Run_s" || $clm[$i] eq "Run");
+    $line_org = $i if($clm[$i] eq "Organism_s" || $clm[$i] eq "Organism");
+    $line_type = $i if($clm[$i] eq "LibraryLayout_s" || $clm[$i] eq "LibraryLayout");
 }
 
 while(<IN>) {
