@@ -7,13 +7,17 @@ nsample=`expr $# - 2`
 
 pcgene=$(mktemp)
 chrtemp=$(mktemp)
-cat $refFlat | awk '{if($13=="protein_coding") print;}' > $pcgene
+
+cat $refFlat | awk '{if($13=="protein_coding" && $3!="Y" && $3!="M") print;}' > $pcgene
 cut -f3,5,6 $pcgene | addchr.pl - > $chrtemp
 
 temp=$(mktemp)
 echo "bedtools multicov -bams $bams -bed $chrtemp > $temp.temp"
 bedtools multicov -bams $bams -bed $chrtemp > $temp.temp
-if test ! -s $temp; then exit; fi
+if test ! -s $temp.temp; then
+    exit
+fi
+
 paste $pcgene $temp.temp > $temp
 
 getMaxvalTSS.pl -n $nsample $temp > $output.all.csv
