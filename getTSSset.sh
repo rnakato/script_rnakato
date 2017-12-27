@@ -8,8 +8,8 @@ nsample=`expr $# - 2`
 pcgene=$(mktemp)
 chrtemp=$(mktemp)
 
-cat $refFlat | awk '{if($13=="protein_coding" && $3!="Y" && $3!="M") print;}' > $pcgene
-cut -f3,5,6 $pcgene | addchr.pl - > $chrtemp
+cat $refFlat | awk '{if($13=="protein_coding" && $3!="chrY" && $3!="chrM") print;}' > $pcgene
+cut -f3,5,6 $pcgene > $chrtemp
 
 temp=$(mktemp)
 echo "bedtools multicov -bams $bams -bed $chrtemp > $temp.temp"
