@@ -9,7 +9,10 @@ pcgene=$(mktemp)
 chrtemp=$(mktemp)
 
 cat $refFlat | awk '{if($13=="protein_coding" && $3!="chrY" && $3!="chrM") print;}' > $pcgene
-cut -f3,5,6 $pcgene > $chrtemp
+
+cat $pcgene | awk '{if($4=="+"){ start=$7-2000; end=$7+2000}else{ start=$8-2000; end=$8+2000}; print $3"\t"start"\t"end"\t"$1}' | sort -k1,1 -k2,2n > $chrtemp
+
+#cut -f3,5,6 $pcgene > $chrtemp
 
 temp=$(mktemp)
 echo "bedtools multicov -bams $bams -bed $chrtemp > $temp.temp"
