@@ -40,7 +40,7 @@ while(<$fh>){
     my @clm = split(/\t/, $_);
     my $sum=0;
     for(my $i=0; $i<$nsample; $i++) {
-	$sum += $clm[$i+16];
+	$sum += $clm[$i+17];
     }
     if(!exists($Hash{$clm[0]}) || $sum > $max{$clm[0]}) {
 	$Hash{$clm[0]} = $_;
