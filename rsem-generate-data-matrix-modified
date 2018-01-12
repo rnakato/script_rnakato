@@ -63,9 +63,11 @@ for (my $i = 1; $i < $n; $i++) {
     }
 
     my $colname;
-    if (substr($ARGV[$i], 0, 2) eq "./") { $colname = substr($ARGV[$i], 2); }
-    else { $colname = $ARGV[$i]; }
-    $colname = "$colname";
+    my @strlist = split(/\//, $ARGV[$i]);
+#    if (substr($ARGV[$i], 0, 2) eq "./") { $colname = substr($ARGV[$i], 2); }
+#    else { $colname = $ARGV[$i]; }
+#    $colname = "$colname";
+    $colname = "$strlist[$#strlist]";
     @ecs = ($colname, @ecs);
     push(@matrix, \@ecs);
 }

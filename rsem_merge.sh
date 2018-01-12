@@ -33,14 +33,14 @@ str_sed=$5
 
 for str in genes isoforms; do
     s=""
-    for prefix in $files; do s="$s star/$prefix.$build.$str.results"; done
+    for prefix in $files; do s="$s $prefix.$build.$str.results"; done
 
     for tp in count TPM; do
 	head=$outname.$str.$tp.$build
 	rsem-generate-data-matrix-modified $tp $s > $head.txt
 	cat $head.txt | sed -e 's/.'$build'.'$str'.results//g' > $head.temp
 	mv $head.temp $head.txt
-	for rem in $str_sed "star\/"
+	for rem in $str_sed
 	  do
 	  cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
 	  mv $head.temp $head.txt
