@@ -18,8 +18,15 @@ cut -f1,2,3 $1 > $tmpfile1
 
 for file in ${@:1}
 do
-    cut -f5 $file | paste $tmpfile1 > $tmpfile2
+    cut -f5 $file | paste $tmpfile1 - > $tmpfile2
     mv $tmpfile2 $tmpfile1
 done
 
-cat $tmpfile1
+echo -en "target_id\tlength\teff_length"
+for file in ${@:1}
+do
+  echo -en "\t`echo  $file | sed -e 's/kallisto\///g' -e 's/\/abundance.tsv//g'`"
+done
+
+echo ""
+tail -n +2 $tmpfile1
