@@ -15,12 +15,12 @@ txdb <- makeTxDbFromGFF(gtf)
 k <- keys(txdb, keytype = "GENEID")
 df <- select(txdb, keys = k, keytype = "GENEID", columns = "TXNAME")
 tx2gene <- df[, 2:1]
-head(tx2gene)
+#head(tx2gene)
 
-names(files) <- labels
+#names(files) <- labels
 txi.kallisto <- tximport(files, type = "kallisto", tx2gene = tx2gene, ignoreTxVersion=TRUE)
 
-head(txi.kallisto$counts)
-names(txi.kallisto)
+#head(txi.kallisto$counts)
+#names(txi.kallisto)
 
-write.table(txi.kallisto$counts, file=paste(output, ".csv", sep=""), quote=F, sep = "\t", row.names = T, col.names = T)
+write.table(txi.kallisto$counts, file=paste(output, ".csv", sep=""), quote=F, sep = "\t", row.names = T, col.names = F)
