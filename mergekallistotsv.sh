@@ -29,4 +29,4 @@ do
 done
 
 echo ""
-tail -n +2 $tmpfile1
+tail -n +2 $tmpfile1 | sed -e 's/\.[0-9]\t/\t/g'
