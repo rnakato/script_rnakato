@@ -14,9 +14,12 @@ fi
 tmpfile1=$(mktemp)
 tmpfile2=$(mktemp)
 
-cut -f1,2,3 $1 
+cut -f1,2,3 $1 > $tmpfile1
 
 for file in ${@:1}
 do
-    cut -f5 $file
+    cut -f5 $file | paste $tmpfile1 > $tmpfile2
+    mv $tmpfile2 $tmpfile1
 done
+
+cat $tmpfile1
