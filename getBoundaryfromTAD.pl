@@ -6,11 +6,10 @@
 
 =head1 SYNOPSIS
 
-    % sample.pl [options] <filename>
+    % getBoundaryfromTAD.pl [options] <filename>
 
     Options:
-    --binsize=<int>
-    --pair
+    --length=<int>
 
 =cut
 
