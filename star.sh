@@ -62,10 +62,10 @@ fi
 
 STARdir=$(cd $(dirname $0) && pwd)/../STAR/bin/Linux_x86_64_static
 
-#$STARdir/STAR --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM \
-#    --runThreadN 12 --outSAMattributes All $pzip \
-#    --genomeDir $index_star --readFilesIn $fastq $parstr \
-#    --outFileNamePrefix $odir/$prefix.$build.
+$STARdir/STAR --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM \
+    --runThreadN 12 --outSAMattributes All $pzip \
+    --genomeDir $index_star --readFilesIn $fastq $parstr \
+    --outFileNamePrefix $odir/$prefix.$build.
 
 log=log/star-$prefix.$build.txt
 echo -en "$prefix\t" > $log
@@ -75,4 +75,4 @@ RSEMdir=$(cd $(dirname $0) && pwd)/../RSEM
 $RSEMdir/rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build #--calc-ci --ci-memory 30000 --seed 12345
 
 #$RSEMdir/rsem-plot-transcript-wiggles --gene-list --show-unique mmliver_single_quals gene_ids.txt output.pdf 
-#$RSEMdir/rsem-plot-model $odir/$prefix.$build $odir/$prefix.$build.quals.pdf
+$RSEMdir/rsem-plot-model $odir/$prefix.$build $odir/$prefix.$build.quals.pdf
