@@ -5,7 +5,6 @@ args <- commandArgs(trailingOnly=TRUE)
 output <- args[1]
 gtf <- args[2]
 files <- args[3:length(args)]
-labels <- gsub("kallisto/|/abundance.tsv","",files)
 
 output
 gtf
@@ -17,7 +16,7 @@ df <- select(txdb, keys = k, keytype = "GENEID", columns = "TXNAME")
 tx2gene <- df[, 2:1]
 #head(tx2gene)
 
-#names(files) <- labels
+#names(files) <- gsub("kallisto/|/abundance.tsv","",files)
 txi.kallisto <- tximport(files, type = "kallisto", tx2gene = tx2gene, ignoreTxVersion=TRUE)
 
 #head(txi.kallisto$counts)
