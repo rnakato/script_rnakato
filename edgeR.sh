@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "edgeR.sh [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
+    echo "$cmdname [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
     echo "  Example:" 1>&2
     echo "  edgeR.sh -n star/Matrix GRCh38 2:2 WT:KD 0.05 GRCh38.gtf" 1>&2
 }
