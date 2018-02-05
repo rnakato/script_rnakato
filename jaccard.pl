@@ -34,18 +34,23 @@ die "different number: -f and -l.\n" if($#file != $#name);
 pod2usage(2) if(!$#file);
 my ($fh, $tmpfile) = tempfile;
 
-for(my $i=0;$i<=$#file;$i++){ system("sort -k1,1 -k2,2n $file[$i] | head -n $number > $tmpfile.$i"); }
+for(my $i=0;$i<=$#file;$i++){
+    system("sort -k1,1 -k2,2n $file[$i] | cut -f1,2,3 > $tmpfile.$i");
+    system("head -n $number $tmpfile.$i > $tmpfile.$i.top$number");
+}
 
 foreach (@name){ print "\t$_"; }
 print "\n";
 
 for(my $i=0;$i<=$#file;$i++){
-    my $f1 = $file[$i];
     print "$name[$i]";
     for(my $j=0;$j<=$#file;$j++){
-	my $f2 = $file[$j];
-	my $jaccard=`bedtools jaccard -a $tmpfile.$i -b $tmpfile.$j | grep -v jaccard | cut -f3 | tr -d '\n'`;
+	my $jaccard=`bedtools jaccard -a $tmpfile.$i.top$number -b $tmpfile.$j.top$number | grep -v jaccard | cut -f3 | tr -d '\n'`;
 	print "\t$jaccard";
     }
     print "\n";
+}
+
+for(my $i=0;$i<=$#file;$i++){
+    system("rm $tmpfile.${i}*");
 }
