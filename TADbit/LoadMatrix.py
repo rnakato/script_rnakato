@@ -26,8 +26,8 @@ def main():
         print(path)
         getHiCData(my_chrom, output, label, path, resolution, ncpu)
         
-    if not os.path.exists('tdb'):
-        os.makedirs("tdb")
+#    if not os.path.exists('tdb'):
+ #       os.makedirs("tdb")
 
     my_chrom.save_chromosome(output + ".tdb", force=True)
     
