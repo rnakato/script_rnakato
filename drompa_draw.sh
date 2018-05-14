@@ -41,7 +41,7 @@ genedensity=$Ddir/genedensity
 if test $ens = 0; then
     gene=$Ddir/refFlat.dupremoved.txt
 else 
-    gene=/home/Database/Ensembl/homo_sapiens/Homo_sapiens.GRCh38.83.chr.name.refFlat
+    gene=/home/Database/Ensembl/GRCh38/gtf_chrUCSC/Homo_sapiens.GRCh38.88.chr.gene.name.refFlat
 fi
 
 if test $type = "GV"; then
