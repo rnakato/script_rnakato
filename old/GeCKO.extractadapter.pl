@@ -24,7 +24,7 @@ while(my $line = <File>){
     if($n%4 == 1){   # 配列の行
 	if($line =~ /(.*)$adapter(.+)/) {  # adapterを含んでいれば
 	    if(length($2)>=20){            # 配列長が20bp以上であれば
-		$Hash{substr($2, 0, 20)}++; # ハッシュに追加
+		$Hash{substr($2, 0, 20)}++; # アダプタ配列以降の20bpをハッシュに追加
 		$adapternum++;
 	    }else{
 		$short++;

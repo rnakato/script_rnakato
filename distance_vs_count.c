@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <zlib.h>
 
 #define max(a, b) ((a) > (b)) ? (a) :(b)
 
@@ -20,7 +21,11 @@ int main(int argc, char *argv[])
 {
   int i;
   FILE *IN;
+  struct gzFile_s *gzIN=NULL;
   Elem clm[ELEM_NUM];
+  char *inputfile = argv[1];
+  int zipped=0;
+  if(strstr(inputfile, ".gz")) zipped=1;
 
   int winsize = WINSIZE_DEFAULT;
   if(argc>=3 && atoi(argv[2]) > 0) {
@@ -30,13 +35,27 @@ int main(int argc, char *argv[])
   char *str = (char *)my_calloc(STR_LEN, sizeof(char), "str");
   int *array = (int *)my_calloc(ARRAYNUM, sizeof(int), "array");
 
-  if ((IN = fopen(argv[1], "r")) == NULL) {
-    fprintf(stderr,"[E] cannot open %s.\n", argv[1]);
-    exit(1);
+  if (zipped) {
+    if ((gzIN = gzopen(inputfile, "r"))==NULL) {
+      fprintf(stderr,"[E] Cannot open <%s>.\n", inputfile); 
+      exit(1);
+    }
+  } else {
+    if ((IN = fopen(inputfile, "r")) == NULL) {
+      fprintf(stderr,"[E] cannot open %s.\n", inputfile);
+      exit(1);
+    }
   }
-  while ((fgets(str, STR_LEN, IN))!=NULL) { 
-    if(str[0]=='\n') continue;
+  
+  //  while ((fgets(str, STR_LEN, IN))!=NULL) { 
+  //   if(str[0]=='\n') continue;
+  while(1){
+    char *c=NULL;
+    if (zipped) c = gzgets(gzIN, str, STR_LEN);
+    else        c = fgets(str, STR_LEN, IN);
+    if(!c) break;
     
+    if(str[0]=='\n') continue;
     int nclm = ParseLine(str, clm);
     if(nclm < 6) continue;
     if(strcmp(clm[1].str, clm[4].str)) continue;
