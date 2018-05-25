@@ -40,10 +40,3 @@ for (c in list) {
     filename <- paste(odir, "/", c@xgi@seqinfo@seqnames, ".txt", sep="")
     write.table(pr, filename, quote=F, col.names=F, row.names=F, sep="\t")
 }
-
-#sset <- reduce(hiC, chr=c("chr5","chr6","chr7"))
-#imr90_500 <- HTClist(mclapply(sset, binningC, binsize=500000, bin.adjust=FALSE, method="sum", step=1))
-#mapC(imr90_500)
-# mapC(hiC$chr1chr1)
-# hox <- extractRegion(hiC$chr6chr6, chr="chr6", from=50e6, to=58e6)
-# plot(hox, maxrange=50, col.pos=c("white", "orange", "red", "black"))
