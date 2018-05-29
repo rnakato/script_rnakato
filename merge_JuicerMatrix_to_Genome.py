@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 def parse_argv():
-    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> [--help] [--includeintra] [--evenodd]'.format(__file__)
+    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> <lim_pzero> [--help] [--includeintra] [--evenodd]'.format(__file__)
     arguments = sys.argv
     if len(arguments) == 1:
         print(usage)
@@ -20,7 +20,7 @@ def parse_argv():
     return arguments
 
 def getfilename(i, j):
-    return "matrix/" + str(res) + "/chr" + str(i) + "-chr" + str(j) + "/" + ntype + ".txt"
+    return dir + "/" + str(res) + "/chr" + str(i) + "-chr" + str(j) + "/" + ntype + ".txt"
 
 def getchrlen():
     chrlen = []
@@ -54,6 +54,7 @@ if __name__ == '__main__':
     outputfile = arguments[1]
     res = int(arguments[2])
     ntype = arguments[3]
+    lim_pzero = float(arguments[4])
     include_intra_read = False
     if '--includeintra' in arguments:
         include_intra_read = True
@@ -83,7 +84,8 @@ if __name__ == '__main__':
             else:
                 A = np.r_[A, matrix]
 
-    A = A[np.sum(A>0, axis=1)/A.shape[1] > 0.9]
-    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > 0.9]
+    A = A[np.sum(A>0, axis=1)/A.shape[1] > lim_pzero]
+    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > lim_pzero]
 
+    print(A.shape)
     np.save(outputfile, A)
