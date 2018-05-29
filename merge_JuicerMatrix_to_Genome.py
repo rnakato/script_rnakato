@@ -91,6 +91,9 @@ if __name__ == '__main__':
         matrix = np.r_[matrix, data]
 
     triu = np.triu(matrix)
-    matrix = triu + triu.T - np.diag(np.diag(triu))
+    A = triu + triu.T - np.diag(np.diag(triu))
+    p_nonzero = np.sum(A>0, axis=1)/A.shape[0]
+    A = A[p_nonzero > 0.3]
+    A = A[:,p_nonzero > 0.3]
 
-    np.save(outputfile, matrix)
+    np.save(outputfile, A)
