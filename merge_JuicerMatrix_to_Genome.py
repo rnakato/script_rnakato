@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 def parse_argv():
-    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> [--help] [--includeintra]'.format(__file__)
+    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> [--help] [--includeintra] [--evenodd]'.format(__file__)
     arguments = sys.argv
     if len(arguments) == 1:
         print(usage)
@@ -34,44 +34,19 @@ def getchrlen():
 
     return chrlen
 
-def make_matrix_chr1(include_intra_read):
-    def getinit(include_intra_read):
-        if include_intra_read:
-            matrix = np.genfromtxt(getfilename(1, 1), delimiter="\t", filling_values=(0, 0, 0))
-            matrix = np.delete(matrix, -1, 1)
-        else:
-            matrix = np.zeros((chrlen[0], chrlen[0]))
-        return matrix
-        
-    matrix = getinit(include_intra_read)
-        
-    for i in range(2,23):
-        #    print(i)
-        d = np.genfromtxt(getfilename(1, i), delimiter="\t", filling_values=(0, 0, 0))
+def getmatrix(i, j, chrlen, include_intra_read):
+    if j < i:
+        d = np.genfromtxt(getfilename(j, i), delimiter="\t", filling_values=(0, 0, 0))
         d = np.delete(d, -1, 1)
-        matrix = np.c_[matrix, d]
-
-    return matrix
-
-def make_matrix_eachchr(i, chrlen):
-    if include_intra_read:
-        data = np.zeros((chrlen[i-1], sum(chrlen[0:i-1])))
-
-        for j in range(i,23):
-            #    print(j)
-            d = np.genfromtxt(getfilename(i, j), delimiter="\t", filling_values=(0, 0, 0))
-            d = np.delete(d, -1, 1)
-            data = np.c_[data, d]
-        return data
+        return d.T
+#        return np.zeros((chrlen[i-1], chrlen[j-1]))
+    elif i==j and include_intra_read==False:
+        return np.zeros((chrlen[i-1], chrlen[j-1]))
     else:
-        data = np.zeros((chrlen[i-1], sum(chrlen[0:i])))
-        
-        for j in range(i+1,23):
-            #    print(j)
-            d = np.genfromtxt(getfilename(i, j), delimiter="\t", filling_values=(0, 0, 0))
-            d = np.delete(d, -1, 1)
-            data = np.c_[data, d]
-        return data
+        d = np.genfromtxt(getfilename(i, j), delimiter="\t", filling_values=(0, 0, 0))
+        d = np.delete(d, -1, 1)
+        return d
+
 
 if __name__ == '__main__':
     arguments = parse_argv()
@@ -82,18 +57,36 @@ if __name__ == '__main__':
     include_intra_read = False
     if '--includeintra' in arguments:
         include_intra_read = True
-        
+
     chrlen = getchrlen()
-    matrix = make_matrix_chr1(include_intra_read)
+    
+    if '--evenodd' in arguments:
+        for i in range(1,23,2):
+            print('i={0} j=2'.format(i))
+            matrix = getmatrix(i, 2, chrlen, include_intra_read)
+            for j in range(4,23,2):
+                print('i={0} j={1}'.format(i,j))
+                mat = getmatrix(i, j, chrlen, include_intra_read) 
+                matrix = np.c_[matrix, mat]
+            if i==1:
+                A = matrix
+            else:
+                A = np.r_[A, matrix]
+    else:
+        for i in range(1,23):
+            matrix = getmatrix(i, 1, chrlen, include_intra_read)
+            for j in range(2,23):
+                mat = getmatrix(i, j, chrlen, include_intra_read) 
+                matrix = np.c_[matrix, mat]
+            if i==1:
+                A = matrix
+            else:
+                A = np.r_[A, matrix]
 
-    for i in range(2,23):
-        data = make_matrix_eachchr(i, chrlen)
-        matrix = np.r_[matrix, data]
+#        triu = np.triu(A)
+ #       A = triu + triu.T - np.diag(np.diag(triu))
 
-    triu = np.triu(matrix)
-    A = triu + triu.T - np.diag(np.diag(triu))
-    p_nonzero = np.sum(A>0, axis=1)/A.shape[0]
-    A = A[p_nonzero > 0.3]
-    A = A[:,p_nonzero > 0.3]
+    A = A[np.sum(A>0, axis=1)/A.shape[1] > 0.3]
+    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > 0.3]
 
     np.save(outputfile, A)
