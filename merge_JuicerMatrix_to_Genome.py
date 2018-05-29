@@ -83,10 +83,7 @@ if __name__ == '__main__':
             else:
                 A = np.r_[A, matrix]
 
-#        triu = np.triu(A)
- #       A = triu + triu.T - np.diag(np.diag(triu))
-
-    A = A[np.sum(A>0, axis=1)/A.shape[1] > 0.3]
-    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > 0.3]
+    A = A[np.sum(A>0, axis=1)/A.shape[1] > 0.9]
+    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > 0.9]
 
     np.save(outputfile, A)
