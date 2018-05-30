@@ -55,6 +55,7 @@ if __name__ == '__main__':
     res = int(arguments[2])
     ntype = arguments[3]
     lim_pzero = float(arguments[4])
+
     include_intra_read = False
     if '--includeintra' in arguments:
         include_intra_read = True
@@ -73,6 +74,18 @@ if __name__ == '__main__':
                 A = matrix
             else:
                 A = np.r_[A, matrix]
+                
+        print("before trim: ")
+        print(A.shape)
+
+        index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
+        index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
+        A = A[index1]
+        A = A[:, index2]
+
+        print("after trim: ")
+        print(A.shape)
+                
     else:
         for i in range(1,23):
             matrix = getmatrix(i, 1, chrlen, include_intra_read)
@@ -84,8 +97,7 @@ if __name__ == '__main__':
             else:
                 A = np.r_[A, matrix]
 
-    A = A[np.sum(A>0, axis=1)/A.shape[1] > lim_pzero]
-    A = A[:, np.sum(A>0, axis=0)/A.shape[0] > lim_pzero]
+        print("matrix size: ")
+        print(A.shape)
 
-    print(A.shape)
     np.save(outputfile, A)
