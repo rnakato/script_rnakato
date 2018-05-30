@@ -38,6 +38,7 @@ def getmatrix(i, j, chrlen, include_intra_read):
     if j < i:
         d = np.genfromtxt(getfilename(j, i), delimiter="\t", filling_values=(0, 0, 0))
         d = np.delete(d, -1, 1)
+        d[np.isnan(d)] = 0  # NANを0に変換
         return d.T
 #        return np.zeros((chrlen[i-1], chrlen[j-1]))
     elif i==j and include_intra_read==False:
@@ -45,6 +46,7 @@ def getmatrix(i, j, chrlen, include_intra_read):
     else:
         d = np.genfromtxt(getfilename(i, j), delimiter="\t", filling_values=(0, 0, 0))
         d = np.delete(d, -1, 1)
+        d[np.isnan(d)] = 0  # NANを0に変換
         return d
 
 
@@ -75,16 +77,16 @@ if __name__ == '__main__':
             else:
                 A = np.r_[A, matrix]
                 
-#        print("before trim: ")
+        print("before trim: ")
         print(A.shape)
 
- #       index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
-  #      index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
-   #     A = A[index1]
-    #    A = A[:, index2]
+        index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
+        index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
+        A = A[index1]
+        A = A[:, index2]
 
-     #   print("after trim: ")
-      #  print(A.shape)
+        print("after trim: ")
+        print(A.shape)
                 
     else:
         for i in range(1,23):
