@@ -75,16 +75,16 @@ if __name__ == '__main__':
             else:
                 A = np.r_[A, matrix]
                 
-        print("before trim: ")
+#        print("before trim: ")
         print(A.shape)
 
-        index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
-        index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
-        A = A[index1]
-        A = A[:, index2]
+ #       index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
+  #      index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
+   #     A = A[index1]
+    #    A = A[:, index2]
 
-        print("after trim: ")
-        print(A.shape)
+     #   print("after trim: ")
+      #  print(A.shape)
                 
     else:
         for i in range(1,23):
