@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*- 
 import numpy as np
+import pandas as pd
 import sys
 
 def parse_argv():
@@ -35,20 +36,27 @@ def getchrlen():
     return chrlen
 
 def getmatrix(i, j, chrlen, include_intra_read):
-    if j < i:
-        d = np.genfromtxt(getfilename(j, i), delimiter="\t", filling_values=(0, 0, 0))
-        d = np.delete(d, -1, 1)
-        d[np.isnan(d)] = 0  # NANを0に変換
-        return d.T
-#        return np.zeros((chrlen[i-1], chrlen[j-1]))
-    elif i==j and include_intra_read==False:
-        return np.zeros((chrlen[i-1], chrlen[j-1]))
-    else:
-        d = np.genfromtxt(getfilename(i, j), delimiter="\t", filling_values=(0, 0, 0))
-        d = np.delete(d, -1, 1)
-        d[np.isnan(d)] = 0  # NANを0に変換
-        return d
+    def rename(d):
+        d.index = map(str, d.index * res)
+        d.index = d.index.map(lambda x: "chr" + str(i) + "-" + x)
+        d.columns = map(str, d.columns * res)
+        d.columns = d.columns.map(lambda x: "chr" + str(j) + "-" + x)
 
+    if j < i:
+        d = pd.read_csv(getfilename(j, i), delimiter='\t', header=None)
+        del d[d.shape[1]-1]
+        d = d.T
+        rename(d)
+        return d
+    elif i==j and include_intra_read==False:
+        d = pd.DataFrame(np.zeros((chrlen[i-1], chrlen[j-1])))
+        rename(d)
+        return d
+    else:
+        d = pd.read_csv(getfilename(i, j), delimiter='\t', header=None)
+        del d[d.shape[1]-1]
+        rename(d)
+        return d
 
 if __name__ == '__main__':
     arguments = parse_argv()
@@ -66,24 +74,29 @@ if __name__ == '__main__':
     
     if '--evenodd' in arguments:
         for i in range(1,23,2):
-            print('i={0} j=2'.format(i))
+            #            print('i={0} j=2'.format(i))
             matrix = getmatrix(i, 2, chrlen, include_intra_read)
             for j in range(4,23,2):
-                print('i={0} j={1}'.format(i,j))
+ #               print('i={0} j={1}'.format(i,j))
                 mat = getmatrix(i, j, chrlen, include_intra_read) 
-                matrix = np.c_[matrix, mat]
+#                matrix = np.c_[matrix, mat]
+                matrix = pd.concat([matrix, mat], axis=1)
+#            print(matrix.shape)
             if i==1:
                 A = matrix
             else:
-                A = np.r_[A, matrix]
-                
+                A = pd.concat([A, matrix])
+        
         print("before trim: ")
         print(A.shape)
 
-        index1 = np.sum(A>0, axis=1)/A.shape[1] > lim_pzero
-        index2 = np.sum(A>0, axis=0)/A.shape[0] > lim_pzero
-        A = A[index1]
-        A = A[:, index2]
+        pzero_raw = A[A>0].count(axis=0)/A.shape[0]
+        index = pzero_raw[pzero_raw > lim_pzero].index
+        pzero_col = A[A>0].count(axis=1)/A.shape[1]
+        columns = pzero_col[pzero_col > lim_pzero].index
+
+        A = A[index]
+        A = A.loc[columns]
 
         print("after trim: ")
         print(A.shape)
@@ -93,13 +106,13 @@ if __name__ == '__main__':
             matrix = getmatrix(i, 1, chrlen, include_intra_read)
             for j in range(2,23):
                 mat = getmatrix(i, j, chrlen, include_intra_read) 
-                matrix = np.c_[matrix, mat]
+                matrix = pd.concat([matrix, mat], axis=1)
             if i==1:
                 A = matrix
             else:
-                A = np.r_[A, matrix]
+                A = pd.concat([A, matrix])
 
         print("matrix size: ")
         print(A.shape)
-
-    np.save(outputfile, A)
+        
+    A.to_pickle(outputfile)
