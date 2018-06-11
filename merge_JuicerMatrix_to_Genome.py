@@ -26,8 +26,8 @@ def getfilename(i, j):
 def getchrlen(nchr):
     chrlen = []
     for i in range(1,nchr+1):
-        d = np.genfromtxt(getfilename(1, i), delimiter="\t", filling_values=(0, 0, 0))
-        d = np.delete(d, -1, 1)
+        d = pd.read_csv(getfilename(1, i), delimiter='\t', header=None)
+        del d[d.shape[1]-1]
         chrlen.append(d.shape[1])
     
     #print(chrlen)
@@ -80,9 +80,7 @@ if __name__ == '__main__':
             for j in range(4,nchr+1,2):
  #               print('i={0} j={1}'.format(i,j))
                 mat = getmatrix(i, j, chrlen, include_intra_read) 
-#                matrix = np.c_[matrix, mat]
                 matrix = pd.concat([matrix, mat], axis=1)
-#            print(matrix.shape)
             if i==1:
                 A = matrix
             else:
