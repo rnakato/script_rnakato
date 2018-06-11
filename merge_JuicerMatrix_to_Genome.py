@@ -5,7 +5,7 @@ import pandas as pd
 import sys
 
 def parse_argv():
-    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> <lim_pzero> [--help] [--includeintra] [--evenodd]'.format(__file__)
+    usage = 'Usage: \n    python {} <matrixdir> <outputfilename> <resolution> <observed/oe> <lim_pzero> <num of chr> [--help] [--includeintra] [--evenodd]'.format(__file__)
     arguments = sys.argv
     if len(arguments) == 1:
         print(usage)
@@ -23,9 +23,9 @@ def parse_argv():
 def getfilename(i, j):
     return dir + "/" + str(res) + "/chr" + str(i) + "-chr" + str(j) + "/" + ntype + ".txt"
 
-def getchrlen():
+def getchrlen(nchr):
     chrlen = []
-    for i in range(1,23):
+    for i in range(1,nchr+1):
         d = np.genfromtxt(getfilename(1, i), delimiter="\t", filling_values=(0, 0, 0))
         d = np.delete(d, -1, 1)
         chrlen.append(d.shape[1])
@@ -65,18 +65,19 @@ if __name__ == '__main__':
     res = int(arguments[2])
     ntype = arguments[3]
     lim_pzero = float(arguments[4])
+    nchr = int(arguments[5])
 
     include_intra_read = False
     if '--includeintra' in arguments:
         include_intra_read = True
 
-    chrlen = getchrlen()
+    chrlen = getchrlen(nchr)
     
     if '--evenodd' in arguments:
-        for i in range(1,23,2):
+        for i in range(1,nchr+1,2):
             #            print('i={0} j=2'.format(i))
             matrix = getmatrix(i, 2, chrlen, include_intra_read)
-            for j in range(4,23,2):
+            for j in range(4,nchr+1,2):
  #               print('i={0} j={1}'.format(i,j))
                 mat = getmatrix(i, j, chrlen, include_intra_read) 
 #                matrix = np.c_[matrix, mat]
@@ -102,9 +103,9 @@ if __name__ == '__main__':
         print(A.shape)
                 
     else:
-        for i in range(1,23):
+        for i in range(1,nchr+1):
             matrix = getmatrix(i, 1, chrlen, include_intra_read)
-            for j in range(2,23):
+            for j in range(2,nchr+1):
                 mat = getmatrix(i, j, chrlen, include_intra_read) 
                 matrix = pd.concat([matrix, mat], axis=1)
             if i==1:
