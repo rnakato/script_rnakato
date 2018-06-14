@@ -21,7 +21,7 @@ def parse_argv():
     return arguments
 
 def getfilename(i, j):
-    return dir + "/" + str(res) + "/chr" + str(i) + "-chr" + str(j) + "/" + ntype + ".txt"
+    return dir + "/" + str(res) + "/chr" + str(i) + "-chr" + str(j) + "/" + ntype + ".matrix.gz"
 
 def getchrlen(nchr):
     chrlen = []
