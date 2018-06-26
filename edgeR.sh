@@ -2,22 +2,22 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-n] <Matrix> <build> <num of reps> <groupname> <FDR> <gtf>" 1>&2
+    echo "$cmdname [-a] <Matrix> <Ensembl|UCSC> <build> <num of reps> <groupname> <FDR>" 1>&2
     echo "  Example:" 1>&2
-    echo "  edgeR.sh -n star/Matrix GRCh38 2:2 WT:KD 0.05 GRCh38.gtf" 1>&2
+    echo "  $cmdname Matrix GRCh38 2:2 WT:KD 0.05" 1>&2
 }
 
-name=0
-while getopts n option
+all=0
+while getopts a option
 do
     case ${option} in
-        n)
-            name=1
-            ;;
-        *)
-            usage
-            exit 1
-            ;;
+	a)
+	    all=1
+	    ;;
+	*)
+	    usage
+	    exit 1
+	    ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -28,11 +28,17 @@ if [ $# -ne 6 ]; then
 fi
 
 outname=$1
-build=$2
-n=$3
-gname=$4
-p=$5
-gtf=$6
+db=$2
+build=$3
+n=$4
+gname=$5
+p=$6
+
+n1=$(cut -d':' -f1 <<<${n})
+n2=$(cut -d':' -f2 <<<${n})
+
+Ddir=`database.sh`
+gtf=`ls $Ddir/$db/$build/gtf_chrUCSC/*.$build.*.chr.gtf`
 
 Rdir=$(cd $(dirname $0) && pwd)
 R="Rscript $Rdir/edgeR.R"
@@ -43,43 +49,43 @@ ex(){
 }
 
 postfix=count.$build
-if test $name -eq 1; then
-    ex "$R -i=$outname.genes.count.$build.name.txt    -n=$n -gname=$gname -o=$outname.genes.$postfix    -p=$p -nrowname=2 -ncolskip=1"
-    ex "$R -i=$outname.isoforms.count.$build.name.txt -n=$n -gname=$gname -o=$outname.isoforms.$postfix -p=$p -nrowname=3 -ncolskip=2 -color=orange"
-else
-    ex "$R -i=$outname.genes.count.$build.txt    -n=$n -gname=$gname -o=$outname.genes.$postfix    -p=$p -nrowname=1"
-    ex "$R -i=$outname.isoforms.count.$build.txt -n=$n -gname=$gname -o=$outname.isoforms.$postfix -p=$p -nrowname=2 -ncolskip=1 -color=orange"
-fi
 
-convertname(){
-    str=$1
-    nline=$2
-    s=""
-    for ty in all DEGs upDEGs downDEGs; do
-	head=$outname.$str.$postfix.edgeR.$ty
-	cat $head.csv | sed 's/,/\t/g' > $head.csv.temp
-	mv $head.csv.temp $head.csv
-	if test $str = "genes"; then
-	    convert_genename_fromgtf.pl gene $head.csv $gtf $nline > $head.name.csv
-	else
-	    convert_genename_fromgtf.pl transcript $head.csv $gtf $nline > $head.name.csv
-	fi
-	s="$s -i $head.name.csv -n fitted-$str-$ty"
-    done
-    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.name.xlsx
-}
+# genes
+ncol=$((n1+n2+2))
+cut -f 1-$ncol $outname.genes.count.$build.txt > $outname.genes.count.$build.temp
+ex "$R -i=$outname.genes.count.$build.temp    -n=$n -gname=$gname -o=$outname.genes.$postfix    -p=$p -nrowname=2 -ncolskip=1"
+rm $outname.genes.count.$build.temp
+
+# isoforms
+ncol=$((n1+n2+3))
+cut -f 1-$ncol $outname.isoforms.count.$build.txt > $outname.isoforms.count.$build.temp
+ex "$R -i=$outname.isoforms.count.$build.temp -n=$n -gname=$gname -o=$outname.isoforms.$postfix -p=$p -nrowname=3 -ncolskip=2 -color=orange"
+rm $outname.isoforms.count.$build.temp
 
 for str in genes isoforms; do
+    if test $str = "genes"; then
+	refFlat=`ls $Ddir/$db/$build/gtf_chrUCSC/*.$build.*.chr.gene.refFlat`
+    else
+	refFlat=`ls $Ddir/$db/$build/gtf_chrUCSC/*.$build.*.chr.transcript.refFlat`
+    fi
+    
     s=""
-    for ty in all DEGs upDEGs downDEGs;do
-	s="$s -i $outname.$str.$postfix.edgeR.$ty.csv -n fitted-$str-$ty"
+    # gene info 追加
+    for ty in all DEGs upDEGs downDEGs; do
+	head=$outname.$str.$postfix.edgeR.$ty
+	add_geneinfo_fromRefFlat.pl $str $head.tsv $refFlat 0 > $head.temp
+	mv $head.temp $head.tsv
+	s="$s -i $head.tsv -n fitted-$str-$ty"
     done
-    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.xlsx #-d,
+
+    # short gene, nonsense geneを除去 (all除く)
+    if test $all = 0; then
+	for ty in DEGs upDEGs downDEGs; do
+	    head=$outname.$str.$postfix.edgeR.$ty
+	    filter_short_or_nonsense_genes.pl $head.tsv -l 1000 > $head.temp
+	    mv $head.temp $head.tsv
+	done
+    fi
+
+    csv2xlsx.pl $s -o $outname.$str.$postfix.edgeR.xlsx
 done
-
-exit 0
-
-if test $name -eq 1; then
-    convertname genes 0
-    convertname isoforms 0
-fi

@@ -3,12 +3,13 @@
 use strict;
 use warnings;
 use autodie;
-die "convert_genename_fromgtf.pl [gene|transcript] <file> <gtf> <line>\n" if($#ARGV !=3);
+die "convert_genename_fromgtf.pl [genes|isoforms] <file> <gtf> <line>\n" if($#ARGV !=3);
 
 my $type=$ARGV[0];
 my $file=$ARGV[1];
 my $gtf=$ARGV[2];
 my $nline=$ARGV[3];
+
 my %Hashgname;
 my %Hashtname;
 
@@ -40,7 +41,7 @@ while(<ListFile>){
     chomp;
     my @clm = split(/\t/, $_);
 
-    if($type eq "gene") {
+    if($type eq "genes") {
 	if(exists($Hashgname{$clm[$nline]})){
 	    print "$Hashgname{$clm[$nline]}\t$_\n";
 	}else{

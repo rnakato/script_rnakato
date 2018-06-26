@@ -114,6 +114,8 @@ num1
 num2
 output
 
+nsample <- num1 + num2
+
 group <- factor(c(rep(gname1,num1),rep(gname2,num2)))
 design <- model.matrix(~ group)
 design
@@ -233,10 +235,10 @@ cnts_sig <- cnts[significant,]
 cnts_sig <- cnts_sig[order(cnts_sig$PValue),]
 
 # FDRでソートすると同値が発生するので、PValueでソートする
-write.table(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
-write.table(cnts_sig, file=paste(output, ".edgeR.DEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
-write.table(cnts_sig[cnts_sig$logFC > 0,], file=paste(output, ".edgeR.upDEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
-write.table(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.csv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts[order(cnts$PValue),], file=paste(output, ".edgeR.all.tsv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig, file=paste(output, ".edgeR.DEGs.tsv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig[cnts_sig$logFC > 0,], file=paste(output, ".edgeR.upDEGs.tsv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
+write.table(cnts_sig[cnts_sig$logFC < 0,], file=paste(output, ".edgeR.downDEGs.tsv", sep=""), quote=F, sep = "\t",row.names = F, col.names = T)
 
 
 # DEGsのクラスタリング
