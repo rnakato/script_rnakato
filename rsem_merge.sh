@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-n] <files> <output> [Ensembl|UCSC] <build> <strings for sed>" 1>&2
+    echo "$cmdname <files> <output> <Ensembl|UCSC> <build> <strings for sed>" 1>&2
 }
 
 name=0
