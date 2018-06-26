@@ -72,7 +72,7 @@ echo -en "$prefix\t" > $log
 parse_starlog.pl $odir/$prefix.$build.Log.final.out >> $log
 
 RSEMdir=$(cd $(dirname $0) && pwd)/../RSEM
-$RSEMdir/rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build #--calc-ci --ci-memory 30000 --seed 12345
+$RSEMdir/rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build
 
 #$RSEMdir/rsem-plot-transcript-wiggles --gene-list --show-unique mmliver_single_quals gene_ids.txt output.pdf 
 $RSEMdir/rsem-plot-model $odir/$prefix.$build $odir/$prefix.$build.quals.pdf
