@@ -78,12 +78,12 @@ elif test $build = "pombe"; then
 else
     Ddir=`database.sh`/$db/$build
 fi
+
 gt=$Ddir/genome_table
 mptable=../SSP/data/mptable/mptable.UCSC.$build.50mer.flen150.txt
+bam=$bamdir/$head.sort.bam
 
 if test $type = "exec";then
-    bam=$bamdir/$head.sort.bam
-
     if test $program = "bowtie2";then
     	bowtie2.sh $pens -d $bamdir "$fastq" $prefix $build
     else
@@ -104,6 +104,9 @@ elif test $type = "stats"; then
     b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
     gcov=`cat log/parsestats-$head.100 | grep -v Sample | cut -f10`
     b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`
-#    c=`cut -f2,3,4,5 ppout/$head.SN`
-    echo -e "$a\t$b\t$gcov\t$b2\t$c"
+    echo -en "$a\t$b\t$gcov\t$b2\t$c\t"
+
+    if test $nopp != 1; then
+	echo -e "`tail -n1 sspout/$head.stats.txt | cut -f4,5,6,7,8,9,10,11,12,13,14`"
+    fi
 fi
