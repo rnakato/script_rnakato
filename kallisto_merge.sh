@@ -19,7 +19,7 @@ pwd=`pwd.sh`
 $pwd/mergekallistotsv.sh $files > $output.transcript.csv
 $pwd/convert_genename_fromgtf.pl transcript $output.transcript.csv $gtf 0 > $output.transcript.name.csv
 
-/usr/bin/Rscript $pwd/kallisto_tximport.R $output $gtf $files
+Rscript $pwd/kallisto_tximport.R $output $gtf $files
 
 tmpfile=$(mktemp)
 for file in $files
