@@ -20,7 +20,7 @@ do
 done
 shift $((OPTIND - 1))
 
-if [ $# -ne 4 ]; then
+if [ $# -ne 5 ]; then
   usage
   exit 1
 fi
