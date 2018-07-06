@@ -25,7 +25,7 @@ if [ $# -ne 5 ]; then
   exit 1
 fi
 
-matrixdir=$1
+dir=$1
 hic=$2
 binsize=$3
 build=$4
@@ -40,12 +40,10 @@ else
 fi
 
 juicertool="java -Xms512m -Xmx2048m -jar /home/git/binaries/Aidenlab/juicer_tools.1.8.9_jcuda.0.8.jar"
-dir=$matrixdir/intrachromosomal/$binsize
-mkdir -p $dir
-
 pwd=$(cd $(dirname $0) && pwd)
 
-for i in $(seq 1 $chrnum); do
+for i in $(seq 1 $chrnum)
+do
     for j in $(seq $i $chrnum); do
         d=$dir/interchromosomal/$binsize/chr$i-chr$j
         mkdir -p $d
@@ -57,12 +55,12 @@ for i in $(seq 1 $chrnum); do
     done
 done
 
-for str in observed #oe                                                                                                                                                                       
+for str in observed #oe
 do
     $pwd/merge_JuicerMatrix_to_Genome.py $dir/interchromosomal \
         $dir/interchromosomal/$binsize/genome.$str.full.$lim_pzero.pickle \
-        $binsize $str $lim_pzero
+        $binsize $str $lim_pzero $chrnum
     $pwd/merge_JuicerMatrix_to_Genome.py $dir/interchromosomal \
         $dir/interchromosomal/$binsize/genome.$str.evenodd.$lim_pzero.pickle \
-        $binsize $str $lim_pzero --evenodd
+        $binsize $str $lim_pzero $chrnum --evenodd
 done
