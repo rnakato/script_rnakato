@@ -37,16 +37,25 @@ if __name__ == '__main__':
     binlen = int(chrlen/resolution) +1
 
     arr = np.zeros((binlen, binlen))
-    d = pd.read_csv(inputfile, delimiter='\t', header=None)
+    d = pd.read_csv(inputfile, delimiter='\t', header=None, index_col=[0,1])
+    d = d.iloc[:,0]
+    d = d.unstack(fill_value=0)
+    index = np.arange(binlen) * resolution
+    d = d.reindex(index, columns=index, fill_value=0)
+    d.index.name = None
+    d.columns.name = None
 
-    for index, row in d.iterrows():
-        i = int(row[0]/resolution)
-        c = int(row[1]/resolution)
-        arr[i, c] = row[2]
-        arr[c, i] = row[2]
-        #    print(i, c, row[2])
-        df = pd.DataFrame(arr)
-        df.index = df.index * resolution
-        df.columns = df.columns * resolution
+    triu = np.triu(d)
+    array = triu + triu.T - np.diag(np.diag(triu))
+    df = pd.DataFrame(array, index=d.index, columns=d.columns)
+
+#    for index, row in d.iterrows():
+ #       i = int(row[0]/resolution)
+  #      c = int(row[1]/resolution)
+   #     arr[i, c] = row[2]
+    #    arr[c, i] = row[2]
+     #   df = pd.DataFrame(arr)
+      #  df.index = df.index * resolution
+       # df.columns = df.columns * resolution
 
     df.to_csv(outputfile, sep='\t', compression='gzip')
