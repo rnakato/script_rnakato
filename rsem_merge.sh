@@ -48,8 +48,8 @@ do
 	cat $head.txt | sed -e 's/.'$build'.'$str'.results//g' > $head.temp
 	mv $head.temp $head.txt
 	for rem in $str_sed; do
-	  cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
-	  mv $head.temp $head.txt
+	    cat $head.txt | sed -e 's/'$rem'//g' > $head.temp
+	    mv $head.temp $head.txt
 	done
 
     done
