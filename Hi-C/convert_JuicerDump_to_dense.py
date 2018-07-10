@@ -49,13 +49,4 @@ if __name__ == '__main__':
     array = triu + triu.T - np.diag(np.diag(triu))
     df = pd.DataFrame(array, index=d.index, columns=d.columns)
 
-#    for index, row in d.iterrows():
- #       i = int(row[0]/resolution)
-  #      c = int(row[1]/resolution)
-   #     arr[i, c] = row[2]
-    #    arr[c, i] = row[2]
-     #   df = pd.DataFrame(arr)
-      #  df.index = df.index * resolution
-       # df.columns = df.columns * resolution
-
     df.to_csv(outputfile, sep='\t', compression='gzip')
