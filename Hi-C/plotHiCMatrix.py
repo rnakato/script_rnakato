@@ -27,6 +27,7 @@ e = int(end / resolution)
 
 logmat = data.apply(np.log2)
 
-plt.imshow(ExtractMatrix(logmat,s,e), clim=(-3, 12), cmap=cm)
+fig = plt.figure(figsize=(8, 8))
+plt.imshow(ExtractMatrix(logmat,s,e), clim=(-3, 8), cmap=cm)
 plt.title(label)
 plt.savefig(output)
