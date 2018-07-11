@@ -33,6 +33,6 @@ data = data * 10000000 / np.nansum(data)
 
 fig = plt.figure(figsize=(8, 8))
 #plt.imshow(ExtractMatrix(logmat,s,e), clim=(0, 500), cmap=cm)
-plt.imshow(ExtractMatrix(data,s,e), clim=(0, 500), cmap=cm)
+plt.imshow(ExtractMatrix(data,s,e), clim=(0, 40), cmap=cm)
 plt.title(label)
 plt.savefig(output)
