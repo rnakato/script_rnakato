@@ -11,7 +11,7 @@ import pandas as pd
 import seaborn as sns
 sys.path.append("/home/git/script_rnakato/Hi-C")
 from HiCmodule import *
-cm = generate_cmap(['#1310cc', '#FFFFFF', '#d10a3f'])
+cm = generate_cmap(['#FFFFFF', '#d10a3f'])
 
 filename = sys.argv[1]
 output = sys.argv[2]
@@ -25,9 +25,14 @@ resolution = data.index[1] - data.index[0]
 s = int(start / resolution)
 e = int(end / resolution)
 
-logmat = data.apply(np.log2)
+# Total read normalization
+data = data * 10000000 / np.nansum(data)
+
+# log2
+#logmat = data.apply(np.log2)
 
 fig = plt.figure(figsize=(8, 8))
-plt.imshow(ExtractMatrix(logmat,s,e), clim=(-3, 8), cmap=cm)
+#plt.imshow(ExtractMatrix(logmat,s,e), clim=(0, 500), cmap=cm)
+plt.imshow(ExtractMatrix(data,s,e), clim=(0, 500), cmap=cm)
 plt.title(label)
 plt.savefig(output)

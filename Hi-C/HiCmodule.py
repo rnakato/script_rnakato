@@ -55,7 +55,7 @@ class JuicerMatrix:
         
     def getlog(self, *, isOE=False, isNonZero=False):
         mat = self.getmatrix(isOE=isOE, isNonZero=isNonZero)
-        logmat = mat.apply(np.log1p)
+        logmat = mat.apply(np.log2)
         return logmat
 
     def getPearson(self, *, isOE=False):
