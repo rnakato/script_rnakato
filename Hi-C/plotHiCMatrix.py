@@ -26,13 +26,13 @@ s = int(start / resolution)
 e = int(end / resolution)
 
 # Total read normalization
-data = data * 10000000 / np.nansum(data)
+data = data * 10 * data.shape[0] * data.shape[1] / np.nansum(data)
 
 # log2
 #logmat = data.apply(np.log2)
 
 fig = plt.figure(figsize=(8, 8))
 #plt.imshow(ExtractMatrix(logmat,s,e), clim=(0, 500), cmap=cm)
-plt.imshow(ExtractMatrix(data,s,e), clim=(0, 40), cmap=cm)
+plt.imshow(ExtractMatrix(data,s,e), clim=(0, 100), cmap=cm)
 plt.title(label)
 plt.savefig(output)
