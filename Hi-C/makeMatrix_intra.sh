@@ -9,7 +9,7 @@ norm=VC_SQRT
 while getopts k option
 do
     case ${option} in
-        a)
+        k)
             norm=KR
             ;;
         *)
