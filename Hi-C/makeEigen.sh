@@ -5,12 +5,12 @@ function usage()
     echo "$cmdname <matrixdir> <hic file> <binsize> <build>" 1>&2
 }
 
-norm=VC_SQRT
-while getopts k option
+all=0
+while getopts a option
 do
     case ${option} in
         a)
-            norm=KR
+            all=1
             ;;
         *)
             usage
@@ -30,8 +30,6 @@ hic=$2
 binsize=$3
 build=$4
 
-gt=/home/Database/UCSC/$build/genome_table
-
 if test $build = "mm10" -o $build = "mm9"; then
     chrnum=19
 else
@@ -45,17 +43,11 @@ mkdir -p $dir
 pwd=$(cd $(dirname $0) && pwd)
 
 for chr in $(seq 1 $chrnum) X; do
-    echo $chr
-    for type in observed oe
+    for norm in VC_SQRT KR
     do
-        $juicertool dump $type $norm $hic $chr $chr BP $binsize $dir/$type.$norm.chr$chr.txt
-        $pwd/convert_JuicerDump_to_dense.py $dir/$type.$norm.chr$chr.txt $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
-        rm $dir/$type.$norm.chr$chr.txt
-    done
-    for type in #expected norm
-    do
-        $juicertool dump $type #$norm $hic.hic $chr BP $binsize $dir/$type.$norm.chr$chr.matrix -d
+        echo $chr
+	$juicertool pearsons    -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.matrix
+        $juicertool eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.txt
+        gzip -f $dir/pearson.$norm.matrix $dir/eigen.$norm.txt
     done
 done
-
-
