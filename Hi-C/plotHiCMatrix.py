@@ -29,7 +29,7 @@ e = int(end / resolution)
 data = data * 1000000 / np.nansum(data)
 
 fig = plt.figure(figsize=(8, 8))
-ymax = np.sqrt(data.unstack().max())
+ymax = np.sqrt(data.unstack().max())/2
 plt.imshow(ExtractMatrix(data,s,e), clim=(0, ymax), cmap=cm)
 plt.title(label)
 plt.savefig(output)

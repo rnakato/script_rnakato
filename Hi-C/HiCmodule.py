@@ -33,13 +33,41 @@ def getNonZeroMatrix(A, lim_pzero):
 
     return A
 
+def calcInsulationScore(mat, max_sqsize, step, resolution):
+    def calceach(mat, squaresize, resolution):
+        matsize = int(squaresize / resolution)
+
+        array = np.zeros(mat.shape[0])
+        for i in range(mat.shape[0]):
+            if(i - matsize < 0 or i + matsize >= mat.shape[0]):
+                continue
+            array[i] = mat[i-matsize: i-1, i+1: i+matsize].mean()
+
+        array = np.log2(array/array.mean())
+        return array
+
+    imax = int(max_sqsize/step)
+    for i in range(imax, 1, -1):
+        if i==imax: 
+            InsulationScore = calceach(mat, i * step, resolution)
+        else: 
+            InsulationScore = np.c_[InsulationScore, calceach(mat, i * step, resolution)]
+            
+    InsulationScore = InsulationScore.T
+    df = pd.DataFrame(InsulationScore)
+    df.index = np.arange(imax, 1, -1) * step
+    df.columns = df.columns * resolution
+    return df
+
 class JuicerMatrix:
     def __init__(self, norm, rawmatrix, oematrix, chr, res):
+        self.res = res
         self.raw = loadHiCMatrix(rawmatrix, chr, res)
         self.oe  = loadHiCMatrix(oematrix, chr, res)
         if norm == "RPM":
             self.raw = self.raw * 10000000 / np.nansum(self.raw)
             self.oe  = self.oe  * 10000000 / np.nansum(self.oe)
+        self.InsulationScore = calcInsulationScore(self.getmatrix().values, 1000000, 100000, self.res)
 
     def getmatrix(self, *, isOE=False, isNonZero=False):
         if isOE == False:
@@ -79,6 +107,25 @@ class JuicerMatrix:
         pc1[index] = np.nan
         return transformed[:, 0]
 
+    def getInsulationScore(self):
+        i = np.where(self.InsulationScore.index == 500000)[0][0]
+        return self.InsulationScore.iloc[i:i+1].T
+
+    def getMultiInsulationScore(self):
+        return self.InsulationScore
+
+    def getTADboundary(self):
+        distance = int(100000 / self.res)
+        array = self.getInsulationScore().values
+        slop = np.zeros(array.shape[0])
+        for i in range(distance, array.shape[0] - distance):
+            slop[i] = array[i - distance] - array[i + distance]
+
+        boundary = []
+        for i in range(1, len(slop)):
+            if(slop[i-1] > 0 and slop[i] < 0 and array[i] <= -0.1):
+                boundary.append(i)
+        return boundary
     
 def ExtractMatrix(mat,s,e):
     if e==-1:
