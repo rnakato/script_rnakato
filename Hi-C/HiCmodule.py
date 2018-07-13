@@ -24,7 +24,7 @@ def loadHiCMatrix(filename, chr, res):
 def getNonZeroMatrix(A, lim_pzero):
     A = A.fillna(0)
     pzero_row = A[A>0].count(axis=0)/A.shape[0]
-    index = pzero_raw[pzero_row > lim_pzero].index
+    index = pzero_row[pzero_row > lim_pzero].index
     pzero_col = A[A>0].count(axis=1)/A.shape[1]
     columns = pzero_col[pzero_col > lim_pzero].index
 
@@ -83,28 +83,32 @@ class JuicerMatrix:
         
     def getlog(self, *, isOE=False, isNonZero=False):
         mat = self.getmatrix(isOE=isOE, isNonZero=isNonZero)
-        logmat = mat.apply(np.log2)
+        logmat = mat.apply(np.log1p)
         return logmat
 
-    def getPearson(self, *, isOE=False):
-        logmat = self.getlog(isOE=isOE)
-        ccmat = pd.DataFrame(np.corrcoef(logmat), index=logmat.index, columns=logmat.index)
-        return ccmat
-    
     def getZscore(self, *, isOE=False):
         logmat = self.getlog(isOE=isOE)
         zmat = pd.DataFrame(sp.stats.zscore(logmat, axis=1), index=logmat.index, columns=logmat.index)
         return zmat
 
+    def getPearson(self, *, isOE=False):
+        oe = self.getlog(isOE=isOE)
+#        oe = self.getmatrix(isOE=isOE)
+#        cov = logmat.cov()
+ #       ccmat = np.corrcoef(cov)
+        ccmat = np.corrcoef(oe)
+        ccmat[np.isnan(ccmat)] = 0
+        ccmat = pd.DataFrame(ccmat, index=oe.index, columns=oe.index)
+        return ccmat
+    
     def getEigen(self):
         from sklearn.decomposition import PCA
         pca = PCA()
         ccmat = self.getPearson()
-        index = np.isnan(ccmat).all(axis=1)
-        ccmat[np.isnan(ccmat)] = 0
+#        index = np.isnan(ccmat).all(axis=1)
         transformed = pca.fit_transform(ccmat)
         pc1 = transformed[:, 0]
-        pc1[index] = np.nan
+#        pc1[index] = np.nan
         return transformed[:, 0]
 
     def getInsulationScore(self):
