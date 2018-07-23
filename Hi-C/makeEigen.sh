@@ -42,12 +42,18 @@ mkdir -p $dir
 
 pwd=$(cd $(dirname $0) && pwd)
 
+ex(){
+    command=$1
+    echo $1
+    `echo $1`
+}
+
 for chr in $(seq 1 $chrnum) X; do
     for norm in VC_SQRT KR
     do
         echo $chr
-	$juicertool pearsons    -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.matrix
-        $juicertool eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.txt
-        gzip -f $dir/pearson.$norm.matrix $dir/eigen.$norm.txt
+	ex "$juicertool pearsons    -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.chr$chr.matrix"
+        ex "$juicertool eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.chr$chr.txt"
+        gzip -f $dir/pearson.$norm.chr$chr.matrix $dir/eigen.$norm.chr$chr.txt
     done
 done
