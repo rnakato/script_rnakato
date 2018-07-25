@@ -43,7 +43,7 @@ def calcInsulationScore(mat, max_sqsize, step, resolution):
                 continue
             array[i] = mat[i-matsize: i-1, i+1: i+matsize].mean()
 
-        array = np.log2(array/array.mean())
+        array = np.log2(array/np.nanmean(array))
         return array
 
     imax = int(max_sqsize/step)
