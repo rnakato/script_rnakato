@@ -44,8 +44,13 @@ plt.savefig(output + ".InsulationScore.png")
 start = IS.index[boundary]
 end = start + resolution
 
-path = 'data/src/test.txt'
-
 with open(output + ".boundary.bed", "w", encoding="utf-8") as f:
     for s, e in zip(start,end):
         f.write(chr + "\t" + str(s) + "\t" + str(e) + "\n")
+
+start = IS.index
+end = start + resolution
+
+with open(output + ".InsulationScore.bedGraph", "w", encoding="utf-8") as f:
+    for s, e in zip(start,end):
+        f.write(chr + "\t" + str(s) + "\t" + str(e) + "\t" + str(IS.loc[s].values[0]) + "\n")
