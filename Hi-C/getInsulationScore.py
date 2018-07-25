@@ -38,7 +38,6 @@ for x in boundary:
     plt.axvline(x, color="orange")
     
 ax.set_ylim([-2, 2])
-#ax.set_xlim([100,500])
 
 plt.savefig(output + ".InsulationScore.png")
 
@@ -50,4 +49,3 @@ path = 'data/src/test.txt'
 with open(output + ".boundary.bed", "w", encoding="utf-8") as f:
     for s, e in zip(start,end):
         f.write(chr + "\t" + str(s) + "\t" + str(e) + "\n")
-#        f.write(chr, s, e, sep="\t")
