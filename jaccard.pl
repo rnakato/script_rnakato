@@ -35,7 +35,7 @@ pod2usage(2) if(!$#file);
 my ($fh, $tmpfile) = tempfile;
 
 for(my $i=0;$i<=$#file;$i++){
-    system("sort -k1,1 -k2,2n $file[$i] | cut -f1,2,3 > $tmpfile.$i");
+    system("cat $file[$i] | grep -v start | sort -k1,1 -k2,2n | cut -f1,2,3 > $tmpfile.$i");
     system("head -n $number $tmpfile.$i > $tmpfile.$i.top$number");
 }
 
