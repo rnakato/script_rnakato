@@ -50,10 +50,11 @@ convertname(){
 	head=$outname.$str.count.$build.DESeq2multi.$ty
 	cat $head.csv | sed 's/,/\t/g' > $head.csv.temp
 	mv $head.csv.temp $head.csv
+
 	if test $str = "genes"; then
-	    convert_genename_fromgtf.pl gene $head.csv $gtf $nline > $head.name.csv
+	    convert_genename_fromgtf.pl genes all $head.csv $gtf $nline > $head.name.csv
 	else
-	    convert_genename_fromgtf.pl transcript $head.csv $gtf $nline > $head.name.csv
+	    convert_genename_fromgtf.pl isoforms all $head.csv $gtf $nline > $head.name.csv
 	fi
 	s="$s -i $head.name.csv -n $str-$ty"
     done
