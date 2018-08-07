@@ -107,6 +107,7 @@ elif test $type = "stats"; then
     echo -en "$a\t$b\t$gcov\t$b2\t$c\t"
 
     if test $nopp != 1; then
-	echo -e "`tail -n1 sspout/$head.stats.txt | cut -f4,5,6,7,8,9,10,11,12,13,14`"
+	echo -en "`tail -n1 sspout/$head.stats.txt | cut -f4,5,6,7,8,9,10,11,12,13,14`"
     fi
+    echo ""
 fi

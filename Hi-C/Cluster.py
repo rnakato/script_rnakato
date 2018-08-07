@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from sklearn.cluster import MiniBatchKMeans
 
 def KMeansPlot(matrix, title, ncluster):
     import matplotlib.cm
+    from sklearn.cluster import MiniBatchKMeans
     model = MiniBatchKMeans(random_state=0, n_clusters=ncluster, max_iter=10000)
     kmeans = model.fit_predict(matrix)
     color = matplotlib.cm.brg(np.linspace(0,1, np.max(kmeans) - np.min(kmeans)+1))
