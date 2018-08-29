@@ -6,8 +6,8 @@ from sklearn import linear_model
 
 #自分で定義したカラーマップを返す
 # https://qiita.com/kenmatsu4/items/fe8a2f1c34c8d5676df8
-from matplotlib.colors import LinearSegmentedColormap
 def generate_cmap(colors):
+    from matplotlib.colors import LinearSegmentedColormap
     values = range(len(colors))
 
     vmax = np.ceil(np.max(values))
@@ -15,11 +15,6 @@ def generate_cmap(colors):
     for v, c in zip(values, colors):
         color_list.append( ( v/ vmax, c) )
     return LinearSegmentedColormap.from_list('custom_cmap', color_list)
-
-def loadHiCMatrix(filename, chr, res):
-    print(filename)
-    data = pd.read_csv(filename, delimiter='\t', index_col=0)
-    return data
 
 def getNonZeroMatrix(A, lim_pzero):
     A = A.fillna(0)
@@ -47,7 +42,7 @@ def calcInsulationScore(mat, max_sqsize, step, resolution):
         return array
 
     imax = int(max_sqsize/step)
-    for i in range(imax, 1, -1):
+    for i in range(imax, 0, -1):
         if i==imax: 
             InsulationScore = calceach(mat, i * step, resolution)
         else: 
@@ -55,15 +50,39 @@ def calcInsulationScore(mat, max_sqsize, step, resolution):
             
     InsulationScore = InsulationScore.T
     df = pd.DataFrame(InsulationScore)
-    df.index = np.arange(imax, 1, -1) * step
+    df.index = np.arange(imax, 0, -1) * step
     df.columns = df.columns * resolution
     return df
 
+def loadHiCMatrix(filename):
+    print(filename)
+    data = pd.read_csv(filename, delimiter='\t', index_col=0)
+    return data
+
+def loadEigen(filename, refFlat, chr, res):
+    print(filename)
+    eigen = np.loadtxt(filename)
+    gene = pd.read_csv(refFlat, delimiter='\t', header=None, index_col=0)
+    gene = gene[gene.iloc[:,1] == chr]
+    gene = gene.iloc[:,5].values
+
+    genenum = np.zeros(len(eigen), int)
+    for row in gene:
+        if int(row/res)>= len(eigen): continue
+        genenum[int(row/res)] += 1
+
+    from scipy.stats import pearsonr
+    if pearsonr(genenum[~np.isnan(eigen)], eigen[~np.isnan(eigen)])[0] < 0:
+        eigen = -eigen
+        
+    return eigen
+
 class JuicerMatrix:
-    def __init__(self, norm, rawmatrix, oematrix, chr, res):
+    def __init__(self, norm, rawmatrix, oematrix, eigenfile, refFlat, chr, res):
         self.res = res
-        self.raw = loadHiCMatrix(rawmatrix, chr, res)
-        self.oe  = loadHiCMatrix(oematrix, chr, res)
+        self.raw = loadHiCMatrix(rawmatrix)
+        self.oe  = loadHiCMatrix(oematrix)
+        self.eigen = loadEigen(eigenfile, refFlat, chr, res)
         if norm == "RPM":
             self.raw = self.raw * 10000000 / np.nansum(self.raw)
             self.oe  = self.oe  * 10000000 / np.nansum(self.oe)
@@ -111,8 +130,8 @@ class JuicerMatrix:
 #        pc1[index] = np.nan
         return transformed[:, 0]
 
-    def getInsulationScore(self):
-        i = np.where(self.InsulationScore.index == 500000)[0][0]
+    def getInsulationScore(self, *, distance=500000):
+        i = np.where(self.InsulationScore.index == distance)[0][0]
         return self.InsulationScore.iloc[i:i+1].T
 
     def getMultiInsulationScore(self):

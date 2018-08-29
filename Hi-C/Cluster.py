@@ -139,7 +139,7 @@ def getHead(labels):
             a.append(labels[i] + "-" + labels[j])
     return a
 
-def get_corr_allcluster(sub3d, ncluster, labels):
+def get_corr_allcluster(sub3d, ncluster, kmeans, labels):
     def getmat(df, nlabels):
         corr_mat = df.corr(method='spearman')
         corr_mat = corr_mat.values
@@ -150,7 +150,7 @@ def get_corr_allcluster(sub3d, ncluster, labels):
     
     nlabels = len(labels)
     for cl in range(ncluster):
-        df = sub3d[sub3d["kmeans"]==cl]
+        df = pd.DataFrame(sub3d[kmeans==cl])
         a = getmat(df, nlabels)
         if cl==0:
             mat = a
