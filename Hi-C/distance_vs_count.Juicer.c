@@ -23,6 +23,12 @@ int main(int argc, char *argv[])
   FILE *IN;
   struct gzFile_s *gzIN=NULL;
   Elem clm[ELEM_NUM];
+
+  if(argc<=1) {
+    printf("Usage: distance_vs_count.Juicer <file> <winsize>\n");
+    exit(0);
+  }
+  
   char *inputfile = argv[1];
   int zipped=0;
   if(strstr(inputfile, ".gz")) zipped=1;
