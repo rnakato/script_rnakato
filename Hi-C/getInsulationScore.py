@@ -21,7 +21,7 @@ chr = sys.argv[2]
 resolution = int(sys.argv[3])
 output = sys.argv[4]
 
-Ct1 = JuicerMatrix(normalizetype, obsfile, obsfile, chr, resolution)
+Ct1 = JuicerMatrix(normalizetype, obsfile, obsfile, "", "", chr, resolution)
 
 MIS = Ct1.getMultiInsulationScore()
 fig, ax = plt.subplots(1, 1, figsize=(30, 2))

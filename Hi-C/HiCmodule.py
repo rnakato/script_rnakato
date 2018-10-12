@@ -61,6 +61,8 @@ def loadHiCMatrix(filename):
 
 def loadEigen(filename, refFlat, chr, res):
     print(filename)
+    if filename == "": return
+    
     eigen = np.loadtxt(filename)
     gene = pd.read_csv(refFlat, delimiter='\t', header=None, index_col=0)
     gene = gene[gene.iloc[:,1] == chr]
