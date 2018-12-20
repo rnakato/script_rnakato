@@ -72,6 +72,8 @@ ex_hiseq(){
 }
 
 ex_csfasta(){
+    # bowtie-1.2.2 has a bug for csfasta
+    # use bowtie-1.1.2 
     if test $build = "scer"; then
 	index=$Ddir/bowtie-indexes/S_cerevisiae-cs
     elif test $build = "pombe"; then
@@ -83,9 +85,9 @@ ex_csfasta(){
     qual=`ls $fastq*qual*`
 
     if [[ $csfasta = *.gz ]]; then
-	command="bowtie -S -C $index -f <(zcat $csfasta) -Q <(zcat $qual) $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+	command="/home/rnakato/git/binaries/bowtie-1.1.2/bowtie -S -C $index -f <(zcat $csfasta) -Q <(zcat $qual) $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
     else
-	command="bowtie -S -C $index -f $csfasta -Q $qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
+	command="/home/rnakato/git/binaries/bowtie-1.1.2/bowtie -S -C $index -f $csfasta -Q $qual $param --chunkmbs 2048 -p12 | samtools view -bS - | samtools sort > $file"
     fi
     echo $command
     eval $command

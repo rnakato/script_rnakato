@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
-use autodie;
+#use strict;
+#use warnings;
+#use autodie;
 $filename = $ARGV[0];
 $len=0;
 $lenall=0;

@@ -25,7 +25,6 @@ if [ $# -ne 6 ]; then
   exit 1
 fi
 
-
 readtype=$1
 prefix=$2
 fastq=$3
