@@ -4,8 +4,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
-import os
+import argparse
 from loadData import loadJuicerMatrix
 from generateCmap import generate_cmap
 #import pdb; pdb.set_trace()
@@ -65,39 +64,28 @@ def getTADboundary(array, resolution):
     return boundary
 
 if(__name__ == '__main__'):
-    obsfile = sys.argv[1]
-    chr = sys.argv[2]
-    resolution = int(sys.argv[3])
-    output = sys.argv[4]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("matrix", help="Input matrix", type=str)
+    parser.add_argument("output", help="Output prefix", type=str)
+    parser.add_argument("chr", help="Chromosome", type=str)
+    parser.add_argument("resolution", help="Resolution of the input matrix", type=int)
+    parser.add_argument("--num4norm", help="Read number after normalization (default: 10000000)", type=int, default=10000000)
+    parser.add_argument("--distance", help="Distance of Insulation Score (default: 500000)", type=int, default=500000)
 
-    matrix = loadJuicerMatrix(obsfile)
-    matrix = matrix * 10000000 / np.nansum(matrix)
+    args = parser.parse_args()
+    print(args)
 
-    MI = MultiInsulationScore(matrix.values, 1000000, 100000, resolution)
+    matrix = loadJuicerMatrix(args.matrix)
+    matrix = matrix * args.num4norm / np.nansum(matrix)
+
+    MI = MultiInsulationScore(matrix.values, 1000000, 100000, args.resolution)
 
     # output InsulationScore to BedGraph
-    df = MI.getInsulationScore(distance=500000)
+    df = MI.getInsulationScore(distance=args.distance)
     df = df.replace([np.inf, -np.inf], 0)
     df.columns = ["Insulation Score"]
-    df["chr"] = chr
+    df["chr"] = args.chr
     df["start"] = df.index
-    df["end"] = df["start"] + resolution
+    df["end"] = df["start"] + args.resolution
     df = df.loc[:,["chr","start","end","Insulation Score"]]
-    df.to_csv(output + ".bedGraph", sep="\t", header=False, index=False)
-
-    # generate MI .png
-    fig, ax = plt.subplots(1, 1, figsize=(30, 2))
-    plt.imshow(MI.MI, clim=(-1, 1), cmap=generate_cmap(['#d10a3f', '#FFFFFF', '#1310cc']), aspect="auto")
-    plt.colorbar()
-    plt.savefig(output + ".multiscale.png")
-
-    # generate InsulationScore .png
-    fig, ax = plt.subplots(1, 1, figsize=(15, 2))
-    plt.plot(df["Insulation Score"].values)
-
-    boundary = getTADboundary(df["Insulation Score"].values, resolution)
-    for x in boundary:
-        plt.axvline(x, color="orange")
-    
-    ax.set_ylim([-2, 2])
-    plt.savefig(output + ".InsulationScore.png")
+    df.to_csv(args.output + ".bedGraph", sep="\t", header=False, index=False)
