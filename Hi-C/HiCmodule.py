@@ -5,18 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 from InsulationScore import *
 from loadData import loadJuicerMatrix
-
-#自分で定義したカラーマップを返す
-# https://qiita.com/kenmatsu4/items/fe8a2f1c34c8d5676df8
-def generate_cmap(colors):
-    from matplotlib.colors import LinearSegmentedColormap
-    values = range(len(colors))
-
-    vmax = np.ceil(np.max(values))
-    color_list = []
-    for v, c in zip(values, colors):
-        color_list.append( ( v/ vmax, c) )
-    return LinearSegmentedColormap.from_list('custom_cmap', color_list)
+from generateCmap import generate_cmap
 
 def getNonZeroMatrix(A, lim_pzero):
     A = A.fillna(0)
@@ -104,26 +93,11 @@ class JuicerMatrix:
         return transformed[:, 0]
 
     def getInsulationScore(self, *, distance=500000):
-        return MI.getInsulationScore(distance=distance)
-        i = np.where(self.InsulationScore.index == distance)[0][0]
-        return self.InsulationScore.iloc[i:i+1].T
+        return self.InsulationScore.getInsulationScore(distance=distance)
 
     def getMultiInsulationScore(self):
         return self.InsulationScore
 
-    def getTADboundary(self):
-        distance = int(100000 / self.res)
-        array = self.getInsulationScore().values
-        slop = np.zeros(array.shape[0])
-        for i in range(distance, array.shape[0] - distance):
-            slop[i] = array[i - distance] - array[i + distance]
-
-        boundary = []
-        for i in range(1, len(slop)):
-            if(slop[i-1] > 0 and slop[i] < 0 and array[i] <= -0.1):
-                boundary.append(i)
-        return boundary
-    
 def ExtractMatrix(mat,s,e):
     if e==-1:
         return mat.values[s:,s:]

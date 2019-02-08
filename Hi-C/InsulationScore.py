@@ -3,9 +3,11 @@
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import sys
 import os
 from loadData import loadJuicerMatrix
+from generateCmap import generate_cmap
 #import pdb; pdb.set_trace()
 
 def calceach(mat, squaresize, resolution):
@@ -50,6 +52,17 @@ class MultiInsulationScore:
         i = np.where(self.MI.index == distance)[0][0]
         return self.MI.iloc[i:i+1].T
 
+def getTADboundary(array, resolution):
+    distance = int(100000 / resolution)
+    slop = np.zeros(array.shape[0])
+    for i in range(distance, array.shape[0] - distance):
+        slop[i] = array[i - distance] - array[i + distance]
+        
+    boundary = []
+    for i in range(1, len(slop)):
+        if(slop[i-1] > 0 and slop[i] < 0 and array[i] <= -0.1):
+            boundary.append(i)
+    return boundary
 
 if(__name__ == '__main__'):
     obsfile = sys.argv[1]
@@ -62,6 +75,7 @@ if(__name__ == '__main__'):
 
     MI = MultiInsulationScore(matrix.values, 1000000, 100000, resolution)
 
+    # output InsulationScore to BedGraph
     df = MI.getInsulationScore(distance=500000)
     df = df.replace([np.inf, -np.inf], 0)
     df.columns = ["Insulation Score"]
@@ -69,4 +83,21 @@ if(__name__ == '__main__'):
     df["start"] = df.index
     df["end"] = df["start"] + resolution
     df = df.loc[:,["chr","start","end","Insulation Score"]]
-    df.to_csv(output, sep="\t", header=False, index=False)
+    df.to_csv(output + ".bedGraph", sep="\t", header=False, index=False)
+
+    # generate MI .png
+    fig, ax = plt.subplots(1, 1, figsize=(30, 2))
+    plt.imshow(MI.MI, clim=(-1, 1), cmap=generate_cmap(['#d10a3f', '#FFFFFF', '#1310cc']), aspect="auto")
+    plt.colorbar()
+    plt.savefig(output + ".multiscale.png")
+
+    # generate InsulationScore .png
+    fig, ax = plt.subplots(1, 1, figsize=(15, 2))
+    plt.plot(df["Insulation Score"].values)
+
+    boundary = getTADboundary(df["Insulation Score"].values, resolution)
+    for x in boundary:
+        plt.axvline(x, color="orange")
+    
+    ax.set_ylim([-2, 2])
+    plt.savefig(output + ".InsulationScore.png")
