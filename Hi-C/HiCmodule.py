@@ -3,6 +3,8 @@ import scipy.stats as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import linear_model
+from InsulationScore import *
+from loadData import loadJuicerMatrix
 
 #自分で定義したカラーマップを返す
 # https://qiita.com/kenmatsu4/items/fe8a2f1c34c8d5676df8
@@ -28,37 +30,6 @@ def getNonZeroMatrix(A, lim_pzero):
 
     return A
 
-def calcInsulationScore(mat, max_sqsize, step, resolution):
-    def calceach(mat, squaresize, resolution):
-        matsize = int(squaresize / resolution)
-
-        array = np.zeros(mat.shape[0])
-        for i in range(mat.shape[0]):
-            if(i - matsize < 0 or i + matsize >= mat.shape[0]):
-                continue
-            array[i] = mat[i-matsize: i-1, i+1: i+matsize].mean()
-
-        array = np.log2(array/np.nanmean(array))
-        return array
-
-    imax = int(max_sqsize/step)
-    for i in range(imax, 0, -1):
-        if i==imax: 
-            InsulationScore = calceach(mat, i * step, resolution)
-        else: 
-            InsulationScore = np.c_[InsulationScore, calceach(mat, i * step, resolution)]
-            
-    InsulationScore = InsulationScore.T
-    df = pd.DataFrame(InsulationScore)
-    df.index = np.arange(imax, 0, -1) * step
-    df.columns = df.columns * resolution
-    return df
-
-def loadHiCMatrix(filename):
-    print(filename)
-    data = pd.read_csv(filename, delimiter='\t', index_col=0)
-    return data
-
 def loadEigen(filename, refFlat, chr, res):
     print(filename)
     if filename == "": return
@@ -82,13 +53,13 @@ def loadEigen(filename, refFlat, chr, res):
 class JuicerMatrix:
     def __init__(self, norm, rawmatrix, oematrix, eigenfile, refFlat, chr, res):
         self.res = res
-        self.raw = loadHiCMatrix(rawmatrix)
-        self.oe  = loadHiCMatrix(oematrix)
+        self.raw = loadJuicerMatrix(rawmatrix)
+        self.oe  = loadJuicerMatrix(oematrix)
         self.eigen = loadEigen(eigenfile, refFlat, chr, res)
         if norm == "RPM":
             self.raw = self.raw * 10000000 / np.nansum(self.raw)
             self.oe  = self.oe  * 10000000 / np.nansum(self.oe)
-        self.InsulationScore = calcInsulationScore(self.getmatrix().values, 1000000, 100000, self.res)
+        self.InsulationScore = MultiInsulationScore(self.getmatrix().values, 1000000, 100000, self.res)
 
     def getmatrix(self, *, isOE=False, isNonZero=False):
         if isOE == False:
@@ -133,6 +104,7 @@ class JuicerMatrix:
         return transformed[:, 0]
 
     def getInsulationScore(self, *, distance=500000):
+        return MI.getInsulationScore(distance=distance)
         i = np.where(self.InsulationScore.index == distance)[0][0]
         return self.InsulationScore.iloc[i:i+1].T
 
