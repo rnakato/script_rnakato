@@ -37,7 +37,7 @@ while(<$fh>){
     my $nsplit = ceil($len / $windowsize);
 #    print "$chr\t$s\t$e\t$len\t$nsplit\n";
     for(my $i=0; $i<$nsplit; $i++) {
-	printf("%s\t%s\t%s\n", $chr, $s + $i*$windowsize, $s + ($i+1)*$windowsize);
+	printf("%s\t%s\t%s\n", $chr, $s + $i*$windowsize, $s + ($i+1)*$windowsize -1);
     }
 }
 $fh->close;
