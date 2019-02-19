@@ -1,3 +1,16 @@
+# script_rnakato
+Scripts for NGS analysis
+
+#### rGREAT.R
+R script to utilize rGREAT
+
+Usage: 
+
+      Rscript rGREAT.R <bed> <output prefix>
+
+
+
+
 # scripts
 add_genename_fromgtf.pl
 add_genename_fromrefseqid.pl
