@@ -37,7 +37,7 @@ if(__name__ == '__main__'):
     plt.title('Ratio')
     
     if args.png:
-        plt.savefig(args.output + ".png")
+        plt.savefig(args.output + ".png", bbox_inches='tight')
     else:
-        plt.savefig(args.output + ".pdf")
+        plt.savefig(args.output + ".pdf", bbox_inches='tight')
         
