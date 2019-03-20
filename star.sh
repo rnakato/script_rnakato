@@ -32,14 +32,16 @@ db=$4
 build=$5
 prob=$6
 
+pwd=$(cd $(dirname $0) && pwd)
+
 mkdir -p log $odir
 
 if test $build = "S_pombe" -o $build = "S_cerevisiae"; then
-    index_star=`database.sh`/rsem-star-indexes/$build
-    index_rsem=`database.sh`/rsem-star-indexes/$build/$build
+    index_star=`$pwd/database.sh`/rsem-star-indexes/$build
+    index_rsem=`$pwd/database.sh`/rsem-star-indexes/$build/$build
 else
-    index_star=`database.sh`/rsem-star-indexes/$db-$build
-    index_rsem=`database.sh`/rsem-star-indexes/$db-$build/$db-$build
+    index_star=`$pwd/database.sh`/rsem-star-indexes/$db-$build
+    index_rsem=`$pwd/database.sh`/rsem-star-indexes/$db-$build/$db-$build
 fi
 
 if test $readtype = "paired"; then pair="--paired-end"
@@ -59,7 +61,7 @@ if [ "`echo $fastq | grep '.gz'`" ] ; then
     pzip="--readFilesCommand zcat"
 fi
 
-STARdir=$(cd $(dirname $0) && pwd)/../STAR/bin/Linux_x86_64_static
+STARdir=$pwd/../STAR/bin/Linux_x86_64_static
 
 $STARdir/STAR --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM \
     --runThreadN 12 --outSAMattributes All $pzip \
@@ -68,7 +70,7 @@ $STARdir/STAR --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --
 
 log=log/star-$prefix.$build.txt
 echo -en "$prefix\t" > $log
-parse_starlog.pl $odir/$prefix.$build.Log.final.out >> $log
+$pwd/parse_starlog.pl $odir/$prefix.$build.Log.final.out >> $log
 
 RSEMdir=$(cd $(dirname $0) && pwd)/../RSEM
 $RSEMdir/rsem-calculate-expression $pair --alignments --estimate-rspd --forward-prob $prob --no-bam-output -p 12 $odir/${prefix}.$build.Aligned.toTranscriptome.out.bam $index_rsem $odir/$prefix.$build
