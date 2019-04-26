@@ -28,12 +28,14 @@ def KMeansPlot(data, title, ncluster):
     kmeans = model.fit_predict(matrix)
     color = matplotlib.cm.brg(np.linspace(0,1, np.max(kmeans) - np.min(kmeans)+1))
 
+    plt.figure()
     for i in range(np.min(kmeans), np.max(kmeans)+1):
         plt.plot(matrix[kmeans == i][:,0],    matrix[kmeans == i][:,1], ".", color=color[i])
         plt.text(matrix[kmeans == i][:,0][0], matrix[kmeans == i][:,1][0], str(i+1), color="black", size=16)
     plt.title(title, size=16)
 
     return kmeans
+
 def UMAPPlot(data, title, ncluster):
     import umap
     import matplotlib.cm
@@ -42,6 +44,7 @@ def UMAPPlot(data, title, ncluster):
     kmeans = model.fit_predict(matrix)
     color = matplotlib.cm.brg(np.linspace(0,1, np.max(kmeans) - np.min(kmeans)+1))
 
+    plt.figure()
     for i in range(np.min(kmeans), np.max(kmeans)+1):
         plt.plot(matrix[kmeans == i][:,0],    matrix[kmeans == i][:,1], ".", color=color[i])
         plt.text(matrix[kmeans == i][:,0][0], matrix[kmeans == i][:,1][0], str(i+1), color="black", size=16)
@@ -58,6 +61,7 @@ def tSNEPlot(data, title, ncluster):
     kmeans = model.fit_predict(matrix)
     color = matplotlib.cm.brg(np.linspace(0,1, np.max(kmeans) - np.min(kmeans)+1))
 
+    plt.figure()
     for i in range(np.min(kmeans), np.max(kmeans)+1):
         plt.plot(matrix[kmeans == i][:,0],    matrix[kmeans == i][:,1], ".", color=color[i])
         plt.text(matrix[kmeans == i][:,0][0], matrix[kmeans == i][:,1][0], str(i+1), color="black", size=16)
