@@ -1,5 +1,5 @@
 ## Scripts for NGS analysis
-
+---
 ### combine_lines_from2files.pl 
 Merge rows of two files for overlapping rows (the column1 of file1 are overlapping the column2 in file2)
 
@@ -17,7 +17,7 @@ R script to utilize rGREAT
 
      Rscript rGREAT.R <bed> <output prefix>
 
-
+---
 ## mapping_QC.sh: ChIP-seq analysis
 Usage:
 
