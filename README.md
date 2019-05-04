@@ -21,7 +21,7 @@ R script to utilize rGREAT
 ## mapping_QC.sh: ChIP-seq analysis
 Usage:
 
-      mapping_QC.sh [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>
+    mapping_QC.sh [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>
 
 Execute bowtie and parse2wig
 
@@ -35,7 +35,7 @@ Check stats:
 
 Execute bowtie and parse2wig
 
-      mapping_QC.sh exec fastq/SRR20753.fastq Rad21 "-n2 -m1" hg38
+    mapping_QC.sh exec fastq/SRR20753.fastq Rad21 "-n2 -m1" hg38
 
 Output:
 * mapfile (bam/Rad21-n2-m1-hg38.sort.bam)
@@ -50,9 +50,11 @@ Output:
  log/parsestats-Rad21-n2-m1-hg38  # parse2wig
 
 
-for multiple fastq files:
+for multiple gzipped fastq files:
 
-      for prefix in `ls $dir/*fastq| sed -e 's/'$dir'\/'//g -e 's/.fastq//g'`
+      dir=fastq/
+      build=hg38
+      for prefix in `ls $dir/*fastq.gz | sed -e 's/'$dir'\/'//g -e 's/.fastq.gz//g'`
       do
           fastqc.sh $prefix                                                      
           mapping_QC.sh -a exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
