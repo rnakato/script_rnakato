@@ -31,9 +31,9 @@ Check stats:
 
     mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
 
-### Example
+### Examples
 
-Execute bowtie and parse2wig
+#### Execute bowtie and parse2wig
 
     mapping_QC.sh exec fastq/SRR20753.fastq Rad21 "-n2 -m1" hg38
 
@@ -50,7 +50,7 @@ Output:
  log/parsestats-Rad21-n2-m1-hg38  # parse2wig
 
 
-for multiple gzipped fastq files:
+#### For multiple gzipped fastq files:
 
       dir=fastq/
       build=hg38
@@ -61,7 +61,7 @@ for multiple gzipped fastq files:
           mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build         
       done
 
-Stats example:
+#### Stats example:
 
     mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
 
