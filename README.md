@@ -1,6 +1,4 @@
-# script_rnakato
-## ChIP-seq analysis
-### mapping_QC.sh
+## mapping_QC.sh: ChIP-seq analysis
 #### Usage
 
       mapping_QC.sh [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>
@@ -40,7 +38,7 @@ Check stats:
 |Rad21	|33,035,083	|9,543,103	|28.89	|3,975,423	|12.03	|13,518,526	|40.92	|19,516,557	|59.08	|8321928 (87.2%)	|1221175 (12.8%)|(0.872)	|0.46	|0.99	|8,321,928 / 9,543,103	|50	|1.162648	|0.9433482	|0|
 
 
-# Scripts for NGS analysis
+## Other scripts for NGS analysis
 
 ### combine_lines_from2files.pl 
 Merge rows of two files for overlapping rows (the column1 of file1 are overlapping the column2 in file2)
