@@ -23,20 +23,19 @@ Usage:
 
       mapping_QC.sh [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>
 
+Execute bowtie and parse2wig
+
+    mapping_QC.sh exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
+
+Check stats:
+
+    mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
+
 ### Example
 
 Execute bowtie and parse2wig
 
       mapping_QC.sh exec fastq/SRR20753.fastq Rad21 "-n2 -m1" hg38
-
-for multiple fastq files:
-
-      for prefix in `ls $dir/*fastq| sed -e 's/'$dir'\/'//g -e 's/.fastq//g'`
-      do
-          fastqc.sh $prefix                                                      
-          mapping_QC.sh -a exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
-          mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build         
-      done
 
 Output:
 * mapfile (bam/Rad21-n2-m1-hg38.sort.bam)
@@ -50,7 +49,17 @@ Output:
  log/bowtie-Rad21-hg38    # bowtie
  log/parsestats-Rad21-n2-m1-hg38  # parse2wig
 
-Check stats:
+
+for multiple fastq files:
+
+      for prefix in `ls $dir/*fastq| sed -e 's/'$dir'\/'//g -e 's/.fastq//g'`
+      do
+          fastqc.sh $prefix                                                      
+          mapping_QC.sh -a exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
+          mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build         
+      done
+
+Stats example:
 
     mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
 
