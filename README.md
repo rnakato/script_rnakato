@@ -45,9 +45,9 @@ Output:
 * output by SSP (with option option)
  sspout/Rad21-n2-m1-hg38.*
 
-* log
- log/bowtie-Rad21-hg38    # bowtie
- log/parsestats-Rad21-n2-m1-hg38  # parse2wig
+* bowtie log (log/bowtie-Rad21-hg38)
+
+* parse2wig log (log/parsestats-Rad21-n2-m1-hg38)
 
 
 #### For multiple gzipped fastq files:
