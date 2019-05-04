@@ -11,16 +11,12 @@ Usage:
 ### plotRatioOfTwoUniqfiles.py
 plot bargraph of ratio between two files output by uniq command
 
-Usage:
-
     plotRatioOfTwoUniqfiles.py [-h] [--threshold THRESHOLD] [--sizex SIZEX]
                                     [--sizey SIZEY] [--png]
                                     numerator denominator output
 
 ### rGREAT.R
 R script to utilize rGREAT
-
-Usage: 
 
      Rscript rGREAT.R <bed> <output prefix>
 
