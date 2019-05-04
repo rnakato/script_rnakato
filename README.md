@@ -23,15 +23,7 @@ Usage:
 
     mapping_QC.sh [-s] [-e] [-a] [-d bamdir] <exec|stats> <fastq> <prefix> <bowtie param> <build>
 
-Execute bowtie and parse2wig
-
-    mapping_QC.sh exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
-
-Check stats:
-
-    mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
-
-### Examples
+### Example
 
 #### Execute bowtie and parse2wig
 
@@ -61,9 +53,9 @@ Output:
           mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build         
       done
 
-#### Stats example:
+#### Check mapping stats:
 
-    mapping_QC.sh stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
+    mapping_QC.sh stats fastq/SRR20753.fastq Rad21 "-n2 -m1" hg38
 
 ||Sample	reads	|mapped unique	|%	|mapped >= 2	|%	|mapped total	|%	|unmapped	|%	|Nonredundant	|Redundant	|Complexity for10M	|Read depth	|Genome coverage	|Tested_reads	|GC summit	|NSC	|RSC	|Qtag|
 ----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----
