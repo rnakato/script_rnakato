@@ -70,7 +70,15 @@ func(){
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of
 	fi
     fi
-    for b in $binsize 100000; do
+    
+    if test $build = "scer"; then
+	bins="$binsize"
+    elif test $build = "pombe"; then
+	bins="$binsize"
+    else
+	bins="$binsize 100000"
+    fi
+    for b in $bins; do
 	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
 	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of"
 	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of
