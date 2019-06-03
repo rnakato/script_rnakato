@@ -84,4 +84,4 @@ func(){
 
 func
 parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls >& log/parsestats-$prefix.GC.100000
-parsestats4DROMPA3.pl $pdir/$prefix-raw-mpbl-GR.100.xls >& log/parsestats-$prefix.100
+parsestats4DROMPA3.pl $pdir/$prefix-raw-mpbl-GR.$binsize.xls >& log/parsestats-$prefix.$binsize

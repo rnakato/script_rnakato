@@ -102,7 +102,7 @@ elif test $type = "stats"; then
 	a=`parsebowtielog.pl log/bowtie-$head | grep -v Sample`
     fi
     b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
-    gcov=`cat log/parsestats-$head.100 | grep -v Sample | cut -f10`
+    gcov=`cat log/parsestats-$head.$binsize | grep -v Sample | cut -f10`
     b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`
     echo -en "$a\t$b\t$gcov\t$b2\t$c\t"
 
