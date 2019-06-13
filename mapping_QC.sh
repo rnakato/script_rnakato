@@ -94,7 +94,7 @@ if test $type = "exec";then
     parse2wig.sh $pa -b $binsize $pens -f $of $bam $head $build
 
     if test $nopp != 1; then ssp.sh $bam $head $build; fi
-    
+
 elif test $type = "stats"; then
     if test $program = "bowtie2";then
 	a=`parsebowtielog2.pl log/bowtie2-$head | grep -v Sample`
@@ -104,7 +104,7 @@ elif test $type = "stats"; then
     b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
     gcov=`cat log/parsestats-$head.$binsize | grep -v Sample | cut -f10`
     b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`
-    echo -en "$a\t$b\t$gcov\t$b2\t$c\t"
+    echo -en "$a\t$b\t$gcov\t$b2\t$c"
 
     if test $nopp != 1; then
 	echo -en "`tail -n1 sspout/$head.stats.txt | cut -f4,5,6,7,8,9,10,11,12,13,14`"
