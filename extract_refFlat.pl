@@ -1,7 +1,9 @@
 #!/usr/bin/env perl
 
 =head1 SYNOPSIS
+
 extract_refFlat.pl [UN|NR|NM|TSS] <file>
+
 =cut
 
 use strict;
