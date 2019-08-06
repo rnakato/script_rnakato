@@ -1,9 +1,9 @@
 #!/usr/bin/env perl;
 
 ###################################################################
-#	This script processes the mappability/GC score by calculating 
+#	This script processes the mappability/GC score by calculating
 #	the average mappability/GC score for each bp in a sliding window
-# 	of 2*expected frag length, and then summarize again the 
+# 	of 2*expected frag length, and then summarize again the
 #	average mappability score in non overlapping bins
 #	The arguments are (1) map_infilename (eg: chr12_binary.txt) (2) outfile_name
 #	(3) tag length (4) frag length (5) bin size
@@ -13,6 +13,7 @@ use warnings;
 use strict;
 use FindBin;
 use lib $FindBin::Bin;
+use Cwd 'getcwd';
 $|=1;
 
 # configuration
@@ -48,10 +49,10 @@ foreach my $raw_map_org (<IN>) {
 }
 close( IN );
 close( TEMPOUT );
-	
-# calculate mappability using window	
 
-system( "java -classpath /home/git/MOSAiCS_scripts CalcMappability $tempfile $tempfile2 $outfile $taglength $L $binsize" )==0 or die( 'fail to run java code!\n' ); 
+# calculate mappability using window
+my $pwd = `dirname $0 | tr -d "\n"`;
+system( "java -classpath $pwd CalcMappability $tempfile $tempfile2 $outfile $taglength $L $binsize" )==0 or die( 'fail to run java code!\n' );
 
 # remove temporary file
 
