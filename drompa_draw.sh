@@ -33,19 +33,19 @@ param=$3
 output=$4
 build=$5
 
-Ddir=`database.sh`/UCSC/$build
+Ddir=$(database.sh)/UCSC/$build
 gt=$Ddir/genome_table
 GC=$Ddir/GCcontents
 genedensity=$Ddir/genedensity
 
 if test $ens = 0; then
     gene=$Ddir/refFlat.dupremoved.txt
-else 
-    gene=/home/Database/Ensembl/GRCh38/gtf_chrUCSC/Homo_sapiens.GRCh38.88.chr.gene.name.refFlat
+else
+    gene=$(database.sh)/Ensembl/GRCh38/gtf_chrUCSC/Homo_sapiens.GRCh38.88.chr.gene.name.refFlat
 fi
 
 if test $type = "GV"; then
-    drompa_draw GV -gt $gt $s $param -p $mdir/drompa3.GV.$output -GC $GC -gcsize 500000 -GD $genedensity -gdsize 500000 
+    drompa_draw GV -gt $gt $s $param -p $mdir/drompa3.GV.$output -GC $GC -gcsize 500000 -GD $genedensity -gdsize 500000
 elif test $type = "BROAD"; then
     drompa_draw PC_ENRICH -gene $gene $s $param -p $mdir/drompa3.BROAD.$output -gt $gt -ls 20000 -binsize 100000 -nosig -offbg
 else
