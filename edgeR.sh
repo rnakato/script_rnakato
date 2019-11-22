@@ -1,1 +1,0 @@
-../script_RNAseq/edgeR.sh
