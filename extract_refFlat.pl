@@ -23,10 +23,10 @@ my $hash = {};
 my $fh = $file->open('r') or die $!;
 while(<$fh>){
     my @clm = split("\t",$_);
-    push @{$hash->{$clm[0]}},\@clm;
+    push @{$hash->{$clm[1]}}, \@clm;
 }
 
-while(my($id,$entry) = each(%$hash)){
+while(my($id, $entry) = each(%$hash)){
     next if($type eq "NR" && $id !~ /NR/);
     next if($type eq "NM" && $id !~ /NM/);
     my @tss;
