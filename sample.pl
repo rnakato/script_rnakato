@@ -40,7 +40,7 @@ my $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "");
     chomp;
-    my @clm = split(/\t/, $_);    
+    my @clm = split(/\t/, $_);
     print "$_\n";
 }
 $fh->close;
