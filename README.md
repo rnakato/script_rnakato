@@ -1,9 +1,9 @@
 ## Scripts for NGS analysis
 ---
-### combine_lines_from2files.pl 
+### combine_lines_from2files.pl
 Merge rows of two files for overlapping rows (the column1 of file1 are overlapping the column2 in file2)
 
-     combine_lines_from2files.pl <file1> <file2> <column1> <column2>
+     combine_lines_from2files.pl -1 <file1> -2 <file2> -a <column1> -b <column2>
 
 ### plotRatioOfTwoUniqfiles.py
 plot bargraph of ratio between two files output by uniq command
@@ -58,9 +58,9 @@ Output:
       build=hg38
       for prefix in `ls $dir/*fastq.gz | sed -e 's/'$dir'\/'//g -e 's/.fastq.gz//g'`
       do
-          fastqc.sh $prefix                                                      
+          fastqc.sh $prefix
           mapping_QC.sh -a exec $dir/$prefix.fastq $prefix "-n2 -m1" $build
-          mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build         
+          mapping_QC.sh -a stats $dir/$prefix.fastq $prefix "-n2 -m1" $build
       done
 
 To be continued
