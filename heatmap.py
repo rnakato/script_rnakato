@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import sys
 import matplotlib
@@ -47,7 +47,7 @@ label = []
 for st in hash:
 #    print hash[st], st
     label.insert(hash[st], st)
-    
+
 #upstream	downstream	genic	intergenic
 #4.41	3.62	38.93	53.04
 # upstream   downstream exon intron   intergenic

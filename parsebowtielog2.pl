@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 
 =head1 DESCRIPTION
- 
+
     Parse stats outputted by bowtie2.
- 
+
 =head1 SYNOPSIS
 
     parsebowtielog2.pl [--pair] <file>
@@ -23,6 +23,8 @@ my $filename=shift;
 pod2usage unless $filename;
 my $file = file($filename);
 my $k=0;
+my $version="";
+
 my $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "\n");
@@ -33,6 +35,8 @@ while(<$fh>){
     }elsif($_=~ /    (.+) (\(.+\)) aligned concordantly exactly (.+) time/){
 	$k = $3;
 	last;
+    }elsif($_=~ /(.+)bowtie(.+)version (.+)/){
+	$version=$3;
     }
 }
 $fh->close;
@@ -45,16 +49,18 @@ my $num_unaligned="";
 my $num_filtered="";
 
 if(!$pair){
-    print "Sample\treads\tmapped $k time\t%\tmapped >$k time\t%\tmapped total\t%\tunmapped\t%\n";
+    print "\tSample\treads\tmapped $k time\t%\tmapped >$k time\t%\tmapped total\t%\tunmapped\t%\n";
 }else{
-    print "Sample\treads\tpaired\t%\tmapped $k time\t%\tmapped >$k time\t%\tmapped total\t%\tunmapped\t%\n";
+    print "\tSample\treads\tpaired\t%\tmapped $k time\t%\tmapped >$k time\t%\tmapped total\t%\tunmapped\t%\n";
 }
+
+print "bowtie2 version $version\t";
 
 $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "\n");
     chomp;
-    if($_ =~ /bowtie2 (.+) (.+)\.fastq (.+)/){
+    if($_ =~ /bowtie2 (.+) (.+)\.fastq(.+)/){
 	if($sample ne ""){
 	    my $totalnum = $num_mapped + $num_filtered;
 	    if(!$pair){

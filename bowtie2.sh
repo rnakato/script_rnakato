@@ -70,5 +70,5 @@ ex_hiseq(){
     if test ! -e $file.crai; then samtools index $file; fi
 }
 
-log=log/bowtie2-$prefix-$build
+log=log/bowtie2-$prefix$post-$build
 ex_hiseq >& $log
