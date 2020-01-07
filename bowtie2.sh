@@ -2,21 +2,23 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "bowtie2.sh [-e] [-d bamdir] <fastq> <prefix> <build>" 1>&2
+    echo "$cmdname" '[-d bamdir] [-p "bowtie2 param"] <fastq> <prefix> <build>' 1>&2
 }
 
 type=hiseq
-bamdir=bam
+bamdir=cram
 db=UCSC
-while getopts ed: option
+post="-bowtie2"
+param=""
+while getopts d:p: option
 do
     case ${option} in
-	e)
-	    db=Ensembl
-	    ;;
 	d)
 	    bamdir=${OPTARG}
 	    ;;
+        p)
+            param=${OPTARG}
+            ;;
 	*)
 	    usage
 	    exit 1
@@ -34,21 +36,20 @@ fi
 fastq=$1
 prefix=$2
 build=$3
-post="-bowtie2"
 
 if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
+bowtie2="singularity exec --bind /work /work/SingularityImages/rnakato_bowtie2.img bowtie2"
 
-samtools=samtools
+#file=$bamdir/$prefix$post-$build.sort.bam
+file=$bamdir/$prefix$post-$build.sort.cram
 
-file=$bamdir/$prefix$post-$build.sort.bam
-if test -e "$file.bam" && test 1000 -lt `wc -c < $file.bam` ; then
-    echo "$file.bam already exist. quit"
+if test -e "$file" && test 1000 -lt `wc -c < $file` ; then
+    echo "$file already exist. quit"
     exit 0
 fi
-
 
 ex_hiseq(){
     if test $build = "scer"; then
@@ -58,16 +59,15 @@ ex_hiseq(){
     else
 	index=$Ddir/bowtie2-indexes/$db-$build
     fi
-    if [ `echo "$fastq" | grep '.gz'` ] ; then
-	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort > $file"
-    else
-	command="bowtie2 $param -p12 -x $index $fastq | $samtools view -bS - | $samtools sort > $file"
-    fi
+    genome=$index.fa
+
+    $bowtie2 --version
+    command="$bowtie2 $param -p12 -x $index $fastq | samtools view -C - -T $genome | samtools sort -O cram > $file"
     echo $command
     eval $command
+
+    if test ! -e $file.crai; then samtools index $file; fi
 }
 
 log=log/bowtie2-$prefix-$build
 ex_hiseq >& $log
-
-
