@@ -2,18 +2,16 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname" '[-s] [-e] [-a] [-b binsize] [-n] [-f of] [-d outputdir] [-p "bowtie2 param"] <exec|stats> <fastq> <prefix> <build>' 1>&2
+    echo "$cmdname" '[-a] [-b binsize] [-n] [-f of] [-d outputdir] [-p "bowtie2 param"] <exec|stats> <fastq> <prefix> <build>' 1>&2
 }
 
-pppar=""
-pens=""
 pa=""
 bowtieparam=""
 nopp=0
 cramdir=cram
 of=0
 binsize=100
-while getopts ab:sed:np:f:p: option
+while getopts ab:d:nf:p: option
 do
     case ${option} in
 	a)
@@ -22,12 +20,6 @@ do
 	b)
 	    binsize=${OPTARG}
                 ;;
-	s)
-	    pppar="-s"
-	    ;;
-	e)
-	    pens="-e"
-	    ;;
 	d)
 	    cramdir=${OPTARG}
 	        ;;
@@ -58,7 +50,7 @@ fastq=$2
 prefix=$3
 build=$4
 
-post="-bowtie2"
+post="-bowtie2"`echo $bowtieparam | tr -d ' '`
 head=$prefix$post-$build
 
 if test $build = "scer"; then
@@ -73,7 +65,7 @@ gt=$Ddir/genome_table
 cram=$cramdir/$head.sort.cram
 
 if test $type = "exec"; then
-    bowtie2.sh $pens -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
+    bowtie2.sh -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
     parse2wig.sh $pa -b $binsize $pens -f $of $cram $head $build
     if test $nopp != 1; then ssp.sh $cram $head $build; fi
 
