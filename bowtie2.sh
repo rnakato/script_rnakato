@@ -5,10 +5,11 @@ function usage()
     echo "$cmdname" '[-d bamdir] [-p "bowtie2 param"] <fastq> <prefix> <build>' 1>&2
 }
 
+echo $cmdname $*
+
 type=hiseq
 bamdir=cram
 db=UCSC
-post="-bowtie2"
 param=""
 while getopts d:p: option
 do
@@ -27,7 +28,6 @@ do
 done
 shift $((OPTIND - 1))
 
-# check arguments
 if [ $# -ne 3 ]; then
   usage
   exit 1
@@ -36,6 +36,7 @@ fi
 fastq=$1
 prefix=$2
 build=$3
+post="-bowtie2"`echo $param | tr -d ' '`
 
 if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
