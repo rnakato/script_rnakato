@@ -61,12 +61,20 @@ else
     Ddir=`database.sh`/$db/$build
 fi
 
+pair=""
+# for paired-end fastq
+if [[ $fastq == *-1\ * ]]; then
+    fastq=${fastq/-1/\\-1}
+    fastq=${fastq/-2/\\-2}
+    pair="-p"
+fi
+
 gt=$Ddir/genome_table
 cram=$cramdir/$head.sort.cram
 
 if test $type = "exec"; then
     bowtie2.sh -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
-    parse2wig.sh $pa -b $binsize $pens -f $of $cram $head $build
+    parse2wig.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
     if test $nopp != 1; then ssp.sh $cram $head $build; fi
 
 elif test $type = "stats"; then

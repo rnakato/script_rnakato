@@ -83,8 +83,8 @@ gt=$Ddir/genome_table
 mptable=../SSP/data/mptable/mptable.UCSC.$build.50mer.flen150.txt
 bam=$bamdir/$head.sort.bam
 
-if test $type = "exec";then
-    if test $program = "bowtie2";then
+if test $type = "exec"; then
+    if test $program = "bowtie2"; then
     	bowtie2.sh $pens -d $bamdir "$fastq" $prefix $build
     else
 	bowtie.sh $pens -d $bamdir -t $btype "$fastq" $prefix $build "$bowtieparam"

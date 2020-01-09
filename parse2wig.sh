@@ -11,7 +11,8 @@ pdir=parse2wigdir
 all=0
 db=UCSC
 of=0
-while getopts aeb:k:o:f: option
+pair=""
+while getopts aeb:k:o:f:p option
 do
     case ${option} in
 	a)
@@ -31,6 +32,9 @@ do
 	    ;;
 	f)
             of=${OPTARG}
+            ;;
+	p)
+            pair="-pair"
             ;;
        	*)
 	    usage
@@ -66,11 +70,11 @@ mpbin=$Ddir/mappability_Mosaics_${k}mer/map
 func(){
     if test $all = 1; then
 	if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of
+	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of"
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of
 	fi
     fi
-    
+
     if test $build = "scer"; then
 	bins="$binsize"
     elif test $build = "pombe"; then
@@ -80,13 +84,13 @@ func(){
     fi
     for b in $bins; do
 	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of
+	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of"
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of
 	fi
     done
     if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
-	echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of"
-	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
+	echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of"
+	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
     fi
 }
 
