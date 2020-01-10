@@ -91,7 +91,7 @@ if test $type = "exec"; then
     fi
 
     if test ! -e $bam.bai; then samtools index $bam; fi
-    parse2wig.sh $pa -b $binsize $pens -f $of $bam $head $build
+    parse2wig.sh $pa -b $binsize $pens -m -f $of $bam $head $build
 
     if test $nopp != 1; then ssp.sh $bam $head $build; fi
 

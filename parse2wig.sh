@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname [-a] [-e] [-b binsize] [-k kmer] [-o dir] [-f of] <bam> <prefix> <build>" 1>&2
+    echo "$cmdname [-a] [-e] [-mp] [-b binsize] [-k kmer] [-o dir] [-f of] <bam> <prefix> <build>" 1>&2
 }
 
 binsize=100
@@ -12,7 +12,8 @@ all=0
 db=UCSC
 of=0
 pair=""
-while getopts aeb:k:o:f:p option
+mp=0
+while getopts aeb:mk:o:f:p option
 do
     case ${option} in
 	a)
@@ -23,6 +24,9 @@ do
 	    ;;
 	b)
 	    binsize=${OPTARG}
+	    ;;
+	m)
+	    mp=1
 	    ;;
 	k)
 	    k=${OPTARG}
@@ -67,11 +71,19 @@ chrpath=$Ddir/chromosomes
 mpbl=$Ddir/mappability_Mosaics_${k}mer/map_fragL150
 mpbin=$Ddir/mappability_Mosaics_${k}mer/map
 
+if test $mp = 1; then
+    mp="-mp $mpbl"
+    mppost="-mpbl"
+else
+    mp=""
+    mppost=""
+fi
+
 func(){
     if test $all = 1; then
-	if test ! -e $pdir/$prefix-raw-mpbl.$binsize.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl -binsize $binsize -odir $pdir -of $of
+	if test ! -e $pdir/$prefix-raw$mppost.$binsize.xls; then
+	    echo "parse2wig -gt $gt -f BAM -i $bam $mp $pair -o $prefix-raw$mppost -binsize $binsize -odir $pdir -of $of"
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost -binsize $binsize -odir $pdir -of $of
 	fi
     fi
 
@@ -83,17 +95,17 @@ func(){
 	bins="$binsize 100000"
     fi
     for b in $bins; do
-	if test ! -e $pdir/$prefix-raw-mpbl-GR.$b.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw-mpbl-GR -n GR -binsize $b -odir $pdir -of $of
+	if test ! -e $pdir/$prefix-raw$mppost-GR.$b.xls; then
+	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost-GR -n GR -binsize $b -odir $pdir -of $of"
+	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost-GR -n GR -binsize $b -odir $pdir -of $of
 	fi
     done
-    if test ! -e $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls; then
-	echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of"
-	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff-mpbl-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
+    if test ! -e $pdir/$prefix-GC-depthoff$mppost-GR.100000.xls; then
+	echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff$mppost-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of"
+	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff$mppost-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
     fi
 }
 
 func
-parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff-mpbl-GR.100000.xls >& log/parsestats-$prefix.GC.100000
-parsestats4DROMPA3.pl $pdir/$prefix-raw-mpbl-GR.$binsize.xls >& log/parsestats-$prefix.$binsize
+parsestats4DROMPA3.pl $pdir/$prefix-GC-depthoff$mppost-GR.100000.xls >& log/parsestats-$prefix.GC.100000
+parsestats4DROMPA3.pl $pdir/$prefix-raw$mppost-GR.$binsize.xls >& log/parsestats-$prefix.$binsize
