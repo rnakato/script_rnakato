@@ -78,7 +78,7 @@ if test $type = "exec"; then
     if test $nopp != 1; then ssp.sh $cram $head $build; fi
 
 elif test $type = "stats"; then
-    a=`parsebowtielog2.pl log/bowtie2-$head | grep -v Sample`
+    a=`parsebowtielog2.pl $pair log/bowtie2-$head | grep -v Sample`
     b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
     gcov=`cat log/parsestats-$head.$binsize | grep -v Sample | cut -f10`
     b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`

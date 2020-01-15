@@ -79,11 +79,12 @@ else
     mppost=""
 fi
 
+ex(){ echo $1; eval $1; }
+
 func(){
     if test $all = 1; then
 	if test ! -e $pdir/$prefix-raw$mppost.$binsize.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam $mp $pair -o $prefix-raw$mppost -binsize $binsize -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost -binsize $binsize -odir $pdir -of $of
+	    ex "parse2wig -gt $gt -f BAM -i $bam $mp $pair -o $prefix-raw$mppost -binsize $binsize -odir $pdir -of $of"
 	fi
     fi
 
@@ -96,13 +97,11 @@ func(){
     fi
     for b in $bins; do
 	if test ! -e $pdir/$prefix-raw$mppost-GR.$b.xls; then
-	    echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost-GR -n GR -binsize $b -odir $pdir -of $of"
-	    parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-raw$mppost-GR -n GR -binsize $b -odir $pdir -of $of
+	    ex "parse2wig -gt $gt -f BAM -i $bam $mp $pair -o $prefix-raw$mppost-GR -n GR -binsize $b -odir $pdir -of $of"
 	fi
     done
     if test ! -e $pdir/$prefix-GC-depthoff$mppost-GR.100000.xls; then
-	echo "parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff$mppost-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of"
-	parse2wig -gt $gt -f BAM -i $bam -mp $mpbl $pair -o $prefix-GC-depthoff$mppost-GR -n GR -GC $chrpath -mpbin $mpbin -binsize 100000 -gcdepthoff -odir $pdir -of $of
+	ex "parse2wig -gt $gt -f BAM -i $bam $mp -mpbin $mpbin $pair -o $prefix-GC-depthoff$mppost-GR -n GR -GC $chrpath -binsize 100000 -gcdepthoff -odir $pdir -of $of"
     fi
 }
 

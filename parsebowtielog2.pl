@@ -60,7 +60,7 @@ $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "\n");
     chomp;
-    if($_ =~ /bowtie2 (.+) (.+)\.fastq(.+)/){
+    if($_ =~ /bowtie2 (.+) (.+)\.fastq(.+)\> cram\/(.+).sort.cram/){
 	if($sample ne ""){
 	    my $totalnum = $num_mapped + $num_filtered;
 	    if(!$pair){
@@ -76,7 +76,7 @@ while(<$fh>){
 	    $num_unaligned="";
 	    $num_filtered="";
 	}
-	$sample = $2;
+	$sample = $4;
     }elsif($_ =~ /(.+) reads; of these:/){
 	$num_total=$1;
     }elsif($_ =~ /Warning: Could not open read file/){
@@ -91,16 +91,17 @@ while(<$fh>){
 	}elsif($_ =~ /    (.+) (\(.+\)) aligned (.+) times/){
 	    $num_filtered=$1;
 	}
-    }else{if($_ =~ /  (.+) (\(.+\)) were paired; of these:/){
-	$num_paired=$1;
-	  }elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly exactly (.+) time/){
-	      $num_mapped=$1;
-	      $k = $2;
-	  }elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly 0 times/){
-	      $num_unaligned=$1;
-	  }elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly (.+) times/){
-	      $num_filtered=$1;
-	  }
+    }else{
+	if($_ =~ /  (.+) (\(.+\)) were paired; of these:/){
+	    $num_paired=$1;
+	}elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly exactly (.+) time/){
+	    $num_mapped=$1;
+	    $k = $2;
+	}elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly 0 times/){
+	    $num_unaligned=$1;
+	}elsif($_ =~ /    (.+) (\(.+\)) aligned concordantly (.+) times/){
+	    $num_filtered=$1;
+	}
     }
 }
 $fh->close;
