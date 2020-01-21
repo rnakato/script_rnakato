@@ -75,7 +75,7 @@ cram=$cramdir/$head.sort.cram
 if test $type = "exec"; then
     bowtie2.sh -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
     parse2wig.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
-    if test $nopp != 1; then ssp.sh $cram $head $build; fi
+    if test $nopp != 1; then ssp.sh $pair $cram $head $build; fi
 
 elif test $type = "stats"; then
     a=`parsebowtielog2.pl $pair log/bowtie2-$head | grep -v Sample`
