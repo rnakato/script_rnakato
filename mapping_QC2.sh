@@ -40,6 +40,11 @@ do
 done
 shift $((OPTIND - 1))
 
+if test $1 = "header"; then
+    echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
+    exit
+fi
+
 if [ $# -ne 4 ]; then
   usage
   exit 1
@@ -88,12 +93,4 @@ elif test $type = "stats"; then
 	echo -en "`tail -n1 sspout/$head.stats.txt | cut -f4,5,6,7,8,9,10,11,12,13,14`"
     fi
     echo ""
-elif test $type = "header"; then
-    a=`parsebowtielog2.pl $pair log/bowtie2-$head | grep Sample`
-    b=`cat log/parsestats-$head.GC.100000 | grep Sample | cut -f6,7,8,9`
-    gcov=`cat log/parsestats-$head.$binsize | grep Sample | cut -f10`
-    b2=`cat log/parsestats-$head.GC.100000 | grep Sample | cut -f11,12`
-    echo -e "$a\t$b\t$gcov\t$b2\t$c"
-#    echo -e "\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)
-"
 fi
