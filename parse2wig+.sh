@@ -85,7 +85,7 @@ parse2wigparam="--gt $gt -i $bam $mp $pair --odir $pdir --outputformat $of -p 4"
 
 func(){
     if test $all = 1; then
-	if test ! -e $pdir/$prefix-raw$mppost.$binsize.xls; then
+	if test ! -e $pdir/$prefix-raw$mppost.$binsize.tsv; then
 	    ex "parse2wig+ $parse2wigparam -o $prefix-raw$mppost --binsize $binsize"
 	fi
     fi
@@ -96,15 +96,15 @@ func(){
 	bins="$binsize 100000"
     fi
     for b in $bins; do
-	if test ! -e $pdir/$prefix-raw$mppost-GR.$b.xls; then
+	if test ! -e $pdir/$prefix-raw$mppost-GR.$b.tsv; then
 	    ex "parse2wig+ $parse2wigparam -o $prefix-raw$mppost-GR -n GR --binsize $b"
 	fi
     done
-    if test ! -e $pdir/$prefix-GC-depthoff$mppost-GR.100000.xls; then
+    if test ! -e $pdir/$prefix-GC-depthoff$mppost-GR.100000.tsv; then
 	ex "parse2wig+ $parse2wigparam -o $prefix-GC-depthoff$mppost-GR -n GR --chrdir $chrpath --mpdir $mpbinary --binsize 100000 --gcdepthoff"
     fi
 }
 
 func
-parsestats4DROMPAplus.pl $pdir/$prefix-GC-depthoff$mppost-GR.100000.xls >& log/parsestats-$prefix.GC.100000
-parsestats4DROMPAplus.pl $pdir/$prefix-raw$mppost-GR.$binsize.xls >& log/parsestats-$prefix.$binsize
+parsestats4DROMPAplus.pl $pdir/$prefix-GC-depthoff$mppost-GR.100000.tsv >& log/parsestats-$prefix.GC.100000
+parsestats4DROMPAplus.pl $pdir/$prefix-raw$mppost-GR.$binsize.tsv >& log/parsestats-$prefix.$binsize
