@@ -9,7 +9,7 @@ pa=""
 bowtieparam=""
 nopp=0
 cramdir=cram
-of=0
+of=3
 binsize=100
 while getopts ab:d:nf:p: option
 do
@@ -74,7 +74,8 @@ cram=$cramdir/$head.sort.cram
 
 if test $type = "exec"; then
     bowtie2.sh -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
-    parse2wig.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
+#    parse2wig.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
+    parse2wig+.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
     if test $nopp != 1; then ssp.sh $pair $cram $head $build; fi
 elif test $type = "stats"; then
     a=`parsebowtielog2.pl $pair log/bowtie2-$head | grep -v Sample`
