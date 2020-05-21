@@ -39,10 +39,13 @@ build=$3
 
 if test ! -e log; then mkdir log; fi
 
+param=""
 if test $build = "scer"; then
     Ddir=`database.sh`/others/S_cerevisiae
+    param="--ng_from 10000 --ng_to 50000 --ng_step 500"
 elif test $build = "pombe"; then
     Ddir=`database.sh`/others/S_pombe
+    param="--ng_from 10000 --ng_to 50000 --ng_step 500"
 else
     Ddir=`database.sh`/UCSC/$build
 fi
@@ -52,7 +55,9 @@ gt=$Ddir/genome_table
 mptable=$(cd $(dirname $0) && pwd)/../SSP/data/mptable/mptable.UCSC.$build.${k}mer.flen150.txt
 
 if test -e $input && test -s $input ; then
-    if test ! -e $odir/$prefix.stats.txt ; then ssp $pair -i $input -o $prefix --odir $odir --gt $gt --mptable $mptable -p 4 >& log/ssp-$prefix; fi
+    if test ! -e $odir/$prefix.stats.txt ; then
+	ssp $param $pair -i $input -o $prefix --odir $odir --gt $gt --mptable $mptable -p 4 >& log/ssp-$prefix
+    fi
 else
     echo "$input does not exist."
 fi
