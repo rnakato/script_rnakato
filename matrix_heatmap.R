@@ -73,18 +73,12 @@ counts <- as.matrix(counts)
 
 if(t == "T"){ counts <- t(counts)}
 
-#cn <- colnames(counts)	
-#for (i in 2:length(cn)){
-#    cn[i-1] <- cn[i]
-#}    
-#colnames(counts) <- cn
-#temp <- counts[,-length(cn)]
-#counts <- temp
-
 head(counts)
 
-xval <- formatC(counts, format="f", digits=2)	
-pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
+xval <- formatC(counts, format="f", digits=2)
+
+#colors = c(seq(0, 1.2, length=100))
+my_palette <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
 
 dist <- dist(counts)
 tdist <- dist(t(counts))
@@ -122,15 +116,33 @@ classify <- function(rlt, k){
 rlt <- classify(rlt, k)
 
 pdf(paste(outfile, ".pdf", sep=""))
-clust.col <- c(rep(c("orange", "brown", "green", "pink", "purple", "cyan", "grey", "blue"), k))
+
 if(clst) {
-    heatmap.2(counts, dendrogram="both", Rowv=as.dendrogram(rlt),Colv=as.dendrogram(trlt), main="Correlation Heatmap"
-            , col=pal, tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, cexRow=fsize, cexCol=fsize
-            , margins=c(10, 10), RowSideColors=clust.col[rlt$cl])
+    clust.col <- c(rep(c("orange", "brown", "green", "pink", "purple", "cyan", "grey", "blue"), k))
+
+    heatmap.2(counts, dendrogram="both",
+              Rowv=as.dendrogram(rlt),
+              Colv=as.dendrogram(trlt),
+              main="Correlation Heatmap",
+              col=my_palette, #breaks=colors,
+              tracecol="#303030",
+              trace="none", notecol="black",
+              notecex=0.3, keysize = 1.5,
+              cexRow=fsize, cexCol=fsize,
+              margins=c(10, 10),
+              RowSideColors=clust.col[rlt$cl])
 #        hclustfun=function(d) hclust(d, method="ward.D2"))
 } else {
-heatmap.2(counts, dendrogram="none", Rowv=F, Colv=F, main="Correlation Heatmap", col=pal,
-          tracecol="#303030", trace="none", notecol="black", notecex=0.3, keysize = 1.5, cexRow=fsize, cexCol=fsize, margins=c(10, 10))
+    heatmap.2(counts, dendrogram="none",
+              Rowv=F, Colv=F,
+              main="Correlation Heatmap",
+              col=my_palette, #breaks=colors,
+#              cellnote=counts,
+              tracecol="#303030",
+              trace="none", notecol="black",
+              notecex=0.3, keysize = 1.5,
+              cexRow=fsize, cexCol=fsize,
+              margins=c(10, 10))
 }
 dev.off()
 
