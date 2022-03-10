@@ -48,7 +48,11 @@ while(<$fh>){
     next if($_ eq "\n");
     chomp;
     my @clm = split(/\s/, $_);
-    $Hash{$clm[$line1]} = $_;
+    my $str = $clm[$line1];
+    if (exists($Hash{$str})){
+        print "Warning: $str already exists. The latter one is stored.\n";
+    }
+    $Hash{$str} = $_;
 }
 $fh->close;
 

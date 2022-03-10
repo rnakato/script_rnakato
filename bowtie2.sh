@@ -63,7 +63,7 @@ ex_hiseq(){
     genome=$index.fa
 
     $bowtie2 --version
-    command="$bowtie2 $param -p12 -x $index $fastq | samtools view -C - -T $genome | samtools sort -O cram > $file"
+    command="$bowtie2 $param -p12 -x $index \"$fastq\" | samtools view -C - -T $genome | samtools sort -O cram > $file"
     echo $command
     eval $command
 
