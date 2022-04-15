@@ -42,7 +42,7 @@ if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
-bowtie2="singularity exec --bind /work /work/SingularityImages/rnakato_bowtie2.img bowtie2"
+bowtie2="singularity exec --bind /work /work/SingularityImages/rnakato_mapping.2022.04.sif bowtie2"
 
 #file=$bamdir/$prefix$post-$build.sort.bam
 file=$bamdir/$prefix$post-$build.sort.cram
