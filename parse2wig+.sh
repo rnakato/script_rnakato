@@ -93,7 +93,7 @@ func(){
     if test $build = "scer" -o $build = "pombe"; then
 	bins="$binsize"
     else
-	bins="$binsize 100000"
+	bins="$binsize 5000 100000"
     fi
     for b in $bins; do
 	if test ! -e $pdir/$prefix-raw$mppost-GR.$b.tsv; then
