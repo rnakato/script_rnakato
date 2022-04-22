@@ -3,6 +3,9 @@ cmdname=`basename $0`
 function usage()
 {
     echo "$cmdname" '[-d bamdir] [-p "bowtie2 param"] <fastq> <prefix> <build>' 1>&2
+    echo "  Example:" 1>&2
+    echo "  For single-end: $cmdname -p \"--very-sensitive\" chip.fastq.gz chip hg38" 1>&2
+    echo "  For paired-end: $cmdname \"\-1 chip_1.fastq.gz \-2 chip_2.fastq.gz\" chip hg38" 1>&2
 }
 
 echo $cmdname $*
@@ -44,7 +47,6 @@ if test ! -e log; then mkdir log; fi
 Ddir=`database.sh`
 bowtie2="singularity exec --bind /work /work/SingularityImages/rnakato_mapping.2022.04.sif bowtie2"
 
-#file=$bamdir/$prefix$post-$build.sort.bam
 file=$bamdir/$prefix$post-$build.sort.cram
 
 if test -e "$file" && test 1000 -lt `wc -c < $file` ; then

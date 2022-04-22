@@ -3,6 +3,9 @@ cmdname=`basename $0`
 function usage()
 {
     echo "$cmdname" '[-a] [-b binsize] [-n] [-f of] [-d outputdir] [-p "bowtie2 param"] <exec|stats|header> <fastq> <prefix> <build>' 1>&2
+    echo "  Example:" 1>&2
+    echo "  For single-end: $cmdname exec chip.fastq.gz chip hg38" 1>&2
+    echo "  For paired-end: $cmdname exec \"-1 chip_1.fastq.gz -2 chip_2.fastq.gz\" chip hg38" 1>&2
 }
 
 pa=""
@@ -39,6 +42,11 @@ do
     esac
 done
 shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+  usage
+  exit 1
+fi
 
 if test $1 = "header"; then
     echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
@@ -79,7 +87,6 @@ cram=$cramdir/$head.sort.cram
 
 if test $type = "exec"; then
     bowtie2.sh -d $cramdir -p "$bowtieparam" "$fastq" $prefix $build
-#    parse2wig.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
     parse2wig+.sh $pa $pair -b $binsize $pens -f $of $cram $head $build
     if test $nopp != 1; then ssp.sh $pair $cram $head $build; fi
 elif test $type = "stats"; then
