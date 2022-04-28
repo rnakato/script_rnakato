@@ -38,7 +38,7 @@ do
             of=${OPTARG}
             ;;
 	p)
-            pair="-pair"
+            pair="--pair"
             ;;
        	*)
 	    usage
