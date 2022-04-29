@@ -45,7 +45,9 @@ if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
-bowtie2="singularity exec --bind /work,/work2,/work3 /work/SingularityImages/rnakato_mapping.2022.04.sif bowtie2"
+# singularityにすると--bind /workでサーバ間でエラーになる
+#bowtie2="singularity exec --bind /work,/work2 /work/SingularityImages/rnakato_mapping.2022.04.sif bowtie2"
+bowtie2="bowtie2"
 
 file=$bamdir/$prefix$post-$build.sort.cram
 
