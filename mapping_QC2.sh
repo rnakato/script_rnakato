@@ -49,7 +49,7 @@ if [ $# -eq 0 ]; then
 fi
 
 if test $1 = "header"; then
-    echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
+    echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	reads in peaks	FRiP	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
     exit
 fi
 
@@ -93,7 +93,7 @@ elif test $type = "stats"; then
     a=`parsebowtielog2.pl $pair log/bowtie2-$head | grep -v Sample`
     b=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f6,7,8,9`
     gcov=`cat log/parsestats-$head.$binsize | grep -v Sample | cut -f10`
-    b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12`
+    b2=`cat log/parsestats-$head.GC.100000 | grep -v Sample | cut -f11,12,13,14`
     echo -en "$a\t$b\t$gcov\t$b2\t$c"
 
     if test $nopp != 1; then
