@@ -49,7 +49,7 @@ if [ $# -eq 0 ]; then
 fi
 
 if test $1 = "header"; then
-    echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Read depth	Genome coverage	Tested reads	reads in peaks	FRiP	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
+    echo -e "\tSample\tSequenced reads	Mapped 1 time	%	Mapped >1 times	%	Mapped all	%	Unmapped	%	Nonredundant	Redundant	Complexity for10M	Tested reads	Read depth	Genome coverage	reads in peaks	FRiP	GC summit	read length	fragment length	SSP-NSC	SSP-RLSC	SSP-RSC	Background uniformity	FCS(read)	FCS(flen)	FCS(1k)	FCS(10k)	FCS(100k)"
     exit
 fi
 
