@@ -2,7 +2,11 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname" '[-d bamdir] [-p "bowtie2 param"] <fastq> <prefix> <build>' 1>&2
+    echo "$cmdname" '[Options] <fastq> <prefix> <build>' 1>&2
+    echo ' Options:' 1>&2
+    echo '    -B: output as BAM format (defalt: CRAM)' 1>&2
+    echo '    -d: output directory of map files (default: cram)' 1>&2
+    echo '    -p "bowtie2 param": parameter of bowtie2 (shouled be quated)' 1>&2
     echo "  Example:" 1>&2
     echo "  For single-end: $cmdname -p \"--very-sensitive\" chip.fastq.gz chip hg38" 1>&2
     echo "  For paired-end: $cmdname \"\-1 chip_1.fastq.gz \-2 chip_2.fastq.gz\" chip hg38" 1>&2
@@ -10,13 +14,17 @@ function usage()
 
 echo $cmdname $*
 
+format=CRAM
 type=hiseq
 bamdir=cram
 db=UCSC
 param=""
-while getopts d:p: option
+while getopts Bd:p: option
 do
     case ${option} in
+        B) format=BAM
+           bamdir=bam
+           ;;
 	d)
 	    bamdir=${OPTARG}
 	    ;;
@@ -45,16 +53,19 @@ if test ! -e $bamdir; then mkdir $bamdir; fi
 if test ! -e log; then mkdir log; fi
 
 Ddir=`database.sh`
-# singularityにすると--bind /workでサーバ間でエラーになる
-#bowtie2="singularity exec --bind /work,/work2 /work/SingularityImages/rnakato_mapping.2022.04.sif bowtie2"
 bowtie2="bowtie2"
-
-file=$bamdir/$prefix$post-$build.sort.cram
+if test $format = "BAM"; then
+    file=$bamdir/$prefix$post-$build.sort.bam
+else
+    file=$bamdir/$prefix$post-$build.sort.cram
+fi
 
 if test -e "$file" && test 1000 -lt `wc -c < $file` ; then
     echo "$file already exist. quit"
     exit 0
 fi
+
+ex(){ echo $1; eval $1; }
 
 ex_hiseq(){
     if test $build = "scer"; then
@@ -67,11 +78,14 @@ ex_hiseq(){
     genome=$index.fa
 
     $bowtie2 --version
-    command="$bowtie2 $param -p12 -x $index \"$fastq\" | samtools view -C - -T $genome | samtools sort -O cram > $file"
-    echo $command
-    eval $command
 
-    if test ! -e $file.crai; then samtools index $file; fi
+    if test $format = "BAM"; then
+        ex "bowtie2 $param -p12 -x $index \"$fastq\" | samtools sort > $file"
+        if test ! -e $file.bai; then samtools index $file; fi
+    else
+        ex "bowtie2 $param -p12 -x $index \"$fastq\" | samtools view -C - -T $genome | samtools sort -O cram > $file"
+        if test ! -e $file.crai; then samtools index $file; fi
+    fi
 }
 
 log=log/bowtie2-$prefix$post-$build
