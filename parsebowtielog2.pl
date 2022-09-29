@@ -60,7 +60,7 @@ $fh = $file->open('r') or die $!;
 while(<$fh>){
     next if($_ eq "\n");
     chomp;
-    if($_ =~ /bowtie2 (.+) (.+)\.fastq(.+)\> cram\/(.+).sort.cram/){
+    if($_ =~ /bowtie2 (.+) (.+)\.fastq(.+)\> (.+)\/(.+).sort.(.+)/){
 	if($sample ne ""){
 	    my $totalnum = $num_mapped + $num_filtered;
 	    if(!$pair){
@@ -76,7 +76,7 @@ while(<$fh>){
 	    $num_unaligned="";
 	    $num_filtered="";
 	}
-	$sample = $4;
+	$sample = $5;
     }elsif($_ =~ /(.+) reads; of these:/){
 	$num_total=$1;
     }elsif($_ =~ /Warning: Could not open read file/){
