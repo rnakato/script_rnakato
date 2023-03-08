@@ -6,10 +6,6 @@ import pandas as pd
 
 def parserefFlat(filename):
     refFlat = pd.read_csv(filename, sep='\t', header=0)
-#    refFlat.columns = ['genename', 'name', 'chrom', 'strand', 'txStart', 'txEnd', 'cdsStart', 'cdsEnd', 'exonCount',
-#                       'exonStarts', 'exonEnds', 'gene type', 'transcript type', 'reference transcript name', 'reference transcript id']
-    refFlat['exonStarts'] = refFlat['exonStarts'].apply(lambda x: [int(i) for i in x.split(',')[:-1]])
-    refFlat['exonEnds'] = refFlat['exonEnds'].apply(lambda x: [int(i) for i in x.split(',')[:-1]])
     refFlat.index = refFlat['name']
     return refFlat
 
