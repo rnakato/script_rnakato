@@ -11,12 +11,8 @@ topt=FALSE
 while getopts tf: option
 do
   case ${option} in
-    t)
-      topt=TRUE
-      ;;
-    f)
-      file=${OPTARG}
-      ;;
+    t) topt=TRUE;;
+    f) file=${OPTARG};;
     *)
       usage
       exit 1
