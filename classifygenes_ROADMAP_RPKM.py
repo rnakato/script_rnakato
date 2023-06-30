@@ -46,3 +46,11 @@ def main():
 
 if(__name__ == '__main__'):
     main()
+
+
+
+
+    refFlat = pd.read_csv(filename, sep='\t', header=0)
+    refFlat.columns = ['genename', 'name', 'chrom', 'strand', 'txStart', 'txEnd', 'cdsStart', 'cdsEnd', 'exonCount',
+
+
