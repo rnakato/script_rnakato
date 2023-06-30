@@ -81,7 +81,7 @@ for dir in $fqdir/*; do
 
     for fq1 in "$dir"/*"$postfix1"; do
         if [ ! -f "$fq1" ]; then
-            echo "$dir: *_1.fastq.gz does not exist. Skipping"
+            echo "$dir: *${postfix} does not exist. Skipping"
             continue
         fi
 
