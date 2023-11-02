@@ -49,7 +49,7 @@ do
         if test -e $fq && test -s $fq ; then
             echo "$fq exists"
         else
-            singularity exec --bind /home,/work,/work2,/work3 /work/SingularityImages/SRAtools.3.0.0.sif fastq-dump --gzip $id
+            singularity exec --bind /home,/work,/work2,/work3 /work/SingularityImages/churros.0.10.2.sif fastq-dump --gzip $id
     fi
     else
         fq1=${id}_1.fastq.gz
@@ -57,7 +57,7 @@ do
         if test -e $fq1 && test -s $fq1 && test -e $fq2 && test -s $fq2 ; then
             echo "$fq1| $fq2 exists"
         else
-            singularity exec --bind /home,/work,/work2,/work3 /work/SingularityImages/SRAtools.3.0.0.sif fastq-dump --gzip $id
+            singularity exec --bind /home,/work,/work2,/work3 /work/SingularityImages/churros.0.10.2.sif fastq-dump --gzip $id
         fi
     fi
 done
