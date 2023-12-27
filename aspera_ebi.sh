@@ -5,13 +5,11 @@ function usage()
 {
     echo "Usage: ${cmdname} RunTable.txt" 1>&2
     echo '   Options:' 1>&2
-#    echo '      -p: paired-end fastq (default: single-end)' 1>&2
-    echo '      -n <int>: column of SRR id (1-based, default: 8)' 1>&2
+    echo '      -n <int>: column of SRR id (1-based, default: 7)' 1>&2
 }
 
-# check options
 pair=FALSE
-n=8
+n=7
 while getopts n: option
 do
   case ${option} in
@@ -30,7 +28,7 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 file="$1"
-urls=`cut -f$n $file | grep -v fastq_ftp | grep -v submitted_ftp | sed -e 's|ftp.sra.ebi.ac.uk|era-fasp@fasp.sra.ebi.ac.uk:|g' | sed -e  's|\;| |g'` 
+urls=`cut -f$n $file | grep -v fastq_ftp | grep -v submitted_ftp | sed -e 's|ftp.sra.ebi.ac.uk|era-fasp@fasp.sra.ebi.ac.uk:|g' | sed -e  's|\;| |g'`
 
 ssh=/home/rnakato/.aspera/connect/etc/asperaweb_id_dsa.openssh
 
