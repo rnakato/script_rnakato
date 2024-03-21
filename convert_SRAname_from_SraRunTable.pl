@@ -18,7 +18,7 @@ $file=$ARGV[0];
 $line_name=$ARGV[1];
 open(IN, $file) || die;
 $file=<IN>;
-@clm= split(/\t/, $file);
+@clm= split(/,/, $file);
 for($i=0;$i<=$#clm;$i++){
     $line_id = $i if($clm[$i] eq "Run_s" || $clm[$i] eq "Run");
     $line_org = $i if($clm[$i] eq "Organism_s" || $clm[$i] eq "Organism");
@@ -28,7 +28,7 @@ for($i=0;$i<=$#clm;$i++){
 while(<IN>) {
     next if($_ eq "\n");
     chomp;
-    @clm= split(/\t/, $_);
+    @clm= split(/,/, $_);
     my $srr = $clm[$line_id];
     $name = $clm[$line_name];
     $name =~ s/(?:\()/_/g;
