@@ -36,11 +36,14 @@ if [ $# -ne 1 ]; then
   usage
   exit 1
 fi
+
 inputfile="$1"
 
 func(){
     id=$1
     pair=$2
+
+    sing="apptainer exec --bind /home,/work,/work2,/work3 /work/SingularityImages/SRAtools.3.4.1.sif"
 
     echo $id
     if test $pair -eq 1; then
@@ -49,14 +52,15 @@ func(){
         if test -e $fq1 && test -s $fq1 && test -e $fq2 && test -s $fq2 ; then
             echo "$fq1| $fq2 exists"
         else
-            singularity exec --bind /home,/work,/work2,/work3 /work3/SingularityImages/SRAtools.3.0.0.sif fastq-dump --split-3 --gzip $id
+            $sing fastq-dump --split-3 --gzip $id
         fi
     else
         fq=$id.fastq.gz
         if test -e $fq && test -s $fq ; then
             echo "$fq exists"
         else
-            singularity exec --bind /home,/work,/work2,/work3 /work3/SingularityImages/SRAtools.3.0.0.sif fastq-dump --gzip $id
+
+	    $sing fastq-dump --gzip $id
         fi
     fi
 }
@@ -71,4 +75,3 @@ echo "comma"
 fi
 
 echo ${ids[@]} | tr ' ' '\n' | xargs -I {} -P $ncore bash -c "func {} $pair"
-
