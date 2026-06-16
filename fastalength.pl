@@ -23,7 +23,7 @@ while($line = <InputFile>){
 	chomp($line);
 	$len += length($line);
     }
-} 
+}
 close (InputFile);
 
 print "$len\n";
