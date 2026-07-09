@@ -41,13 +41,15 @@ fi
 
 samplelist=$1
 
+sing="singularity exec  --bind /work,/work2,/work3 /work/SingularityImages/churros.2.0.0.sif"
+
 while IFS=$'\t' read -r srr assay layout; do
     outdir="${assay}/fastq"
     ex "mkdir -p \"$outdir\""
 
     if [ "$layout" = "PAIRED" ]; then
-        ex "pfastq-dump -t 12 --gzip --split-files -O \"$outdir\" -s \"$srr\""
+        ex "$sing pfastq-dump -t 12 --gzip --split-files -O \"$outdir\" -s \"$srr\""
     else
-        ex "pfastq-dump -t 12 --gzip -O \"$outdir\" -s \"$srr\""
+        ex "$sing pfastq-dump -t 12 --gzip -O \"$outdir\" -s \"$srr\""
     fi
 done < "$samplelist"
